@@ -324,16 +324,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
               <input style={{...estiloInput, flex: 1}} placeholder="Zona" value={novoEleitor.zona_eleitoral} onChange={e => setNovoEleitor({...novoEleitor, zona_eleitoral: e.target.value})} />
               <input style={{...estiloInput, flex: 1}} placeholder="Seção" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({...novoEleitor, secao_eleitoral: e.target.value})} />
             </div>
-            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-              <p style={{ fontSize: 13, color: '#0369a1', fontWeight: 'bold', marginBottom: 8 }}>📋 TERMO — LGPD / TSE</p>
-              <p style={{ fontSize: 12, color: '#334155', lineHeight: 1.6, marginBottom: 12 }}>
-                Autorizo o tratamento dos meus dados para fins de comunicação política, conforme <strong>Lei nº 13.709/2018</strong> e <strong>Resoluções do TSE</strong>.
-              </p>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
-                <input type="checkbox" checked={termoAceito} onChange={e => setTermoAceito(e.target.checked)} style={{ marginTop: 2, width: 18, height: 18 }} />
-                <span style={{ fontSize: 13, color: '#1e293b', fontWeight: 500 }}>Li e aceito o Termo (v1.0 — 2026)</span>
-              </label>
-            </div>
+                        <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '✅ Cadastrar Eleitor'}</button>
             <button onClick={() => setShowEleitor(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
