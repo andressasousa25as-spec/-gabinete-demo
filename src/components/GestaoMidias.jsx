@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useState, useEffect, useRef } from 'react';\nimport { supabase } from '../lib/supabase';
+import { useState, useEffect, useRef } from 'react';
+import { supabase } from '../lib/supabase';
 
 export default function GestaoMidias({ onVoltar }) {
   const [midias, setMidias] = useState([]);
