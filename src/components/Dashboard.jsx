@@ -132,7 +132,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   const card = (titulo, valor, sub, cor) => (
     <div style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: `1px solid ${cor}33` }}>
-      <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 4 }}>{titulo}</p>
+      <p style={{ color: 'white', fontSize: 13, marginBottom: 4, fontWeight: 600 }}>{titulo}</p>
       <p style={{ color: cor, fontSize: 32, fontWeight: 800 }}>{valor}</p>
       <p style={{ color: '#64748b', fontSize: 12 }}>{sub}</p>
     </div>
