@@ -52,7 +52,7 @@ export default function GestaoMidias({ onVoltar }) {
 
   const upload = async () => {
     setErro(''); setSucesso('');
-    if (!titulo) return setErro('? Digite um t?tulo para a m?dia.');
+    if (!titulo) return setErro('? Digite um título para a mídia.');
     if (!arquivo) return setErro('? Selecione um arquivo.');
     setUploading(true);
     try {
@@ -68,7 +68,7 @@ export default function GestaoMidias({ onVoltar }) {
         link_rastreavel: urlData.publicUrl,
       });
       if (dbError) throw dbError;
-      setSucesso('? M?dia enviada com sucesso!');
+      setSucesso('? Mídia enviada com sucesso!');
       setTitulo(''); setDescricao(''); setArquivo(null); setPreview(null);
       fetchAll();
     } catch (err) {
@@ -98,7 +98,7 @@ export default function GestaoMidias({ onVoltar }) {
     const alvos = eleitores.filter(e => selecionados.includes(e.id));
     const links = alvos.map(e => {
       const numero = '55' + e.telefone.replace(/\D/g, '');
-      const msg = `Ol?, ${e.nome}! ??\n\nO Dep. *Paulinho Ramos* compartilhou uma novidade:\n\n?? *${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\n?? https://gabinete-asf.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair responda *SAIR*. ?`;
+      const msg = `Olá, ${e.nome}! ??\n\nO Dep. Deputado Demo compartilhou uma novidade:\n\n?? *${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\n?? https://gabinete-asf.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair responda *SAIR*. ?`;
       return { nome: e.nome, bairro: e.bairro || '', id: e.id, eleitor_id: e.id, url: `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` };
     });
     for (const l of links) {
@@ -126,7 +126,7 @@ export default function GestaoMidias({ onVoltar }) {
   };
 
   const excluirMidia = async (midia) => {
-    if (!confirm('Excluir esta m?dia permanentemente?')) return;
+    if (!confirm('Excluir esta mídia permanentemente?')) return;
     await supabase.storage.from('midias-campanha').remove([midia.arquivo_path]);
     await supabase.from('midias_cliques').delete().eq('midia_id', midia.id);
     await supabase.from('midias').delete().eq('id', midia.id);
@@ -141,35 +141,35 @@ export default function GestaoMidias({ onVoltar }) {
   return (
     <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }}>
       <button onClick={onVoltar} style={{ marginBottom: '20px', padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>? Voltar</button>
-      <h2 style={{ color: '#1e40af', marginBottom: '24px', fontSize: '24px' }}>?? Central de M?dias</h2>
+      <h2 style={{ color: '#1e40af', marginBottom: '24px', fontSize: '24px' }}>?? Central de Mídias</h2>
 
       {/* Upload */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>? Enviar Nova M?dia</h3>
+        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>? Enviar Nova Mídia</h3>
         {sucesso && <div style={{ background: '#dcfce7', color: '#166534', padding: '12px', borderRadius: '8px', marginBottom: '12px' }}>{sucesso}</div>}
         {erro && <div style={{ background: '#fee2e2', color: '#991b1b', padding: '12px', borderRadius: '8px', marginBottom: '12px' }}>{erro}</div>}
-        <input type="text" placeholder="T?tulo da m?dia *" value={titulo} onChange={e => setTitulo(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: '15px', marginBottom: '12px', boxSizing: 'border-box' }} />
-        <textarea placeholder="Descri??o (opcional)" value={descricao} onChange={e => setDescricao(e.target.value)} rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: '15px', marginBottom: '12px', boxSizing: 'border-box', resize: 'vertical' }} />
+        <input type="text" placeholder="Título da mídia *" value={titulo} onChange={e => setTitulo(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: '15px', marginBottom: '12px', boxSizing: 'border-box' }} />
+        <textarea placeholder="Descrição (opcional)" value={descricao} onChange={e => setDescricao(e.target.value)} rows={2} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: '15px', marginBottom: '12px', boxSizing: 'border-box', resize: 'vertical' }} />
         <div style={{ border: '2px dashed #93c5fd', borderRadius: '12px', padding: '24px', textAlign: 'center', marginBottom: '12px', background: '#eff6ff' }}>
           <input type="file" id="file-upload" accept="image/*,video/*,.pdf" onChange={handleArquivo} style={{ display: 'none' }} />
           <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
             <p style={{ fontSize: '32px', marginBottom: '8px' }}>??</p>
             <p style={{ color: '#1e40af', fontWeight: 'bold', fontSize: '15px' }}>Clique para selecionar arquivo</p>
-            <p style={{ color: '#6b7280', fontSize: '13px' }}>Imagem, V?deo ou PDF ? m?x. 50MB</p>
+            <p style={{ color: '#6b7280', fontSize: '13px' }}>Imagem, Vídeo ou PDF — máx. 50MB</p>
           </label>
           {arquivo && <div style={{ marginTop: '12px', padding: '8px', background: 'white', borderRadius: '8px', fontSize: '14px', color: '#374151' }}>? {arquivo.name} ({(arquivo.size / 1024 / 1024).toFixed(2)} MB)</div>}
           {preview && <img src={preview} alt="preview" style={{ marginTop: '12px', maxHeight: '120px', borderRadius: '8px', objectFit: 'cover' }} />}
         </div>
         <button onClick={upload} disabled={uploading} style={{ width: '100%', padding: '14px', background: uploading ? '#93c5fd' : '#1e40af', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: 'bold', cursor: uploading ? 'not-allowed' : 'pointer' }}>
-          {uploading ? '? Enviando...' : '?? Enviar M?dia'}
+          {uploading ? '? Enviando...' : '?? Enviar Mídia'}
         </button>
       </div>
 
-      {/* Lista m?dias */}
+      {/* Lista mídias */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>?? M?dias ({midias.length})</h3>
+        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>?? Mídias ({midias.length})</h3>
         {loading ? <p style={{ color: '#6b7280', textAlign: 'center' }}>? Carregando...</p> :
-          midias.length === 0 ? <p style={{ color: '#9ca3af', textAlign: 'center', padding: '40px 0' }}>?? Nenhuma m?dia ainda.</p> : (
+          midias.length === 0 ? <p style={{ color: '#9ca3af', textAlign: 'center', padding: '40px 0' }}>?? Nenhuma mídia ainda.</p> : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {midias.map(m => (
               <div key={m.id} style={{ background: '#f9fafb', borderRadius: '12px', padding: '16px', border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9' }}>
@@ -177,7 +177,7 @@ export default function GestaoMidias({ onVoltar }) {
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: 'bold', fontSize: '15px', color: '#111827' }}>{icone(m.tipo)} {m.titulo}</p>
                     {m.descricao && <p style={{ color: '#6b7280', fontSize: '13px', marginTop: '4px' }}>{m.descricao}</p>}
-                    <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>{m.tipo?.toUpperCase()} ? {new Date(m.created_at).toLocaleString('pt-BR')}</p>
+                    <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>{m.tipo?.toUpperCase()} • {new Date(m.created_at).toLocaleString('pt-BR')}</p>
                   </div>
                   {m.tipo === 'imagem' && <img src={m.arquivo_url} alt={m.titulo} style={{ width: '80px', height: '60px', objectFit: 'cover', borderRadius: '8px' }} />}
                 </div>
@@ -203,11 +203,11 @@ export default function GestaoMidias({ onVoltar }) {
           <div style={estiloCardModal}>
             <h3 style={{ color: '#1e40af', marginBottom: '6px' }}>?? Disparar: {midiaDisparo.titulo}</h3>
             <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '16px' }}>Selecione os eleitores e clique em Gerar Links.</p>
-            {/* Filtro por Lideran?a */}
+            {/* Filtro por Liderança */}
             <div style={{ marginBottom: 12 }}>
               <select value={filtroLideranca} onChange={e => filtrarPorLideranca(e.target.value)}
                 style={{ width: '100%', padding: '10px', borderRadius: 8, border: '1px solid #334155', background: '#1e293b', color: '#f1f5f9', fontSize: 14 }}>
-                <option value="">?? Filtrar por Lideran?a (todos)</option>
+                <option value="">?? Filtrar por Liderança (todos)</option>
                 {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
               </select>
             </div>
@@ -223,7 +223,7 @@ export default function GestaoMidias({ onVoltar }) {
                   <input type="checkbox" checked={selecionados.includes(e.id)} onChange={() => toggleSelecionado(e.id)} style={{ width: '18px', height: '18px', accentColor: '#1e40af' }} />
                   <div>
                     <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#111827' }}>{e.nome}</p>
-                    <p style={{ color: '#6b7280', fontSize: '12px' }}>?? {e.telefone}{e.bairro ? ` ? ?? ${e.bairro}` : ''}</p>
+                    <p style={{ color: '#6b7280', fontSize: '12px' }}>?? {e.telefone}{e.bairro ? ` • ?? ${e.bairro}` : ''}</p>
                   </div>
                 </label>
               ))}
@@ -241,7 +241,7 @@ export default function GestaoMidias({ onVoltar }) {
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setListaLinks([])}>
           <div style={estiloCardModal}>
             <h3 style={{ color: '#1e40af', marginBottom: '6px' }}>?? Clique para enviar para cada eleitor</h3>
-            <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '16px' }}>Clique em cada bot?o verde para abrir o WhatsApp com a mensagem pronta.</p>
+            <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '16px' }}>Clique em cada botão verde para abrir o WhatsApp com a mensagem pronta.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
               {listaLinks.map((l, i) => (
                 <a key={i} href={l.url} target="_blank" rel="noopener noreferrer"
@@ -255,7 +255,7 @@ export default function GestaoMidias({ onVoltar }) {
               ))}
             </div>
             <button onClick={() => setListaLinks([])} style={{ width: '100%', padding: '14px', background: '#1e40af', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px' }}>
-              ? Conclu?do
+              ? Concluído
             </button>
           </div>
         </div>
