@@ -125,6 +125,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'eleitores', label: '👥 Eleitores' },
     { id: 'reunioes', label: '📅 Reuniões' },
     { id: 'mapa', label: '🗺️ Mapa' },
+    { id: 'midias', label: '📱 Mídias' },
+    { id: 'relatorios', label: '🖨️ Relatórios' },
     { id: 'anotacoes', label: '📝 Anotações' },
   ];
 
