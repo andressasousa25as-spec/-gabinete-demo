@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import MapaDemo from './MapaDemo';
 import TermoLGPD from './TermoLGPD';
@@ -117,7 +117,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'midias', label: '📱 Mídias' },
     { id: 'analytics', label: '📊 Analytics' },
     { id: 'ranking', label: '🏆 Ranking' },
-    { id: 'cenario', label: '?? Cen�rio' },
+    { id: 'cenario', label: '?? Cen�rio' },
     { id: 'relatorios', label: 'Relatorios' },
   ];
 
