@@ -28,6 +28,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [showReuniao, setShowReuniao] = useState(false);
   const [showAnotacao, setShowAnotacao] = useState(false);
   const [termoAceito, setTermoAceito] = useState(false);
+  const [metaEleitores, setMetaEleitores] = useState(50000);
 
   const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', logradouro: '', zona_eleitoral: '', secao_eleitoral: '', cidade: 'Macapá' });
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '' });
@@ -197,10 +198,10 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           <div>
             <div style={{ background: 'linear-gradient(135deg, #1e3a5f, #1e40af)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center' }}>
               <h2 style={{ fontSize: 28, margin: 0 }}>👑 {nomeAtual}</h2>
-              <p style={{ color: '#93c5fd', margin: '8px 0 0' }}>Meta: <strong>7.000 votos</strong> • Eleitores: {eleitores.length} • Lideranças: {liderancas.length}</p>
+              <p style={{ color: '#93c5fd', margin: '8px 0 0' }}>Eleitores: {eleitores.length} • Lideranças: {liderancas.length}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
-              {card('Total de Eleitores', eleitores.length, 'Meta: 50.000', '#60a5fa')}
+              {card('Total de Eleitores', eleitores.length, `Meta: ${metaEleitores.toLocaleString('pt-BR')}`, '#60a5fa')}
               {card('Lideranças Ativas', liderancas.length, 'Meta: 200', '#f59e0b')}
               {card('Reuniões', reunioes.length, 'agendadas e realizadas', '#34d399')}
               {card('Anotações', anotacoes.length, 'registradas', '#a78bfa')}
