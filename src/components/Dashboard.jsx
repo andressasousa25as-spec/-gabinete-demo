@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import MapaDemo from './MapaDemo';
+import TermoLGPD from './TermoLGPD';
 import CenarioPolitico from './CenarioPolitico';
 import RankingEngajamento from './RankingEngajamento';
 import AnalyticsMidias from './AnalyticsMidias';
@@ -383,3 +384,4 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     </div>
   );
 }
+
