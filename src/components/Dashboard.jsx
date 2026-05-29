@@ -118,7 +118,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'analytics', label: '📊 Analytics' },
     { id: 'ranking', label: '🏆 Ranking' },
     { id: 'cenario', label: '?? Cen�rio' },
-    { id: 'relatorios', label: '??? Relat�rios' },
+    { id: 'relatorios', label: 'Relatorios' },
   ];
 
   const abasEquipe = [
@@ -127,7 +127,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'reunioes', label: '📅 Reuniões' },
     { id: 'mapa', label: '🗺️ Mapa' },
     { id: 'midias', label: '📱 Mídias' },
-    { id: 'relatorios', label: '🖨️ Relatórios' },
+    { id: 'relatorios', label: 'Relatorios' },
     { id: 'anotacoes', label: '📝 Anotações' },
   ];
 
