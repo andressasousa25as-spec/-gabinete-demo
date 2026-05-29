@@ -10,7 +10,7 @@ export const ELEITORES = [
   { id: 9, nome: 'Simone Barbosa Cruz', telefone: '96981110009', bairro: 'Cidade Nova', zona: '8', secao: '0456', latitude: 0.0756, longitude: -51.0389, lideranca_id: 3 },
   { id: 10, nome: 'Alexandre Torres', telefone: '96981110010', bairro: 'Congós', zona: '6', secao: '0267', latitude: 0.0190, longitude: -51.0830, lideranca_id: 1 },
   { id: 11, nome: 'Patrícia Oliveira', telefone: '96981110011', bairro: 'Zerão', zona: '9', secao: '0523', latitude: -0.0100, longitude: -51.0712, lideranca_id: 2 },
-  { id: 12, nome: 'Marcos Vinícius Pinto', telefone: '96981110012', bairro: 'Marabaixo', zona: '1', secao: '0033', latitude: 0.0180, longitude: -51.0350, lideranca_id: 3 },
+
   { id: 13, nome: 'Juliana Freitas', telefone: '96981110013', bairro: 'Universidade', zona: '11', secao: '0634', latitude: -0.0250, longitude: -51.0689, lideranca_id: 1 },
   { id: 14, nome: 'Diego Santos Moura', telefone: '96981110014', bairro: 'Açaí', zona: '3', secao: '0201', latitude: 0.0600, longitude: -51.0550, lideranca_id: 2 },
   { id: 15, nome: 'Cristina Vale Pereira', telefone: '96981110015', bairro: 'Boné Azul', zona: '5', secao: '0312', latitude: 0.0780, longitude: -51.0480, lideranca_id: 3 },
