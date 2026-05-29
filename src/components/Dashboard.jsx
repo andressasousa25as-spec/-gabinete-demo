@@ -197,7 +197,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {aba === 'inicio' && (
           <div>
             <div style={{ background: 'linear-gradient(135deg, #1e3a5f, #1e40af)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center' }}>
-              <h2 style={{ fontSize: 28, margin: 0 }}>👑 {nomeAtual}</h2>
+              <h2 style={{ fontSize: 28, margin: 0, color: 'white' }}>👑 {nomeAtual}</h2>
               <p style={{ color: '#93c5fd', margin: '8px 0 0' }}>Eleitores: {eleitores.length} • Lideranças: {liderancas.length}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
