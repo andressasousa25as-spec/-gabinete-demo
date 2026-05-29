@@ -117,8 +117,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'midias', label: '📱 Mídias' },
     { id: 'analytics', label: '📊 Analytics' },
     { id: 'ranking', label: '🏆 Ranking' },
-    { id: 'cenario', label: '?? Cen�rio' },
-    { id: 'relatorios', label: 'Relatorios' },
+        { id: 'cenario', label: 'Cenario' },
+    { id: 'relatorios', label: '🖨️ Relatórios' },
   ];
 
   const abasEquipe = [
@@ -128,6 +128,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'mapa', label: '🗺️ Mapa' },
     { id: 'midias', label: '📱 Mídias' },
     { id: 'relatorios', label: 'Relatorios' },
+    { id: 'midias', label: '📱 Mídias' },
+    { id: 'relatorios', label: '🖨️ Relatórios' },
     { id: 'anotacoes', label: '📝 Anotações' },
   ];
 
