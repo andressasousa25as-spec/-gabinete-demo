@@ -226,7 +226,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {/* ELEITORES */}
         {aba === 'eleitores' && (
           <div>
-            <h2 style={{ fontSize: 22, marginBottom: 16 }}>👥 Eleitores ({eleitores.length})</h2>
+            <h2 style={{ fontSize: 22, marginBottom: 16, color: 'white' }}>👥 Eleitores ({eleitores.length})</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {eleitores.map(e => (
                 <div key={e.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -248,7 +248,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {aba === 'liderancas' && perfil === 'candidato' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0 }}>🤝 Lideranças ({liderancas.length})</h2>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>🤝 Lideranças ({liderancas.length})</h2>
               <button onClick={() => setShowLider(true)} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Liderança</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
@@ -271,7 +271,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {aba === 'reunioes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0 }}>📅 Reuniões ({reunioes.length})</h2>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>📅 Reuniões ({reunioes.length})</h2>
               <button onClick={() => setShowReuniao(true)} style={{ background: '#d97706', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Reunião</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -295,7 +295,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {aba === 'anotacoes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0 }}>📝 Anotações ({anotacoes.length})</h2>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>📝 Anotações ({anotacoes.length})</h2>
               <button onClick={() => setShowAnotacao(true)} style={{ background: '#1e40af', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Anotação</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
