@@ -117,7 +117,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     { id: 'midias', label: '📱 Mídias' },
     { id: 'analytics', label: '📊 Analytics' },
     { id: 'ranking', label: '🏆 Ranking' },
-    { id: 'cenario', label: '📈 Cenário' },
+    { id: 'cenario', label: '?? Cen�rio' },
+    { id: 'relatorios', label: '??? Relat�rios' },
   ];
 
   const abasEquipe = [
