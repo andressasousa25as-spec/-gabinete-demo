@@ -6,7 +6,7 @@ import RankingEngajamento from './RankingEngajamento';
 import AnalyticsMidias from './AnalyticsMidias';
 import GestaoMidias from './GestaoMidias';
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
+const MAPBOX_TOKEN = 'import.meta.env.VITE_MAPBOX_TOKEN';
 
 export default function Dashboard({ candidato, perfil, onLogout }) {
   const [aba, setAba] = useState('inicio');
