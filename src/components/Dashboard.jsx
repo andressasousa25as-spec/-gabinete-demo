@@ -30,7 +30,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [termoAceito, setTermoAceito] = useState(false);
   const [metaEleitores, setMetaEleitores] = useState(50000);
 
-  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', logradouro: '', zona_eleitoral: '', secao_eleitoral: '', cidade: 'Macapá' });
+  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', logradouro: '', zona_eleitoral: '', secao_eleitoral: '', cidade: 'Macapï¿½' });
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
   const [novaAnotacao, setNovaAnotacao] = useState({ titulo: '', conteudo: '' });
@@ -52,37 +52,37 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   const cadastrarEleitor = async () => {
     if (!termoAceito) return alert('Aceite o termo LGPD para continuar.');
-    if (!novoEleitor.nome || !novoEleitor.telefone) return alert('Nome e telefone são obrigatórios.');
+    if (!novoEleitor.nome || !novoEleitor.telefone) return alert('Nome e telefone sï¿½o obrigatï¿½rios.');
     setLoading(true);
     const { error } = await supabase.from('eleitores').insert([{ ...novoEleitor, consentimento_lgpd: true }]);
-    if (!error) { alert('Eleitor cadastrado!'); fetchAll(); setShowEleitor(false); setTermoAceito(false); setNovoEleitor({ nome: '', telefone: '', bairro: '', logradouro: '', zona_eleitoral: '', secao_eleitoral: '', cidade: 'Macapá' }); }
+    if (!error) { alert('Eleitor cadastrado!'); fetchAll(); setShowEleitor(false); setTermoAceito(false); setNovoEleitor({ nome: '', telefone: '', bairro: '', logradouro: '', zona_eleitoral: '', secao_eleitoral: '', cidade: 'Macapï¿½' }); }
     else alert('Erro: ' + error.message);
     setLoading(false);
   };
 
   const cadastrarLider = async () => {
-    if (!novaLider.nome) return alert('Nome é obrigatório.');
+    if (!novaLider.nome) return alert('Nome ï¿½ obrigatï¿½rio.');
     setLoading(true);
     const { error } = await supabase.from('liderancas').insert([novaLider]);
-    if (!error) { alert('Liderança salva!'); fetchAll(); setShowLider(false); setNovaLider({ nome: '', telefone: '', bairro: '', demanda: '' }); }
+    if (!error) { alert('Lideranï¿½a salva!'); fetchAll(); setShowLider(false); setNovaLider({ nome: '', telefone: '', bairro: '', demanda: '' }); }
     else alert('Erro: ' + error.message);
     setLoading(false);
   };
 
   const cadastrarReuniao = async () => {
-    if (!novaReuniao.titulo || !novaReuniao.data) return alert('Título e data são obrigatórios.');
+    if (!novaReuniao.titulo || !novaReuniao.data) return alert('Tï¿½tulo e data sï¿½o obrigatï¿½rios.');
     setLoading(true);
     const { error } = await supabase.from('reunioes').insert([novaReuniao]);
-    if (!error) { alert('Reunião agendada!'); fetchAll(); setShowReuniao(false); setNovaReuniao({ titulo: '', data: '', local: '', endereco: '' }); }
+    if (!error) { alert('Reuniï¿½o agendada!'); fetchAll(); setShowReuniao(false); setNovaReuniao({ titulo: '', data: '', local: '', endereco: '' }); }
     else alert('Erro: ' + error.message);
     setLoading(false);
   };
 
   const cadastrarAnotacao = async () => {
-    if (!novaAnotacao.titulo) return alert('Título é obrigatório.');
+    if (!novaAnotacao.titulo) return alert('Tï¿½tulo ï¿½ obrigatï¿½rio.');
     setLoading(true);
     const { error } = await supabase.from('anotacoes').insert([novaAnotacao]);
-    if (!error) { alert('Anotação salva!'); fetchAll(); setShowAnotacao(false); setNovaAnotacao({ titulo: '', conteudo: '' }); }
+    if (!error) { alert('Anotaï¿½ï¿½o salva!'); fetchAll(); setShowAnotacao(false); setNovaAnotacao({ titulo: '', conteudo: '' }); }
     else alert('Erro: ' + error.message);
     setLoading(false);
   };
@@ -108,29 +108,29 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   // Abas por perfil
   const abasCandidato = [
-    { id: 'inicio', label: '?? Início' },
+    { id: 'inicio', label: '?? Inï¿½cio' },
     { id: 'eleitores', label: '?? Eleitores' },
-    { id: 'liderancas', label: '?? Lideranças' },
-    { id: 'reunioes', label: '?? Reuniões' },
+    { id: 'liderancas', label: '?? Lideranï¿½as' },
+    { id: 'reunioes', label: '?? Reuniï¿½es' },
     { id: 'mapa', label: '??? Mapa' },
-    { id: 'anotacoes', label: '?? Anotações' },
-    { id: 'midias', label: '?? Mídias' },
+    { id: 'anotacoes', label: '?? Anotaï¿½ï¿½es' },
+    { id: 'midias', label: '?? Mï¿½dias' },
     { id: 'analytics', label: '?? Analytics' },
     { id: 'ranking', label: '?? Ranking' },
         { id: 'cenario', label: 'Cenario' },
-    { id: 'relatorios', label: '??? Relatórios' },
+    { id: 'relatorios', label: '??? Relatï¿½rios' },
   ];
 
   const abasEquipe = [
-    { id: 'inicio', label: '?? Início' },
+    { id: 'inicio', label: '?? Inï¿½cio' },
     { id: 'eleitores', label: '?? Eleitores' },
-    { id: 'reunioes', label: '?? Reuniões' },
+    { id: 'reunioes', label: '?? Reuniï¿½es' },
     { id: 'mapa', label: '??? Mapa' },
-    { id: 'midias', label: '?? Mídias' },
+    { id: 'midias', label: '?? Mï¿½dias' },
     { id: 'relatorios', label: 'Relatorios' },
-    { id: 'midias', label: '?? Mídias' },
-    { id: 'relatorios', label: '??? Relatórios' },
-    { id: 'anotacoes', label: '?? Anotações' },
+    { id: 'midias', label: '?? Mï¿½dias' },
+    { id: 'relatorios', label: '??? Relatï¿½rios' },
+    { id: 'anotacoes', label: '?? Anotaï¿½ï¿½es' },
   ];
 
   const abas = perfil === 'candidato' ? abasCandidato : abasEquipe;
@@ -151,13 +151,13 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   if (aba === 'relatorios') return (
     <div style={{ minHeight: '100vh', background: '#0f172a', color: 'white', padding: 24 }}>
       <button onClick={() => setAba('inicio')} style={{ marginBottom: 20, padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>? Voltar</button>
-      <h2 style={{ color: 'white', marginBottom: 20 }}>??? Relatórios</h2>
+      <h2 style={{ color: 'white', marginBottom: 20 }}>??? Relatï¿½rios</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
         {[
           { label: 'Eleitores', dados: eleitores.map(e => ({ nome: e.nome, telefone: e.telefone || '-', bairro: e.bairro || '-', zona: e.zona_eleitoral ? 'Zona ' + e.zona_eleitoral : '-', secao: e.secao_eleitoral || '-' })), colunas: ['nome','telefone','bairro','zona','secao'] },
-          { label: 'Lideranças', dados: liderancas.map(l => ({ nome: l.nome, telefone: l.telefone || '-', bairro: l.bairro || '-', demanda: l.demanda || '-' })), colunas: ['nome','telefone','bairro','demanda'] },
-          { label: 'Reuniões', dados: reunioes.map(r => ({ titulo: r.titulo, data: r.data ? new Date(r.data).toLocaleString('pt-BR') : '-', local: r.local || '-' })), colunas: ['titulo','data','local'] },
-          { label: 'Anotações', dados: anotacoes.map(a => ({ titulo: a.titulo, conteudo: a.conteudo || '-' })), colunas: ['titulo','conteudo'] },
+          { label: 'Lideranï¿½as', dados: liderancas.map(l => ({ nome: l.nome, telefone: l.telefone || '-', bairro: l.bairro || '-', demanda: l.demanda || '-' })), colunas: ['nome','telefone','bairro','demanda'] },
+          { label: 'Reuniï¿½es', dados: reunioes.map(r => ({ titulo: r.titulo, data: r.data ? new Date(r.data).toLocaleString('pt-BR') : '-', local: r.local || '-' })), colunas: ['titulo','data','local'] },
+          { label: 'Anotaï¿½ï¿½es', dados: anotacoes.map(a => ({ titulo: a.titulo, conteudo: a.conteudo || '-' })), colunas: ['titulo','conteudo'] },
         ].map((rel, i) => (
           <button key={i} onClick={() => {
             const w = window.open('', '_blank');
@@ -199,45 +199,45 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
                 ?? {nomeAtual} {perfil === 'candidato' && <span style={{ fontSize: 11, color: '#64748b' }}>??</span>}
               </p>
             )}
-            <span style={{ fontSize: 11, color: perfil === 'candidato' ? '#f59e0b' : '#a78bfa', fontWeight: 600 }}>{perfil === 'candidato' ? '?? Candidato' : '?? Equipe'}</span>
+            <span style={{ fontSize: 11, color: perfil === 'candidato' ? '#f59e0b' : '#a78bfa', fontWeight: 600 }}>{perfil === 'candidato' ? 'Candidato' : 'Equipe'}</span>
           </div>
         </div>
         <button onClick={onLogout} style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer', fontSize: 13 }}>Sair</button>
       </header>
 
-      {/* Navegação */}
+      {/* Navegaï¿½ï¿½o */}
       <nav style={{ background: '#1e293b', padding: '0 24px', display: 'flex', gap: 4, overflowX: 'auto' }}>
         {abas.map(a => (
           <button key={a.id} onClick={() => setAba(a.id)} style={{ padding: '14px 16px', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', background: aba === a.id ? '#0f172a' : 'transparent', color: aba === a.id ? '#60a5fa' : '#94a3b8', borderBottom: aba === a.id ? '2px solid #3b82f6' : '2px solid transparent' }}>{a.label}</button>
         ))}
       </nav>
 
-      {/* Conteúdo */}
+      {/* Conteï¿½do */}
       <main style={{ padding: 24, maxWidth: 1280, margin: '0 auto' }}>
 
-        {/* Botões de ação */}
+        {/* Botï¿½es de aï¿½ï¿½o */}
         {(aba === 'inicio' || aba === 'eleitores') && (
           <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
             <button onClick={() => setShowEleitor(true)} style={{ background: '#16a34a', color: 'white', border: 'none', padding: '12px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>+ Eleitor</button>
-            {perfil === 'candidato' && <button onClick={() => setShowLider(true)} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '12px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>+ Liderança</button>}
-            <button onClick={() => setShowReuniao(true)} style={{ background: '#d97706', color: 'white', border: 'none', padding: '12px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>+ Reunião</button>
+            {perfil === 'candidato' && <button onClick={() => setShowLider(true)} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '12px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>+ Lideranï¿½a</button>}
+            <button onClick={() => setShowReuniao(true)} style={{ background: '#d97706', color: 'white', border: 'none', padding: '12px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>+ Reuniï¿½o</button>
           </div>
         )}
 
-        {/* INÍCIO */}
+        {/* INï¿½CIO */}
         {aba === 'inicio' && (
           <div>
             <div style={{ background: 'linear-gradient(135deg, #1e3a5f, #1e40af)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center' }}>
               <h2 style={{ fontSize: 28, margin: 0, color: 'white' }}>?? {nomeAtual}</h2>
-              <p style={{ color: '#93c5fd', margin: '8px 0 0' }}>Eleitores: {eleitores.length} • Lideranças: {liderancas.length}</p>
+              <p style={{ color: '#93c5fd', margin: '8px 0 0' }}>Eleitores: {eleitores.length} ï¿½ Lideranï¿½as: {liderancas.length}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
               {card('Total de Eleitores', eleitores.length, `Meta: ${metaEleitores.toLocaleString('pt-BR')}`, '#60a5fa')}
-              {card('Lideranças Ativas', liderancas.length, 'Meta: 200', '#f59e0b')}
-              {card('Reuniões', reunioes.length, 'agendadas e realizadas', '#34d399')}
-              {card('Anotações', anotacoes.length, 'registradas', '#a78bfa')}
+              {card('Lideranï¿½as Ativas', liderancas.length, 'Meta: 200', '#f59e0b')}
+              {card('Reuniï¿½es', reunioes.length, 'agendadas e realizadas', '#34d399')}
+              {card('Anotaï¿½ï¿½es', anotacoes.length, 'registradas', '#a78bfa')}
             </div>
-            <h3 style={{ fontSize: 16, color: '#94a3b8', marginBottom: 12 }}>?? Próximas Reuniões</h3>
+            <h3 style={{ fontSize: 16, color: '#94a3b8', marginBottom: 12 }}>?? Prï¿½ximas Reuniï¿½es</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {reunioes.slice(0, 3).map(r => (
                 <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
@@ -263,7 +263,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
                 <div key={e.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                   <div>
                     <p style={{ fontWeight: 600, margin: 0 }}>{e.nome}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '2px 0 0' }}>?? {e.bairro || '-'} • Zona {e.zona_eleitoral || '-'} Seção {e.secao_eleitoral || '-'}</p>
+                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '2px 0 0' }}>?? {e.bairro || '-'} ï¿½ Zona {e.zona_eleitoral || '-'} Seï¿½ï¿½o {e.secao_eleitoral || '-'}</p>
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {e.telefone && <a href={`https://wa.me/55${e.telefone.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{ background: '#16a34a', color: 'white', padding: '6px 12px', borderRadius: 8, fontSize: 13, textDecoration: 'none' }}>??</a>}
@@ -275,12 +275,12 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           </div>
         )}
 
-        {/* LIDERANÇAS */}
+        {/* LIDERANï¿½AS */}
         {aba === 'liderancas' && perfil === 'candidato' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Lideranças ({liderancas.length})</h2>
-              <button onClick={() => setShowLider(true)} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Liderança</button>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Lideranï¿½as ({liderancas.length})</h2>
+              <button onClick={() => setShowLider(true)} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Lideranï¿½a</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
               {liderancas.map(l => (
@@ -298,19 +298,19 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           </div>
         )}
 
-        {/* REUNIÕES */}
+        {/* REUNIï¿½ES */}
         {aba === 'reunioes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Reuniões ({reunioes.length})</h2>
-              <button onClick={() => setShowReuniao(true)} style={{ background: '#d97706', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Reunião</button>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Reuniï¿½es ({reunioes.length})</h2>
+              <button onClick={() => setShowReuniao(true)} style={{ background: '#d97706', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Reuniï¿½o</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {reunioes.map(r => (
                 <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                   <div>
                     <p style={{ fontWeight: 600, margin: 0 }}>{r.titulo}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>?? {r.local} • {r.data ? new Date(r.data).toLocaleString('pt-BR') : '-'}</p>
+                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>?? {r.local} ï¿½ {r.data ? new Date(r.data).toLocaleString('pt-BR') : '-'}</p>
                   </div>
                   {perfil === 'candidato' && <button onClick={() => excluir('reunioes', r.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '6px 10px', borderRadius: 8, cursor: 'pointer' }}>???</button>}
                 </div>
@@ -322,12 +322,12 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         {/* MAPA */}
         {aba === 'mapa' && <MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} />}
 
-        {/* ANOTAÇÕES */}
+        {/* ANOTAï¿½ï¿½ES */}
         {aba === 'anotacoes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Anotações ({anotacoes.length})</h2>
-              <button onClick={() => setShowAnotacao(true)} style={{ background: '#1e40af', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Anotação</button>
+              <h2 style={{ fontSize: 22, margin: 0, color: 'white' }}>?? Anotaï¿½ï¿½es ({anotacoes.length})</h2>
+              <button onClick={() => setShowAnotacao(true)} style={{ background: '#1e40af', color: 'white', border: 'none', padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>+ Anotaï¿½ï¿½o</button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
               {anotacoes.map(a => (
@@ -351,10 +351,10 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
             <input style={estiloInput} placeholder="Nome completo *" value={novoEleitor.nome} onChange={e => setNovoEleitor({...novoEleitor, nome: e.target.value})} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={novoEleitor.telefone} onChange={e => setNovoEleitor({...novoEleitor, telefone: e.target.value})} />
             <input style={estiloInput} placeholder="Bairro" value={novoEleitor.bairro} onChange={e => setNovoEleitor({...novoEleitor, bairro: e.target.value})} />
-            <input style={estiloInput} placeholder="Endereço" value={novoEleitor.logradouro} onChange={e => setNovoEleitor({...novoEleitor, logradouro: e.target.value})} />
+            <input style={estiloInput} placeholder="Endereï¿½o" value={novoEleitor.logradouro} onChange={e => setNovoEleitor({...novoEleitor, logradouro: e.target.value})} />
             <div style={{ display: 'flex', gap: 10 }}>
               <input style={{...estiloInput, flex: 1}} placeholder="Zona" value={novoEleitor.zona_eleitoral} onChange={e => setNovoEleitor({...novoEleitor, zona_eleitoral: e.target.value})} />
-              <input style={{...estiloInput, flex: 1}} placeholder="Seção" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({...novoEleitor, secao_eleitoral: e.target.value})} />
+              <input style={{...estiloInput, flex: 1}} placeholder="Seï¿½ï¿½o" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({...novoEleitor, secao_eleitoral: e.target.value})} />
             </div>
                         <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '? Cadastrar Eleitor'}</button>
@@ -363,43 +363,43 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         </div>
       )}
 
-      {/* MODAL LIDERANÇA */}
+      {/* MODAL LIDERANï¿½A */}
       {showLider && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowLider(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#7c3aed', marginBottom: 20 }}>? Cadastrar Liderança</h2>
+            <h2 style={{ color: '#7c3aed', marginBottom: 20 }}>? Cadastrar Lideranï¿½a</h2>
             <input style={estiloInput} placeholder="Nome *" value={novaLider.nome} onChange={e => setNovaLider({...novaLider, nome: e.target.value})} />
             <input style={estiloInput} placeholder="Telefone" value={novaLider.telefone} onChange={e => setNovaLider({...novaLider, telefone: e.target.value})} />
             <input style={estiloInput} placeholder="Bairro" value={novaLider.bairro} onChange={e => setNovaLider({...novaLider, bairro: e.target.value})} />
             <textarea style={{...estiloInput, resize: 'vertical'}} placeholder="Demanda" rows={3} value={novaLider.demanda} onChange={e => setNovaLider({...novaLider, demanda: e.target.value})} />
-            <button onClick={cadastrarLider} disabled={loading} style={estiloBotao('#7c3aed')}>{loading ? 'Salvando...' : '? Cadastrar Liderança'}</button>
+            <button onClick={cadastrarLider} disabled={loading} style={estiloBotao('#7c3aed')}>{loading ? 'Salvando...' : '? Cadastrar Lideranï¿½a'}</button>
             <button onClick={() => setShowLider(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
         </div>
       )}
 
-      {/* MODAL REUNIÃO */}
+      {/* MODAL REUNIï¿½O */}
       {showReuniao && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowReuniao(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#d97706', marginBottom: 20 }}>? Agendar Reunião</h2>
-            <input style={estiloInput} placeholder="Título *" value={novaReuniao.titulo} onChange={e => setNovaReuniao({...novaReuniao, titulo: e.target.value})} />
+            <h2 style={{ color: '#d97706', marginBottom: 20 }}>? Agendar Reuniï¿½o</h2>
+            <input style={estiloInput} placeholder="Tï¿½tulo *" value={novaReuniao.titulo} onChange={e => setNovaReuniao({...novaReuniao, titulo: e.target.value})} />
             <input style={estiloInput} type="datetime-local" value={novaReuniao.data} onChange={e => setNovaReuniao({...novaReuniao, data: e.target.value})} />
             <input style={estiloInput} placeholder="Local" value={novaReuniao.local} onChange={e => setNovaReuniao({...novaReuniao, local: e.target.value})} />
-            <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading ? 'Salvando...' : '? Agendar Reunião'}</button>
+            <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading ? 'Salvando...' : '? Agendar Reuniï¿½o'}</button>
             <button onClick={() => setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
         </div>
       )}
 
-      {/* MODAL ANOTAÇÃO */}
+      {/* MODAL ANOTAï¿½ï¿½O */}
       {showAnotacao && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowAnotacao(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#1e40af', marginBottom: 20 }}>?? Nova Anotação</h2>
-            <input style={estiloInput} placeholder="Título *" value={novaAnotacao.titulo} onChange={e => setNovaAnotacao({...novaAnotacao, titulo: e.target.value})} />
-            <textarea style={{...estiloInput, resize: 'vertical'}} placeholder="Conteúdo" rows={4} value={novaAnotacao.conteudo} onChange={e => setNovaAnotacao({...novaAnotacao, conteudo: e.target.value})} />
-            <button onClick={cadastrarAnotacao} disabled={loading} style={estiloBotao('#1e40af')}>{loading ? 'Salvando...' : '? Salvar Anotação'}</button>
+            <h2 style={{ color: '#1e40af', marginBottom: 20 }}>?? Nova Anotaï¿½ï¿½o</h2>
+            <input style={estiloInput} placeholder="Tï¿½tulo *" value={novaAnotacao.titulo} onChange={e => setNovaAnotacao({...novaAnotacao, titulo: e.target.value})} />
+            <textarea style={{...estiloInput, resize: 'vertical'}} placeholder="Conteï¿½do" rows={4} value={novaAnotacao.conteudo} onChange={e => setNovaAnotacao({...novaAnotacao, conteudo: e.target.value})} />
+            <button onClick={cadastrarAnotacao} disabled={loading} style={estiloBotao('#1e40af')}>{loading ? 'Salvando...' : '? Salvar Anotaï¿½ï¿½o'}</button>
             <button onClick={() => setShowAnotacao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
         </div>
