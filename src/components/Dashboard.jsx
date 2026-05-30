@@ -1,22 +1,39 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ELEITORES, LIDERANCAS, REUNIOES, METRICAS } from '../dados';
 import MapaDemo from './MapaDemo';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
 
-export default function Dashboard({ candidato, onLogout }) {
+export default function Dashboard({ candidato, perfil, onLogout }) {
   const [aba, setAba] = useState('inicio');
   const [editandoNome, setEditandoNome] = useState(false);
   const [nomeEdit, setNomeEdit] = useState(candidato);
   const [nomeAtual, setNomeAtual] = useState(candidato);
+  const [foto, setFoto] = useState(null);
+  const fotoInput = useRef(null);
 
-  const abas = [
-    { id: 'inicio', label: '🏠 Início' },
-    { id: 'eleitores', label: '👥 Eleitores' },
-    { id: 'liderancas', label: '🤝 Lideranças' },
-    { id: 'reunioes', label: '📅 Reuniões' },
-    { id: 'mapa', label: '🗺️ Mapa' },
-  ];
+  const handleFoto = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setFoto(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const abas = perfil === 'candidato'
+    ? [
+        { id: 'inicio', label: '🏠 Início' },
+        { id: 'eleitores', label: '👥 Eleitores' },
+        { id: 'liderancas', label: '🤝 Lideranças' },
+        { id: 'reunioes', label: '📅 Reuniões' },
+        { id: 'mapa', label: '🗺️ Mapa' },
+      ]
+    : [
+        { id: 'inicio', label: '🏠 Início' },
+        { id: 'eleitores', label: '👥 Eleitores' },
+        { id: 'reunioes', label: '📅 Reuniões' },
+        { id: 'mapa', label: '🗺️ Mapa' },
+      ];
 
   const card = (titulo, valor, sub, cor) => (
     <div style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: `1px solid ${cor}33` }}>
@@ -29,27 +46,57 @@ export default function Dashboard({ candidato, onLogout }) {
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', color: 'white' }}>
       {/* Header */}
-      <header style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>GABINETE DIGITAL</h1>
-          {editandoNome ? (
-            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-              <input
-                value={nomeEdit}
-                onChange={e => setNomeEdit(e.target.value)}
-                style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #3b82f6', background: '#1e293b', color: 'white', fontSize: 14 }}
-              />
-              <button onClick={() => { setNomeAtual(nomeEdit); setEditandoNome(false); }}
-                style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 13 }}>✓</button>
-              <button onClick={() => setEditandoNome(false)}
-                style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 13 }}>✗</button>
-            </div>
-          ) : (
-            <p style={{ color: '#60a5fa', fontSize: 14, margin: '4px 0 0', cursor: 'pointer' }} onClick={() => setEditandoNome(true)}>
-              👑 {nomeAtual} <span style={{ fontSize: 11, color: '#64748b' }}>✏️ editar</span>
-            </p>
+      <header style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {/* Foto do candidato */}
+          <div
+            onClick={() => perfil === 'candidato' && fotoInput.current.click()}
+            style={{
+              width: 56, height: 56, borderRadius: '50%',
+              background: foto ? 'transparent' : '#1e293b',
+              border: '2px solid #3b82f6',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: perfil === 'candidato' ? 'pointer' : 'default',
+              overflow: 'hidden', flexShrink: 0,
+            }}
+            title={perfil === 'candidato' ? 'Clique para adicionar foto' : ''}
+          >
+            {foto
+              ? <img src={foto} alt="candidato" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <span style={{ fontSize: 24 }}>👤</span>
+            }
+          </div>
+          {perfil === 'candidato' && (
+            <input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{ display: 'none' }} />
           )}
+
+          <div>
+            <h1 style={{ fontSize: 18, fontWeight: 800, margin: 0 }}>GABINETE DIGITAL</h1>
+            {editandoNome && perfil === 'candidato' ? (
+              <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                <input
+                  value={nomeEdit}
+                  onChange={e => setNomeEdit(e.target.value)}
+                  style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #3b82f6', background: '#1e293b', color: 'white', fontSize: 13 }}
+                />
+                <button onClick={() => { setNomeAtual(nomeEdit); setEditandoNome(false); }}
+                  style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 12 }}>✓</button>
+                <button onClick={() => setEditandoNome(false)}
+                  style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, padding: '4px 8px', cursor: 'pointer', fontSize: 12 }}>✗</button>
+              </div>
+            ) : (
+              <p style={{ color: '#60a5fa', fontSize: 14, margin: '2px 0 0', cursor: perfil === 'candidato' ? 'pointer' : 'default' }}
+                onClick={() => perfil === 'candidato' && setEditandoNome(true)}>
+                👑 {nomeAtual}
+                {perfil === 'candidato' && <span style={{ fontSize: 11, color: '#64748b', marginLeft: 6 }}>✏️ editar</span>}
+              </p>
+            )}
+            <span style={{ fontSize: 11, color: perfil === 'candidato' ? '#f59e0b' : '#a78bfa', fontWeight: 600 }}>
+              {perfil === 'candidato' ? '👑 Candidato' : '👥 Equipe'}
+            </span>
+          </div>
         </div>
+
         <button onClick={onLogout} style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer', fontSize: 13 }}>
           Sair
         </button>
@@ -70,21 +117,19 @@ export default function Dashboard({ candidato, onLogout }) {
       {/* Conteúdo */}
       <main style={{ padding: 24, maxWidth: 1280, margin: '0 auto' }}>
 
-        {/* INÍCIO */}
         {aba === 'inicio' && (
           <div>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>📊 Painel Geral</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-              {card('Total de Eleitores', METRICAS.totalEleitores.toLocaleString(), `Meta: ${METRICAS.metaEleitores.toLocaleString()}`, '#60a5fa')}
+              {card('Total de Eleitores', METRICAS.totalEleitores, `Meta: ${METRICAS.metaEleitores.toLocaleString()}`, '#60a5fa')}
               {card('Lideranças Ativas', METRICAS.totalLiderancas, `Meta: ${METRICAS.metaLiderancas}`, '#f59e0b')}
               {card('Reuniões Realizadas', METRICAS.reunioesRealizadas, `${METRICAS.reunioesAgendadas} agendadas`, '#34d399')}
               {card('Bairros Cobertos', METRICAS.bairrosCobertos, 'em Macapá', '#a78bfa')}
             </div>
-
             <h3 style={{ fontSize: 16, color: '#94a3b8', marginBottom: 12 }}>📅 Próximas Reuniões</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {REUNIOES.filter(r => r.status === 'agendada').map(r => (
-                <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                   <div>
                     <p style={{ fontWeight: 600, margin: 0 }}>{r.titulo}</p>
                     <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>📍 {r.local}</p>
@@ -98,7 +143,6 @@ export default function Dashboard({ candidato, onLogout }) {
           </div>
         )}
 
-        {/* ELEITORES */}
         {aba === 'eleitores' && (
           <div>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>👥 Eleitores Cadastrados</h2>
@@ -119,8 +163,7 @@ export default function Dashboard({ candidato, onLogout }) {
           </div>
         )}
 
-        {/* LIDERANÇAS */}
-        {aba === 'liderancas' && (
+        {aba === 'liderancas' && perfil === 'candidato' && (
           <div>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>🤝 Lideranças</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
@@ -128,7 +171,7 @@ export default function Dashboard({ candidato, onLogout }) {
                 <div key={l.id} style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: '1px solid #dc262633' }}>
                   <p style={{ fontWeight: 700, fontSize: 16, color: '#f87171', margin: '0 0 8px' }}>🔴 {l.nome}</p>
                   <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>📍 {l.bairro}</p>
-                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>👥 {l.eleitores} eleitores vinculados</p>
+                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>👥 {l.eleitores} eleitores</p>
                   <p style={{ color: '#fbbf24', fontSize: 13, margin: '8px 0 0' }}>💬 {l.demanda}</p>
                   <a href={`https://wa.me/55${l.telefone}`} target="_blank" rel="noreferrer"
                     style={{ display: 'inline-block', marginTop: 12, background: '#16a34a', color: 'white', padding: '6px 14px', borderRadius: 8, fontSize: 13, textDecoration: 'none' }}>
@@ -140,7 +183,6 @@ export default function Dashboard({ candidato, onLogout }) {
           </div>
         )}
 
-        {/* REUNIÕES */}
         {aba === 'reunioes' && (
           <div>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>📅 Agenda de Reuniões</h2>
@@ -151,10 +193,7 @@ export default function Dashboard({ candidato, onLogout }) {
                     <p style={{ fontWeight: 600, margin: 0 }}>{r.titulo}</p>
                     <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>📍 {r.local} — {new Date(r.data).toLocaleString('pt-BR')}</p>
                   </div>
-                  <span style={{
-                    background: r.status === 'realizada' ? '#16a34a' : '#1e40af',
-                    color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600
-                  }}>
+                  <span style={{ background: r.status === 'realizada' ? '#16a34a' : '#1e40af', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600 }}>
                     {r.status === 'realizada' ? '✅ Realizada' : '🗓️ Agendada'}
                   </span>
                 </div>
@@ -163,9 +202,7 @@ export default function Dashboard({ candidato, onLogout }) {
           </div>
         )}
 
-        {/* MAPA */}
         {aba === 'mapa' && <MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} />}
-
       </main>
     </div>
   );
