@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { ELEITORES, LIDERANCAS, REUNIOES, METRICAS } from '../dados';
 import MapaDemo from './MapaDemo';
+import LinkRastreavel from './LinkRastreavel';
+import PainelRastreamento from './PainelRastreamento';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
 
@@ -27,6 +29,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         { id: 'liderancas', label: '🤝 Lideranças' },
         { id: 'reunioes', label: '📅 Reuniões' },
         { id: 'mapa', label: '🗺️ Mapa' },
+        { id: 'rastreamento', label: '🔗 Links' },
       ]
     : [
         { id: 'inicio', label: '🏠 Início' },
@@ -153,10 +156,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
                     <p style={{ fontWeight: 600, margin: 0 }}>{e.nome}</p>
                     <p style={{ color: '#94a3b8', fontSize: 13, margin: '2px 0 0' }}>📍 {e.bairro} — Zona {e.zona} Seção {e.secao}</p>
                   </div>
-                  <a href={`https://wa.me/55${e.telefone}`} target="_blank" rel="noreferrer"
-                    style={{ background: '#16a34a', color: 'white', padding: '6px 12px', borderRadius: 8, fontSize: 13, textDecoration: 'none' }}>
-                    📲 WhatsApp
-                  </a>
+                  <LinkRastreavel eleitor={e} />
                 </div>
               ))}
             </div>
