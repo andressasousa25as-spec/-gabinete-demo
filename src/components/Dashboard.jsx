@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import { ELEITORES, LIDERANCAS, REUNIOES, METRICAS } from '../dados';
 import MapaDemo from './MapaDemo';
 import LinkRastreavel from './LinkRastreavel';
+import CadastroEleitorDemo from './CadastroEleitorDemo';
 import PainelRastreamento from './PainelRastreamento';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
@@ -12,6 +14,15 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [nomeEdit, setNomeEdit] = useState(candidato);
   const [nomeAtual, setNomeAtual] = useState(candidato);
   const [foto, setFoto] = useState(null);
+  const [showCadastro, setShowCadastro] = useState(false);
+  const [eleitores, setEleitores] = useState([]);
+
+  const carregarEleitores = async () => {
+    const { data } = await supabase.from('eleitores').select('*').order('criado_em', { ascending: false });
+    if (data) setEleitores(data);
+  };
+
+  useEffect(() => { carregarEleitores(); }, []);
   const fotoInput = useRef(null);
 
   const handleFoto = (e) => {
@@ -150,7 +161,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           <div>
             <h2 style={{ fontSize: 22, marginBottom: 20 }}>👥 Eleitores Cadastrados</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {ELEITORES.map(e => (
+              {eleitores.map(e => (
                 <div key={e.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                   <div>
                     <p style={{ fontWeight: 600, margin: 0 }}>{e.nome}</p>
@@ -203,6 +214,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         )}
 
         {aba === 'mapa' && <MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} />}
+        {showCadastro && <CadastroEleitorDemo onFechar={() => setShowCadastro(false)} onCadastrado={carregarEleitores} />}
       </main>
     </div>
   );
