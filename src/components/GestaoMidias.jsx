@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function GestaoMidias({ onVoltar }) {
@@ -79,7 +79,7 @@ export default function GestaoMidias({ onVoltar }) {
     const alvos = eleitores.filter(e => selecionados.includes(e.id));
     const links = alvos.map(e => {
       const numero = '55' + e.telefone.replace(/\D/g, '');
-      const msg = `Olá, ${e.nome}! 👋\n\nO Dep. Deputado Demo compartilhou uma novidade:\n\n📣 *${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\n🔗 https://gabinete-asf.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair responda *SAIR*.`;
+      const msg = `Olá, ${e.nome}! 👋\n\nO Dep. Deputado Demo compartilhou uma novidade:\n\n📣 *${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\n🔗 https://gabinete-demo.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair responda *SAIR*.`;
       return { nome: e.nome, bairro: e.bairro || '', id: e.id, eleitor_id: e.id, url: `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` };
     });
     for (const l of links) {
