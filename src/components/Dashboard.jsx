@@ -123,7 +123,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   if(aba==='cenario') return <CenarioPolitico onVoltar={()=>setAba('inicio')} />;
   if(aba==='anotacoes') return <GestaoAnotacoes liderancaId={liderancas[0]?.id||null} onVoltar={()=>setAba('inicio')} />;
   if(aba==='mapa') return (<div style={{background:'#0f172a',minHeight:'100vh'}}><button onClick={()=>setAba('inicio')} style={{margin:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} /></div>);
-  if(aba==='rastreamento') return (<div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}><button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><PainelRastreamento /></div>);
+  if(aba==='rastreamento') return (<div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}><button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><PainelRastreamento onVoltar={()=>setAba('inicio')} /></div>);
   if(aba==='relatorios') return (
     <div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}>
       <button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button>
