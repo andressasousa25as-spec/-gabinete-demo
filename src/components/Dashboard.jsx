@@ -71,7 +71,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   const fetchAll = async () => {
     const [e,l,r] = await Promise.all([
-      supabase.from('eleitores').select('*').order('criado_em',{ascending:false}),
+      supabase.from('eleitores').select('*').order('created_at',{ascending:false}),
       supabase.from('liderancas').select('*').order('created_at',{ascending:false}),
       supabase.from('reunioes').select('*').order('data',{ascending:false}),
     ]);
