@@ -32,7 +32,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
         <div style={{display:'flex',justifyContent:'space-between',marginBottom:20}}>
           <h2 style={{color:'#1e40af',margin:0}}>{titulo}</h2>
           <div style={{display:'flex',gap:10}}>
-            <button onClick={imprimir} style={{background:'#1e40af',color:'white',border:'none',borderRadius:8,padding:'10px 20px',cursor:'pointer',fontWeight:'bold'}}>Imprimir</button>
+            <button onClick={imprimir} style={{background:'#1e40af',color:'white',border:'none',borderRadius:8,padding:'10px 20px',cursor:'pointer',fontWeight:'bold'}}>Imprimir / PDF</button>
             <button onClick={onFechar} style={{background:'#64748b',color:'white',border:'none',borderRadius:8,padding:'10px 20px',cursor:'pointer',fontWeight:'bold'}}>Fechar</button>
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
         <div style={{display:'flex',flexDirection:'column',gap:8}}>
           {liderancas.map(l=>(<div key={l.id} style={{background:'#1a2332',borderRadius:8,padding:'10px 12px',border:'1px solid #1f2937',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
             <div><p style={{fontWeight:'bold',fontSize:13,color:'#f87171',margin:'0 0 2px'}}>{l.nome}</p>{l.telefone&&<p style={{color:'#94a3b8',fontSize:12,margin:0}}>{l.telefone}</p>}{l.bairro&&<p style={{color:'#94a3b8',fontSize:12,margin:0}}>{l.bairro}</p>}{l.demanda&&<p style={{color:'#fbbf24',fontSize:12,margin:0}}>{l.demanda}</p>}</div>
-            <button onClick={()=>excluir('liderancas',l.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
+            <button onClick={()=>{navigator.clipboard.writeText(window.location.origin+'/#/cadastro/'+l.id);alert('Link copiado!');}} style={{background:'#dbeafe',color:'#1e40af',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12,fontWeight:'bold',marginRight:4}}>Link</button><button onClick={()=>excluir('liderancas',l.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
           </div>))}
         </div>
       </div>}
