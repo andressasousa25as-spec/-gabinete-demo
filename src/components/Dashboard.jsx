@@ -1,172 +1,541 @@
-import { useState } from 'react';
-import { ELEITORES, LIDERANCAS, REUNIOES, METRICAS } from '../dados';
+﻿import { useState, useEffect, useRef } from 'react';
+import { supabase } from '../lib/supabase';
 import MapaDemo from './MapaDemo';
+import LinkRastreavel from './LinkRastreavel';
+import CadastroEleitorDemo from './CadastroEleitorDemo';
+import PainelRastreamento from './PainelRastreamento';
+import GestaoMidias from './GestaoMidias';
+import AnalyticsMidias from './AnalyticsMidias';
+import RankingEngajamento from './RankingEngajamento';
+import GestaoAnotacoes from './GestaoAnotacoes';
+import CenarioPolitico from './CenarioPolitico';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
 
-export default function Dashboard({ candidato, onLogout }) {
+const formatarWA = (tel) => { if (!tel) return null; const n = tel.replace(/\D/g,''); return n.length < 8 ? null : n.startsWith('55') ? n : '55'+n; };
+
+const estiloModal = { position:'fixed',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.6)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px' };
+const estiloCard = { backgroundColor:'white',borderRadius:'20px',padding:'32px',color:'#111827',width:'100%',maxWidth:'560px',maxHeight:'90vh',overflowY:'auto',boxShadow:'0 25px 50px rgba(0,0,0,0.3)' };
+const estiloInput = { width:'100%',padding:'12px 14px',borderRadius:'10px',border:'1px solid #cbd5e1',fontSize:'15px',marginBottom:'12px',boxSizing:'border-box' };
+const estiloBotao = (cor) => ({ width:'100%',padding:'14px',borderRadius:'10px',border:'none',backgroundColor:cor,color:'white',fontSize:'16px',fontWeight:'bold',cursor:'pointer',marginTop:'8px' });
+
+const BAIRROS = ['Acai','Alvorada','Arsenal','Bone Azul','Buritizal','Cabralzinho','Central','Centro','Cidade Nova','Congos','Fazendinha','Fortaleza','Infraero 1','Infraero 2','Jardim Equatorial','Jardim Felicidade','Jesus de Nazare','Laguinho','Marabaixo','Marabaixo 1','Marabaixo 2','Marabaixo 3','Marabaixo 4','Marco Zero','Muca','Nova Brasilia','Nova Esperanca','Novo Buritizal','Novo Horizonte','Pacoval','Pedrinhas','Perpetuo Socorro','Renascer','Santa Ines','Santa Rita','Sao Jose','Sao Lazaro','Trem','Universidade','Vale Verde','Zerao','Outro'].sort();
+const ZONAS = Array.from({length:35},(_,i)=>String(i+1));
+export default function Dashboard({ candidato, perfil, onLogout }) {
   const [aba, setAba] = useState('inicio');
-  const [editandoNome, setEditandoNome] = useState(false);
-  const [nomeEdit, setNomeEdit] = useState(candidato);
+  const [eleitores, setEleitores] = useState([]);
+  const [liderancas, setLiderancas] = useState([]);
+  const [reunioes, setReunioes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [showCadastro, setShowCadastro] = useState(false);
+  const [showLider, setShowLider] = useState(false);
+  const [showReuniao, setShowReuniao] = useState(false);
+  const [relatorio, setRelatorio] = useState(null);
+  const [foto, setFoto] = useState(null);
   const [nomeAtual, setNomeAtual] = useState(candidato);
+  const [nomeEdit, setNomeEdit] = useState(candidato);
+  const [editandoNome, setEditandoNome] = useState(false);
+  const fotoInput = useRef(null);
+  const [novaLider, setNovaLider] = useState({nome:'',telefone:'',bairro:'',demanda:'',endereco:''});
+  const [novaReuniao, setNovaReuniao] = useState({titulo:'',data:'',local:'',endereco:''});
 
-  const abas = [
-    { id: 'inicio', label: '🏠 Início' },
-    { id: 'eleitores', label: '👥 Eleitores' },
-    { id: 'liderancas', label: '🤝 Lideranças' },
-    { id: 'reunioes', label: '📅 Reuniões' },
-    { id: 'mapa', label: '🗺️ Mapa' },
-  ];
+  const fetchAll = async () => {
+    const [e,l,r] = await Promise.all([
+      supabase.from('eleitores').select('*').order('criado_em',{ascending:false}),
+      supabase.from('liderancas').select('*').order('created_at',{ascending:false}),
+      supabase.from('reunioes').select('*').order('data',{ascending:false}),
+    ]);
+    if(e.data) setEleitores(e.data);
+    if(l.data) setLiderancas(l.data);
+    if(r.data) setReunioes(r.data);
+  };
 
-  const card = (titulo, valor, sub, cor) => (
-    <div style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: `1px solid ${cor}33` }}>
-      <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 4 }}>{titulo}</p>
-      <p style={{ color: cor, fontSize: 32, fontWeight: 800 }}>{valor}</p>
-      <p style={{ color: '#64748b', fontSize: 12 }}>{sub}</p>
+  useEffect(()=>{fetchAll();},[]);
+
+  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>setFoto(ev.target.result); r.readAsDataURL(f); };
+
+  const cadastrarLider = async () => {
+    if(!novaLider.nome) return alert('Nome obrigatorio.');
+    setLoading(true);
+    const {error} = await supabase.from('liderancas').insert([novaLider]);
+    if(!error){alert('Lideranca cadastrada!');fetchAll();setNovaLider({nome:'',telefone:'',bairro:'',demanda:'',endereco:''});setShowLider(false);}
+    else alert('Erro: '+error.message);
+    setLoading(false);
+  };
+
+  const cadastrarReuniao = async () => {
+    if(!novaReuniao.titulo||!novaReuniao.data) return alert('Titulo e data obrigatorios.');
+    setLoading(true);
+    const {error} = await supabase.from('reunioes').insert([novaReuniao]);
+    if(!error){alert('Reuniao agendada!');fetchAll();setNovaReuniao({titulo:'',data:'',local:'',endereco:''});setShowReuniao(false);}
+    else alert('Erro: '+error.message);
+    setLoading(false);
+  };
+
+  const excluir = async (tabela,id) => {
+    if(!confirm('Excluir?')) return;
+    await supabase.from(tabela).delete().eq('id',id);
+    fetchAll();
+  };
+
+  const abrirRelatorio = (tipo) => {
+    const configs = {
+      eleitores:{titulo:'Relatorio de Eleitores',dados:eleitores.map(e=>({nome:e.nome,telefone:e.telefone,bairro:e.bairro||'—',zona:e.zona_eleitoral?'Zona '+e.zona_eleitoral:'—',secao:e.secao_eleitoral||'—',municipio:e.municipio||'Macapa'})),colunas:[{key:'nome',label:'Nome'},{key:'telefone',label:'Telefone'},{key:'bairro',label:'Bairro'},{key:'zona',label:'Zona'},{key:'secao',label:'Secao'},{key:'municipio',label:'Municipio'}]},
+      liderancas:{titulo:'Relatorio de Liderancas',dados:liderancas.map(l=>({nome:l.nome,telefone:l.telefone||'—',bairro:l.bairro||'—',demanda:l.demanda||'—'})),colunas:[{key:'nome',label:'Nome'},{key:'telefone',label:'Telefone'},{key:'bairro',label:'Bairro'},{key:'demanda',label:'Demanda'}]},
+      reunioes:{titulo:'Relatorio de Reunioes',dados:reunioes.map(r=>({titulo:r.titulo,data:r.data?new Date(r.data).toLocaleString('pt-BR'):'—',local:r.local||'—'})),colunas:[{key:'titulo',label:'Titulo'},{key:'data',label:'Data'},{key:'local',label:'Local'}]},
+    };
+    setRelatorio(configs[tipo]);
+  };
+
+  if(aba==='midias') return <GestaoMidias onVoltar={()=>setAba('inicio')} />;
+  if(aba==='analytics') return <AnalyticsMidias onVoltar={()=>setAba('inicio')} />;
+  if(aba==='ranking') return <RankingEngajamento onVoltar={()=>setAba('inicio')} />;
+  if(aba==='cenario') return <CenarioPolitico onVoltar={()=>setAba('inicio')} />;
+  if(aba==='anotacoes') return <GestaoAnotacoes liderancaId={liderancas[0]?.id||null} onVoltar={()=>setAba('inicio')} />;
+  if(aba==='mapa') return (<div><button onClick={()=>setAba('inicio')} style={{margin:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} /></div>);
+  if(aba==='rastreamento') return (<div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}><button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><PainelRastreamento /></div>);
+  if(aba==='relatorios') return (
+    <div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}>
+      <button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button>
+      <h2 style={{marginBottom:20}}>Relatorios</h2>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16}}>
+        {[{tipo:'eleitores',label:'Eleitores',count:eleitores.length},{tipo:'liderancas',label:'Liderancas',count:liderancas.length},{tipo:'reunioes',label:'Reunioes',count:reunioes.length}].map(b=>(
+          <button key={b.tipo} onClick={()=>abrirRelatorio(b.tipo)} style={{background:'#1e293b',border:'1px solid #334155',borderRadius:12,padding:24,cursor:'pointer',color:'white',fontSize:15,fontWeight:700}}>
+            {b.label} ({b.count})
+          </button>
+        ))}
+      </div>
+      {relatorio&&<RelatorioImpressao {...relatorio} onFechar={()=>setRelatorio(null)} />}
     </div>
   );
 
+  const eleitorFiltrados = eleitores.filter(e=>e.nome?.toLowerCase().includes(busca.toLowerCase())||e.bairro?.toLowerCase().includes(busca.toLowerCase())||e.telefone?.includes(busca));
+
+  const botoesMenu = perfil==='candidato' ? [
+    {label:'+ Eleitor',onClick:()=>setShowCadastro(true)},
+    {label:'+ Lideranca',onClick:()=>setShowLider(true)},
+    {label:'+ Reuniao',onClick:()=>setShowReuniao(true)},
+    {label:'Mapa',onClick:()=>setAba('mapa')},
+    {label:'Anotacoes',onClick:()=>setAba('anotacoes')},
+    {label:'Midias',onClick:()=>setAba('midias')},
+    {label:'Analytics',onClick:()=>setAba('analytics')},
+    {label:'Ranking',onClick:()=>setAba('ranking')},
+    {label:'Links',onClick:()=>setAba('rastreamento')},
+    {label:'Cenario',onClick:()=>setAba('cenario')},
+    {label:'Relatorios',onClick:()=>setAba('relatorios')},
+  ] : [
+    {label:'+ Eleitor',onClick:()=>setShowCadastro(true)},
+    {label:'+ Reuniao',onClick:()=>setShowReuniao(true)},
+    {label:'Mapa',onClick:()=>setAba('mapa')},
+    {label:'Midias',onClick:()=>setAba('midias')},
+    {label:'Relatorios',onClick:()=>setAba('relatorios')},
+  ];
+
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: 'white' }}>
-      {/* Header */}
-      <header style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0 }}>GABINETE DIGITAL</h1>
-          {editandoNome ? (
-            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-              <input
-                value={nomeEdit}
-                onChange={e => setNomeEdit(e.target.value)}
-                style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #3b82f6', background: '#1e293b', color: 'white', fontSize: 14 }}
-              />
-              <button onClick={() => { setNomeAtual(nomeEdit); setEditandoNome(false); }}
-                style={{ background: '#16a34a', color: 'white', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 13 }}>✓</button>
-              <button onClick={() => setEditandoNome(false)}
-                style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 13 }}>✗</button>
+    <div style={{background:'#0a0f1c',minHeight:'100vh',padding:'20px 24px',display:'flex',flexDirection:'column',gap:14,fontFamily:'Inter,system-ui,sans-serif',color:'#f1f5f9'}}>
+      <header style={{background:'#0f172a',borderBottom:'1px solid #1e293b',padding:'16px 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,borderRadius:16}}>
+        <div style={{display:'flex',alignItems:'center',gap:16}}>
+          <div onClick={()=>perfil==='candidato'&&fotoInput.current.click()} style={{width:56,height:56,borderRadius:'50%',background:foto?'transparent':'#1e293b',border:'2px solid #3b82f6',display:'flex',alignItems:'center',justifyContent:'center',cursor:perfil==='candidato'?'pointer':'default',overflow:'hidden',flexShrink:0}}>
+            {foto?<img src={foto} alt="candidato" style={{width:'100%',height:'100%',objectFit:'cover'}} />:<span style={{fontSize:14,color:'#64748b'}}>Foto</span>}
+          </div>
+          {perfil==='candidato'&&<input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{display:'none'}} />}
+          <div>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              {editandoNome&&perfil==='candidato'?(<>
+                <input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} />
+                <button onClick={()=>{setNomeAtual(nomeEdit);setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>OK</button>
+                <button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
+              </>):(<>
+                <h1 style={{fontSize:18,fontWeight:800,margin:0}}>{nomeAtual}</h1>
+                {perfil==='candidato'&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}
+              </>)}
             </div>
-          ) : (
-            <p style={{ color: '#60a5fa', fontSize: 14, margin: '4px 0 0', cursor: 'pointer' }} onClick={() => setEditandoNome(true)}>
-              👑 {nomeAtual} <span style={{ fontSize: 11, color: '#64748b' }}>✏️ editar</span>
-            </p>
-          )}
+            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='candidato'?'Candidato':'Equipe'}</p>
+          </div>
         </div>
-        <button onClick={onLogout} style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer', fontSize: 13 }}>
-          Sair
-        </button>
+        <button onClick={onLogout} style={{background:'#ef4444',color:'white',border:'none',borderRadius:8,padding:'8px 18px',cursor:'pointer',fontWeight:700}}>Sair</button>
       </header>
 
-      {/* Navegação */}
-      <nav style={{ background: '#1e293b', padding: '0 24px', display: 'flex', gap: 4, overflowX: 'auto' }}>
-        {abas.map(a => (
-          <button key={a.id} onClick={() => setAba(a.id)} style={{
-            padding: '14px 18px', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap',
-            background: aba === a.id ? '#0f172a' : 'transparent',
-            color: aba === a.id ? '#60a5fa' : '#94a3b8',
-            borderBottom: aba === a.id ? '2px solid #3b82f6' : '2px solid transparent',
-          }}>{a.label}</button>
+      <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+        {botoesMenu.map((b,i)=>(
+          <button key={i} onClick={b.onClick} style={{background:'#1e293b',border:'1px solid #334155',borderRadius:8,color:'#f1f5f9',padding:'10px 18px',cursor:'pointer',fontWeight:600,fontSize:13}}
+            onMouseOver={e=>e.currentTarget.style.background='#334155'} onMouseOut={e=>e.currentTarget.style.background='#1e293b'}>
+            {b.label}
+          </button>
         ))}
-      </nav>
+      </div>
 
-      {/* Conteúdo */}
-      <main style={{ padding: 24, maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:16}}>
+        {[
+          {titulo:'Total de Eleitores',valor:eleitores.length,sub:'Meta: 50.000',cor:'#3b82f6'},
+          {titulo:'Liderancas Ativas',valor:liderancas.length,sub:'Meta: 200',cor:'#f59e0b'},
+          {titulo:'Reunioes Realizadas',valor:reunioes.filter(r=>r.status==='realizada').length,sub:reunioes.length+' agendadas',cor:'#10b981'},
+          {titulo:'Bairros Cobertos',valor:[...new Set(eleitores.map(e=>e.bairro).filter(Boolean))].length,sub:'em Macapa',cor:'#8b5cf6'},
+        ].map((c,i)=>(
+          <div key={i} style={{background:'#1e293b',borderRadius:12,padding:20,border:'1px solid '+c.cor+'33'}}>
+            <p style={{color:'#94a3b8',fontSize:13,marginBottom:4}}>{c.titulo}</p>
+            <p style={{color:c.cor,fontSize:32,fontWeight:800}}>{c.valor}</p>
+            <p style={{color:'#64748b',fontSize:12}}>{c.sub}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* INÍCIO */}
-        {aba === 'inicio' && (
-          <div>
-            <h2 style={{ fontSize: 22, marginBottom: 20 }}>📊 Painel Geral</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-              {card('Total de Eleitores', METRICAS.totalEleitores.toLocaleString(), `Meta: ${METRICAS.metaEleitores.toLocaleString()}`, '#60a5fa')}
-              {card('Lideranças Ativas', METRICAS.totalLiderancas, `Meta: ${METRICAS.metaLiderancas}`, '#f59e0b')}
-              {card('Reuniões Realizadas', METRICAS.reunioesRealizadas, `${METRICAS.reunioesAgendadas} agendadas`, '#34d399')}
-              {card('Bairros Cobertos', METRICAS.bairrosCobertos, 'em Macapá', '#a78bfa')}
-            </div>
+      <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+        <h3 style={{fontWeight:'bold',fontSize:16,color:'#60a5fa',marginBottom:12}}>Proximas Reunioes</h3>
+        {reunioes.length===0?<p style={{color:'#9ca3af',fontSize:13}}>Nenhuma reuniao.</p>:reunioes.slice(0,5).map(r=>(
+          <div key={r.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 0',borderBottom:'1px solid #1f2937',flexWrap:'wrap',gap:8}}>
+            <div><p style={{fontWeight:600,margin:0}}>{r.titulo}</p><p style={{color:'#94a3b8',fontSize:13,margin:'4px 0 0'}}>{r.local}</p></div>
+            <span style={{background:'#1e40af',color:'white',padding:'4px 12px',borderRadius:20,fontSize:12,fontWeight:600}}>{r.data?new Date(r.data).toLocaleDateString('pt-BR'):'—'}</span>
+          </div>
+        ))}
+      </div>
 
-            <h3 style={{ fontSize: 16, color: '#94a3b8', marginBottom: 12 }}>📅 Próximas Reuniões</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {REUNIOES.filter(r => r.status === 'agendada').map(r => (
-                <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <p style={{ fontWeight: 600, margin: 0 }}>{r.titulo}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>📍 {r.local}</p>
+      <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+          <h3 style={{fontWeight:'bold',fontSize:16,color:'#60a5fa',margin:0}}>Eleitores ({eleitores.length})</h3>
+          {perfil==='candidato'&&<button onClick={()=>setShowCadastro(true)} style={{background:'#1e40af',color:'white',border:'none',borderRadius:8,padding:'8px 16px',cursor:'pointer',fontWeight:700,fontSize:13}}>+ Cadastrar</button>}
+        </div>
+        <input type="text" placeholder="Buscar por nome, bairro ou telefone..." value={busca} onChange={e=>setBusca(e.target.value)}
+          style={{width:'100%',padding:'8px 10px',borderRadius:8,border:'1px solid #334155',fontSize:13,marginBottom:10,boxSizing:'border-box',background:'#0a0f1c',color:'#f1f5f9'}} />
+        <div style={{maxHeight:400,overflowY:'auto',display:'flex',flexDirection:'column',gap:8}}>
+          {eleitorFiltrados.length===0?<p style={{color:'#9ca3af',fontSize:13,textAlign:'center',padding:'20px 0'}}>Nenhum eleitor.</p>:
+            eleitorFiltrados.map(e=>{
+              const numWA=formatarWA(e.telefone);
+              return (
+                <div key={e.id} style={{background:'#1a2332',borderRadius:8,padding:'10px 12px',border:'1px solid #1f2937',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                  <div style={{flex:1}}>
+                    <p style={{fontWeight:'bold',fontSize:13,color:'#f1f5f9',marginBottom:2}}>{e.nome}</p>
+                    <p style={{color:'#94a3b8',fontSize:12}}>Tel: {e.telefone}</p>
+                    {e.bairro&&<p style={{color:'#94a3b8',fontSize:12}}>Bairro: {e.bairro}</p>}
+                    {e.zona_eleitoral&&<p style={{color:'#94a3b8',fontSize:11}}>Zona {e.zona_eleitoral}{e.secao_eleitoral?' | Secao '+e.secao_eleitoral:''}</p>}
                   </div>
-                  <span style={{ background: '#1e40af', color: 'white', padding: '4px 10px', borderRadius: 6, fontSize: 12 }}>
-                    {new Date(r.data).toLocaleDateString('pt-BR')}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ELEITORES */}
-        {aba === 'eleitores' && (
-          <div>
-            <h2 style={{ fontSize: 22, marginBottom: 20 }}>👥 Eleitores Cadastrados</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {ELEITORES.map(e => (
-                <div key={e.id} style={{ background: '#1e293b', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-                  <div>
-                    <p style={{ fontWeight: 600, margin: 0 }}>{e.nome}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '2px 0 0' }}>📍 {e.bairro} — Zona {e.zona} Seção {e.secao}</p>
+                  <div style={{display:'flex',gap:4,flexShrink:0,marginLeft:6}}>
+                    {numWA&&<a href={'https://wa.me/'+numWA} target="_blank" rel="noreferrer" style={{background:'#dcfce7',color:'#16a34a',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12,textDecoration:'none'}}>WA</a>}
+                    <LinkRastreavel eleitor={e} />
+                    {perfil==='candidato'&&<button onClick={()=>excluir('eleitores',e.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>}
                   </div>
-                  <a href={`https://wa.me/55${e.telefone}`} target="_blank" rel="noreferrer"
-                    style={{ background: '#16a34a', color: 'white', padding: '6px 12px', borderRadius: 8, fontSize: 13, textDecoration: 'none' }}>
-                    📲 WhatsApp
-                  </a>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              );
+            })
+          }
+        </div>
+      </div>
 
-        {/* LIDERANÇAS */}
-        {aba === 'liderancas' && (
-          <div>
-            <h2 style={{ fontSize: 22, marginBottom: 20 }}>🤝 Lideranças</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-              {LIDERANCAS.map(l => (
-                <div key={l.id} style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: '1px solid #dc262633' }}>
-                  <p style={{ fontWeight: 700, fontSize: 16, color: '#f87171', margin: '0 0 8px' }}>🔴 {l.nome}</p>
-                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>📍 {l.bairro}</p>
-                  <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0' }}>👥 {l.eleitores} eleitores vinculados</p>
-                  <p style={{ color: '#fbbf24', fontSize: 13, margin: '8px 0 0' }}>💬 {l.demanda}</p>
-                  <a href={`https://wa.me/55${l.telefone}`} target="_blank" rel="noreferrer"
-                    style={{ display: 'inline-block', marginTop: 12, background: '#16a34a', color: 'white', padding: '6px 14px', borderRadius: 8, fontSize: 13, textDecoration: 'none' }}>
-                    📲 Contatar
-                  </a>
+      {perfil==='candidato'&&(
+        <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+            <h3 style={{fontWeight:'bold',fontSize:16,color:'#94a3b8',margin:0}}>Liderancas ({liderancas.length})</h3>
+            <button onClick={()=>setShowLider(true)} style={{background:'#7c3aed',color:'white',border:'none',borderRadius:8,padding:'8px 16px',cursor:'pointer',fontWeight:700,fontSize:13}}>+ Cadastrar</button>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {liderancas.map(l=>(
+              <div key={l.id} style={{background:'#1a2332',borderRadius:8,padding:'10px 12px',border:'1px solid #1f2937',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                <div>
+                  <p style={{fontWeight:'bold',fontSize:13,color:'#f87171',marginBottom:2}}>{l.nome}</p>
+                  {l.telefone&&<p style={{color:'#94a3b8',fontSize:12}}>Tel: {l.telefone}</p>}
+                  {l.bairro&&<p style={{color:'#94a3b8',fontSize:12}}>Bairro: {l.bairro}</p>}
+                  {l.demanda&&<p style={{color:'#fbbf24',fontSize:12}}>{l.demanda}</p>}
                 </div>
-              ))}
-            </div>
+                <button onClick={()=>excluir('liderancas',l.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* REUNIÕES */}
-        {aba === 'reunioes' && (
+      {relatorio&&<RelatorioImpressao {...relatorio} onFechar={()=>setRelatorio(null)} />}
+      {showCadastro&&<CadastroEleitorDemo onFechar={()=>setShowCadastro(false)} onCadastrado={fetchAll} />}
+
+      {showLider&&(
+        <div style={estiloModal} onClick={e=>e.target===e.currentTarget&&setShowLider(false)}>
+          <div style={estiloCard}>
+            <h2 style={{color:'#94a3b8',marginBottom:20}}>Cadastrar Lideranca</h2>
+            <input style={estiloInput} placeholder="Nome *" value={novaLider.nome} onChange={e=>setNovaLider({...novaLider,nome:e.target.value})} />
+            <input style={estiloInput} placeholder="Telefone" value={novaLider.telefone} onChange={e=>setNovaLider({...novaLider,telefone:e.target.value})} />
+            <select style={estiloInput} value={novaLider.bairro} onChange={e=>setNovaLider({...novaLider,bairro:e.target.value})}>
+              <option value="">Selecione o bairro...</option>
+              {BAIRROS.map(b=><option key={b} value={b}>{b}</option>)}
+            </select>
+            <textarea style={{...estiloInput,resize:'vertical'}} placeholder="Demanda" rows={3} value={novaLider.demanda} onChange={e=>setNovaLider({...novaLider,demanda:e.target.value})} />
+            <button onClick={cadastrarLider} disabled={loading} style={estiloBotao('#7c3aed')}>{loading?'Salvando...':'Cadastrar Lideranca'}</button>
+            <button onClick={()=>setShowLider(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {showReuniao&&(
+        <div style={estiloModal} onClick={e=>e.target===e.currentTarget&&setShowReuniao(false)}>
+          <div style={estiloCard}>
+            <h2 style={{color:'#d97706',marginBottom:20}}>Agendar Reuniao</h2>
+            <input style={estiloInput} placeholder="Titulo *" value={novaReuniao.titulo} onChange={e=>setNovaReuniao({...novaReuniao,titulo:e.target.value})} />
+            <input style={estiloInput} type="datetime-local" value={novaReuniao.data} onChange={e=>setNovaReuniao({...novaReuniao,data:e.target.value})} />
+            <input style={estiloInput} placeholder="Local" value={novaReuniao.local} onChange={e=>setNovaReuniao({...novaReuniao,local:e.target.value})} />
+            <input style={estiloInput} placeholder="Endereco" value={novaReuniao.endereco} onChange={e=>setNovaReuniao({...novaReuniao,endereco:e.target.value})} />
+            <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading?'Salvando...':'Agendar Reuniao'}</button>
+            <button onClick={()=>setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+export default function Dashboard({ candidato, perfil, onLogout }) {
+  const [aba, setAba] = useState('inicio');
+  const [eleitores, setEleitores] = useState([]);
+  const [liderancas, setLiderancas] = useState([]);
+  const [reunioes, setReunioes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [showCadastro, setShowCadastro] = useState(false);
+  const [showLider, setShowLider] = useState(false);
+  const [showReuniao, setShowReuniao] = useState(false);
+  const [relatorio, setRelatorio] = useState(null);
+  const [foto, setFoto] = useState(null);
+  const [nomeAtual, setNomeAtual] = useState(candidato);
+  const [nomeEdit, setNomeEdit] = useState(candidato);
+  const [editandoNome, setEditandoNome] = useState(false);
+  const fotoInput = useRef(null);
+  const [novaLider, setNovaLider] = useState({nome:'',telefone:'',bairro:'',demanda:'',endereco:''});
+  const [novaReuniao, setNovaReuniao] = useState({titulo:'',data:'',local:'',endereco:''});
+
+  const fetchAll = async () => {
+    const [e,l,r] = await Promise.all([
+      supabase.from('eleitores').select('*').order('criado_em',{ascending:false}),
+      supabase.from('liderancas').select('*').order('created_at',{ascending:false}),
+      supabase.from('reunioes').select('*').order('data',{ascending:false}),
+    ]);
+    if(e.data) setEleitores(e.data);
+    if(l.data) setLiderancas(l.data);
+    if(r.data) setReunioes(r.data);
+  };
+
+  useEffect(()=>{fetchAll();},[]);
+
+  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>setFoto(ev.target.result); r.readAsDataURL(f); };
+
+  const cadastrarLider = async () => {
+    if(!novaLider.nome) return alert('Nome obrigatorio.');
+    setLoading(true);
+    const {error} = await supabase.from('liderancas').insert([novaLider]);
+    if(!error){alert('Lideranca cadastrada!');fetchAll();setNovaLider({nome:'',telefone:'',bairro:'',demanda:'',endereco:''});setShowLider(false);}
+    else alert('Erro: '+error.message);
+    setLoading(false);
+  };
+
+  const cadastrarReuniao = async () => {
+    if(!novaReuniao.titulo||!novaReuniao.data) return alert('Titulo e data obrigatorios.');
+    setLoading(true);
+    const {error} = await supabase.from('reunioes').insert([novaReuniao]);
+    if(!error){alert('Reuniao agendada!');fetchAll();setNovaReuniao({titulo:'',data:'',local:'',endereco:''});setShowReuniao(false);}
+    else alert('Erro: '+error.message);
+    setLoading(false);
+  };
+
+  const excluir = async (tabela,id) => {
+    if(!confirm('Excluir?')) return;
+    await supabase.from(tabela).delete().eq('id',id);
+    fetchAll();
+  };
+
+  const abrirRelatorio = (tipo) => {
+    const configs = {
+      eleitores:{titulo:'Relatorio de Eleitores',dados:eleitores.map(e=>({nome:e.nome,telefone:e.telefone,bairro:e.bairro||'—',zona:e.zona_eleitoral?'Zona '+e.zona_eleitoral:'—',secao:e.secao_eleitoral||'—',municipio:e.municipio||'Macapa'})),colunas:[{key:'nome',label:'Nome'},{key:'telefone',label:'Telefone'},{key:'bairro',label:'Bairro'},{key:'zona',label:'Zona'},{key:'secao',label:'Secao'},{key:'municipio',label:'Municipio'}]},
+      liderancas:{titulo:'Relatorio de Liderancas',dados:liderancas.map(l=>({nome:l.nome,telefone:l.telefone||'—',bairro:l.bairro||'—',demanda:l.demanda||'—'})),colunas:[{key:'nome',label:'Nome'},{key:'telefone',label:'Telefone'},{key:'bairro',label:'Bairro'},{key:'demanda',label:'Demanda'}]},
+      reunioes:{titulo:'Relatorio de Reunioes',dados:reunioes.map(r=>({titulo:r.titulo,data:r.data?new Date(r.data).toLocaleString('pt-BR'):'—',local:r.local||'—'})),colunas:[{key:'titulo',label:'Titulo'},{key:'data',label:'Data'},{key:'local',label:'Local'}]},
+    };
+    setRelatorio(configs[tipo]);
+  };
+
+  if(aba==='midias') return <GestaoMidias onVoltar={()=>setAba('inicio')} />;
+  if(aba==='analytics') return <AnalyticsMidias onVoltar={()=>setAba('inicio')} />;
+  if(aba==='ranking') return <RankingEngajamento onVoltar={()=>setAba('inicio')} />;
+  if(aba==='cenario') return <CenarioPolitico onVoltar={()=>setAba('inicio')} />;
+  if(aba==='anotacoes') return <GestaoAnotacoes liderancaId={liderancas[0]?.id||null} onVoltar={()=>setAba('inicio')} />;
+  if(aba==='mapa') return (<div><button onClick={()=>setAba('inicio')} style={{margin:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} /></div>);
+  if(aba==='rastreamento') return (<div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}><button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><PainelRastreamento /></div>);
+  if(aba==='relatorios') return (
+    <div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}>
+      <button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button>
+      <h2 style={{marginBottom:20}}>Relatorios</h2>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:16}}>
+        {[{tipo:'eleitores',label:'Eleitores',count:eleitores.length},{tipo:'liderancas',label:'Liderancas',count:liderancas.length},{tipo:'reunioes',label:'Reunioes',count:reunioes.length}].map(b=>(
+          <button key={b.tipo} onClick={()=>abrirRelatorio(b.tipo)} style={{background:'#1e293b',border:'1px solid #334155',borderRadius:12,padding:24,cursor:'pointer',color:'white',fontSize:15,fontWeight:700}}>
+            {b.label} ({b.count})
+          </button>
+        ))}
+      </div>
+      {relatorio&&<RelatorioImpressao {...relatorio} onFechar={()=>setRelatorio(null)} />}
+    </div>
+  );
+
+  const eleitorFiltrados = eleitores.filter(e=>e.nome?.toLowerCase().includes(busca.toLowerCase())||e.bairro?.toLowerCase().includes(busca.toLowerCase())||e.telefone?.includes(busca));
+
+  const botoesMenu = perfil==='candidato' ? [
+    {label:'+ Eleitor',onClick:()=>setShowCadastro(true)},
+    {label:'+ Lideranca',onClick:()=>setShowLider(true)},
+    {label:'+ Reuniao',onClick:()=>setShowReuniao(true)},
+    {label:'Mapa',onClick:()=>setAba('mapa')},
+    {label:'Anotacoes',onClick:()=>setAba('anotacoes')},
+    {label:'Midias',onClick:()=>setAba('midias')},
+    {label:'Analytics',onClick:()=>setAba('analytics')},
+    {label:'Ranking',onClick:()=>setAba('ranking')},
+    {label:'Links',onClick:()=>setAba('rastreamento')},
+    {label:'Cenario',onClick:()=>setAba('cenario')},
+    {label:'Relatorios',onClick:()=>setAba('relatorios')},
+  ] : [
+    {label:'+ Eleitor',onClick:()=>setShowCadastro(true)},
+    {label:'+ Reuniao',onClick:()=>setShowReuniao(true)},
+    {label:'Mapa',onClick:()=>setAba('mapa')},
+    {label:'Midias',onClick:()=>setAba('midias')},
+    {label:'Relatorios',onClick:()=>setAba('relatorios')},
+  ];
+
+  return (
+    <div style={{background:'#0a0f1c',minHeight:'100vh',padding:'20px 24px',display:'flex',flexDirection:'column',gap:14,fontFamily:'Inter,system-ui,sans-serif',color:'#f1f5f9'}}>
+      <header style={{background:'#0f172a',borderBottom:'1px solid #1e293b',padding:'16px 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,borderRadius:16}}>
+        <div style={{display:'flex',alignItems:'center',gap:16}}>
+          <div onClick={()=>perfil==='candidato'&&fotoInput.current.click()} style={{width:56,height:56,borderRadius:'50%',background:foto?'transparent':'#1e293b',border:'2px solid #3b82f6',display:'flex',alignItems:'center',justifyContent:'center',cursor:perfil==='candidato'?'pointer':'default',overflow:'hidden',flexShrink:0}}>
+            {foto?<img src={foto} alt="candidato" style={{width:'100%',height:'100%',objectFit:'cover'}} />:<span style={{fontSize:14,color:'#64748b'}}>Foto</span>}
+          </div>
+          {perfil==='candidato'&&<input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{display:'none'}} />}
           <div>
-            <h2 style={{ fontSize: 22, marginBottom: 20 }}>📅 Agenda de Reuniões</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {REUNIOES.map(r => (
-                <div key={r.id} style={{ background: '#1e293b', borderRadius: 10, padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-                  <div>
-                    <p style={{ fontWeight: 600, margin: 0 }}>{r.titulo}</p>
-                    <p style={{ color: '#94a3b8', fontSize: 13, margin: '4px 0 0' }}>📍 {r.local} — {new Date(r.data).toLocaleString('pt-BR')}</p>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              {editandoNome&&perfil==='candidato'?(<>
+                <input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} />
+                <button onClick={()=>{setNomeAtual(nomeEdit);setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>OK</button>
+                <button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
+              </>):(<>
+                <h1 style={{fontSize:18,fontWeight:800,margin:0}}>{nomeAtual}</h1>
+                {perfil==='candidato'&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}
+              </>)}
+            </div>
+            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='candidato'?'Candidato':'Equipe'}</p>
+          </div>
+        </div>
+        <button onClick={onLogout} style={{background:'#ef4444',color:'white',border:'none',borderRadius:8,padding:'8px 18px',cursor:'pointer',fontWeight:700}}>Sair</button>
+      </header>
+
+      <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
+        {botoesMenu.map((b,i)=>(
+          <button key={i} onClick={b.onClick} style={{background:'#1e293b',border:'1px solid #334155',borderRadius:8,color:'#f1f5f9',padding:'10px 18px',cursor:'pointer',fontWeight:600,fontSize:13}}
+            onMouseOver={e=>e.currentTarget.style.background='#334155'} onMouseOut={e=>e.currentTarget.style.background='#1e293b'}>
+            {b.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:16}}>
+        {[
+          {titulo:'Total de Eleitores',valor:eleitores.length,sub:'Meta: 50.000',cor:'#3b82f6'},
+          {titulo:'Liderancas Ativas',valor:liderancas.length,sub:'Meta: 200',cor:'#f59e0b'},
+          {titulo:'Reunioes Realizadas',valor:reunioes.filter(r=>r.status==='realizada').length,sub:reunioes.length+' agendadas',cor:'#10b981'},
+          {titulo:'Bairros Cobertos',valor:[...new Set(eleitores.map(e=>e.bairro).filter(Boolean))].length,sub:'em Macapa',cor:'#8b5cf6'},
+        ].map((c,i)=>(
+          <div key={i} style={{background:'#1e293b',borderRadius:12,padding:20,border:'1px solid '+c.cor+'33'}}>
+            <p style={{color:'#94a3b8',fontSize:13,marginBottom:4}}>{c.titulo}</p>
+            <p style={{color:c.cor,fontSize:32,fontWeight:800}}>{c.valor}</p>
+            <p style={{color:'#64748b',fontSize:12}}>{c.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+        <h3 style={{fontWeight:'bold',fontSize:16,color:'#60a5fa',marginBottom:12}}>Proximas Reunioes</h3>
+        {reunioes.length===0?<p style={{color:'#9ca3af',fontSize:13}}>Nenhuma reuniao.</p>:reunioes.slice(0,5).map(r=>(
+          <div key={r.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 0',borderBottom:'1px solid #1f2937',flexWrap:'wrap',gap:8}}>
+            <div><p style={{fontWeight:600,margin:0}}>{r.titulo}</p><p style={{color:'#94a3b8',fontSize:13,margin:'4px 0 0'}}>{r.local}</p></div>
+            <span style={{background:'#1e40af',color:'white',padding:'4px 12px',borderRadius:20,fontSize:12,fontWeight:600}}>{r.data?new Date(r.data).toLocaleDateString('pt-BR'):'—'}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+          <h3 style={{fontWeight:'bold',fontSize:16,color:'#60a5fa',margin:0}}>Eleitores ({eleitores.length})</h3>
+          {perfil==='candidato'&&<button onClick={()=>setShowCadastro(true)} style={{background:'#1e40af',color:'white',border:'none',borderRadius:8,padding:'8px 16px',cursor:'pointer',fontWeight:700,fontSize:13}}>+ Cadastrar</button>}
+        </div>
+        <input type="text" placeholder="Buscar por nome, bairro ou telefone..." value={busca} onChange={e=>setBusca(e.target.value)}
+          style={{width:'100%',padding:'8px 10px',borderRadius:8,border:'1px solid #334155',fontSize:13,marginBottom:10,boxSizing:'border-box',background:'#0a0f1c',color:'#f1f5f9'}} />
+        <div style={{maxHeight:400,overflowY:'auto',display:'flex',flexDirection:'column',gap:8}}>
+          {eleitorFiltrados.length===0?<p style={{color:'#9ca3af',fontSize:13,textAlign:'center',padding:'20px 0'}}>Nenhum eleitor.</p>:
+            eleitorFiltrados.map(e=>{
+              const numWA=formatarWA(e.telefone);
+              return (
+                <div key={e.id} style={{background:'#1a2332',borderRadius:8,padding:'10px 12px',border:'1px solid #1f2937',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                  <div style={{flex:1}}>
+                    <p style={{fontWeight:'bold',fontSize:13,color:'#f1f5f9',marginBottom:2}}>{e.nome}</p>
+                    <p style={{color:'#94a3b8',fontSize:12}}>Tel: {e.telefone}</p>
+                    {e.bairro&&<p style={{color:'#94a3b8',fontSize:12}}>Bairro: {e.bairro}</p>}
+                    {e.zona_eleitoral&&<p style={{color:'#94a3b8',fontSize:11}}>Zona {e.zona_eleitoral}{e.secao_eleitoral?' | Secao '+e.secao_eleitoral:''}</p>}
                   </div>
-                  <span style={{
-                    background: r.status === 'realizada' ? '#16a34a' : '#1e40af',
-                    color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600
-                  }}>
-                    {r.status === 'realizada' ? '✅ Realizada' : '🗓️ Agendada'}
-                  </span>
+                  <div style={{display:'flex',gap:4,flexShrink:0,marginLeft:6}}>
+                    {numWA&&<a href={'https://wa.me/'+numWA} target="_blank" rel="noreferrer" style={{background:'#dcfce7',color:'#16a34a',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12,textDecoration:'none'}}>WA</a>}
+                    <LinkRastreavel eleitor={e} />
+                    {perfil==='candidato'&&<button onClick={()=>excluir('eleitores',e.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>}
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      {perfil==='candidato'&&(
+        <div style={{background:'#111827',borderRadius:12,padding:20,border:'1px solid #1f2937'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+            <h3 style={{fontWeight:'bold',fontSize:16,color:'#94a3b8',margin:0}}>Liderancas ({liderancas.length})</h3>
+            <button onClick={()=>setShowLider(true)} style={{background:'#7c3aed',color:'white',border:'none',borderRadius:8,padding:'8px 16px',cursor:'pointer',fontWeight:700,fontSize:13}}>+ Cadastrar</button>
           </div>
-        )}
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {liderancas.map(l=>(
+              <div key={l.id} style={{background:'#1a2332',borderRadius:8,padding:'10px 12px',border:'1px solid #1f2937',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                <div>
+                  <p style={{fontWeight:'bold',fontSize:13,color:'#f87171',marginBottom:2}}>{l.nome}</p>
+                  {l.telefone&&<p style={{color:'#94a3b8',fontSize:12}}>Tel: {l.telefone}</p>}
+                  {l.bairro&&<p style={{color:'#94a3b8',fontSize:12}}>Bairro: {l.bairro}</p>}
+                  {l.demanda&&<p style={{color:'#fbbf24',fontSize:12}}>{l.demanda}</p>}
+                </div>
+                <button onClick={()=>excluir('liderancas',l.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-        {/* MAPA */}
-        {aba === 'mapa' && <MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} />}
+      {relatorio&&<RelatorioImpressao {...relatorio} onFechar={()=>setRelatorio(null)} />}
+      {showCadastro&&<CadastroEleitorDemo onFechar={()=>setShowCadastro(false)} onCadastrado={fetchAll} />}
 
-      </main>
+      {showLider&&(
+        <div style={estiloModal} onClick={e=>e.target===e.currentTarget&&setShowLider(false)}>
+          <div style={estiloCard}>
+            <h2 style={{color:'#94a3b8',marginBottom:20}}>Cadastrar Lideranca</h2>
+            <input style={estiloInput} placeholder="Nome *" value={novaLider.nome} onChange={e=>setNovaLider({...novaLider,nome:e.target.value})} />
+            <input style={estiloInput} placeholder="Telefone" value={novaLider.telefone} onChange={e=>setNovaLider({...novaLider,telefone:e.target.value})} />
+            <select style={estiloInput} value={novaLider.bairro} onChange={e=>setNovaLider({...novaLider,bairro:e.target.value})}>
+              <option value="">Selecione o bairro...</option>
+              {BAIRROS.map(b=><option key={b} value={b}>{b}</option>)}
+            </select>
+            <textarea style={{...estiloInput,resize:'vertical'}} placeholder="Demanda" rows={3} value={novaLider.demanda} onChange={e=>setNovaLider({...novaLider,demanda:e.target.value})} />
+            <button onClick={cadastrarLider} disabled={loading} style={estiloBotao('#7c3aed')}>{loading?'Salvando...':'Cadastrar Lideranca'}</button>
+            <button onClick={()=>setShowLider(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {showReuniao&&(
+        <div style={estiloModal} onClick={e=>e.target===e.currentTarget&&setShowReuniao(false)}>
+          <div style={estiloCard}>
+            <h2 style={{color:'#d97706',marginBottom:20}}>Agendar Reuniao</h2>
+            <input style={estiloInput} placeholder="Titulo *" value={novaReuniao.titulo} onChange={e=>setNovaReuniao({...novaReuniao,titulo:e.target.value})} />
+            <input style={estiloInput} type="datetime-local" value={novaReuniao.data} onChange={e=>setNovaReuniao({...novaReuniao,data:e.target.value})} />
+            <input style={estiloInput} placeholder="Local" value={novaReuniao.local} onChange={e=>setNovaReuniao({...novaReuniao,local:e.target.value})} />
+            <input style={estiloInput} placeholder="Endereco" value={novaReuniao.endereco} onChange={e=>setNovaReuniao({...novaReuniao,endereco:e.target.value})} />
+            <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading?'Salvando...':'Agendar Reuniao'}</button>
+            <button onClick={()=>setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
