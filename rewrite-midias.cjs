@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+﻿const fs = require('fs');
+
+const conteudo = `import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
 export default function GestaoMidias({ onVoltar }) {
@@ -53,8 +55,8 @@ export default function GestaoMidias({ onVoltar }) {
     setUploading(true);
     try {
       const ext = arquivo.name.split('.').pop();
-      const nomeArquivo = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
-      const path = `publico/${nomeArquivo}`;
+      const nomeArquivo = \`\${Date.now()}-\${Math.random().toString(36).substring(7)}.\${ext}\`;
+      const path = \`publico/\${nomeArquivo}\`;
       const { error: uploadError } = await supabase.storage.from('midias-campanha').upload(path, arquivo, { cacheControl: '3600', upsert: false });
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from('midias-campanha').getPublicUrl(path);
@@ -78,9 +80,9 @@ export default function GestaoMidias({ onVoltar }) {
     if (selecionados.length === 0) return alert('Selecione pelo menos um eleitor.');
     const alvos = eleitores.filter(e => selecionados.includes(e.id));
     const links = alvos.map(e => {
-      const numero = '55' + e.telefone.replace(/\D/g, '');
-      const msg = `Olá, ${e.nome}! 👋\n\nO Dep. Deputado Demo compartilhou uma novidade:\n\n📣 *${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\n🔗 https://gabinete-asf.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair responda *SAIR*.`;
-      return { nome: e.nome, bairro: e.bairro || '', id: e.id, eleitor_id: e.id, url: `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` };
+      const numero = '55' + e.telefone.replace(/\\D/g, '');
+      const msg = \`Olá, \${e.nome}! 👋\\n\\nO Dep. Deputado Demo compartilhou uma novidade:\\n\\n📣 *\${midiaDisparo.titulo}*\\n\${midiaDisparo.descricao ? midiaDisparo.descricao + '\\n' : ''}\\n🔗 https://gabinete-asf.vercel.app/#/m/\${midiaDisparo.id}/\${e.id}\\n\\nPara sair responda *SAIR*.\`;
+      return { nome: e.nome, bairro: e.bairro || '', id: e.id, eleitor_id: e.id, url: \`https://wa.me/\${numero}?text=\${encodeURIComponent(msg)}\` };
     });
     for (const l of links) {
       await supabase.from('midias_cliques').insert({ midia_id: midiaDisparo.id, eleitor_id: l.eleitor_id, bairro: l.bairro, data_clique: new Date().toISOString(), lideranca_id: l.lideranca_id || null });
@@ -188,7 +190,7 @@ export default function GestaoMidias({ onVoltar }) {
                   <input type="checkbox" checked={selecionados.includes(e.id)} onChange={() => toggleSelecionado(e.id)} style={{ width: '18px', height: '18px', accentColor: '#1e40af' }} />
                   <div>
                     <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#111827' }}>{e.nome}</p>
-                    <p style={{ color: '#6b7280', fontSize: '12px' }}>📞 {e.telefone}{e.bairro ? ` — 📍 ${e.bairro}` : ''}</p>
+                    <p style={{ color: '#6b7280', fontSize: '12px' }}>📞 {e.telefone}{e.bairro ? \` — 📍 \${e.bairro}\` : ''}</p>
                   </div>
                 </label>
               ))}
@@ -226,3 +228,7 @@ export default function GestaoMidias({ onVoltar }) {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('src/components/GestaoMidias.jsx', conteudo, { encoding: 'utf8' });
+console.log('OK - GestaoMidias reescrito com encoding correto');
