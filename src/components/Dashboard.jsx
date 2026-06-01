@@ -5,6 +5,7 @@ import MapaDemo from './MapaDemo';
 import LinkRastreavel from './LinkRastreavel';
 import CadastroEleitorDemo from './CadastroEleitorDemo';
 import PainelRastreamento from './PainelRastreamento';
+import GestaoMidias from './GestaoMidias';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
 
@@ -37,9 +38,10 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     ? [
         { id: 'inicio', label: 'Inicio' },
         { id: 'eleitores', label: 'Eleitores' },
-        { id: 'liderancas', label: 'Liderancas' },
+        { id: 'liderancas', label: 'Lideranças' },
         { id: 'reunioes', label: 'Reunioes' },
         { id: 'mapa', label: 'Mapa' },
+        { id: 'midias', label: 'Mídias' },
         { id: 'rastreamento', label: 'Links' },
       ]
     : [
@@ -176,7 +178,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
         {aba === 'liderancas' && perfil === 'candidato' && (
           <div>
-            <h2 style={{ fontSize: 22, marginBottom: 20, color: 'white' }}>Liderancas</h2>
+            <h2 style={{ fontSize: 22, marginBottom: 20, color: 'white' }}>Lideranças</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
               {LIDERANCAS.map(l => (
                 <div key={l.id} style={{ background: '#1e293b', borderRadius: 12, padding: 20, border: '1px solid #dc262633' }}>
@@ -213,6 +215,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           </div>
         )}
 
+        {aba === 'midias' && <GestaoMidias onVoltar={() => setAba('inicio')} />
+        }
         {aba === 'mapa' && <MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} />}
         {showCadastro && <CadastroEleitorDemo onFechar={() => setShowCadastro(false)} onCadastrado={carregarEleitores} />}
       </main>
