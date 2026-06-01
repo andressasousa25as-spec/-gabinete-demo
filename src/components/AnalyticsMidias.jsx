@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from './lib/supabase';
 
 export default function AnalyticsMidias({ onVoltar }) {
   const [midias, setMidias] = useState([]);
@@ -18,8 +18,6 @@ export default function AnalyticsMidias({ onVoltar }) {
     setMidias(m.data || []);
     setCliques(c.data || []);
     setRastreamento(r.data || []);
-    const { data: mc } = await supabase.from('midias_cliques').select('*').order('data_clique', { ascending: false });
-    setCliques(mc || []);
     setLoading(false);
   };
 
