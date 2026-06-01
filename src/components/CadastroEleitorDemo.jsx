@@ -20,7 +20,8 @@ export default function CadastroEleitorDemo({ onFechar, onCadastrado }) {
     if (!dados.nome || !dados.telefone) return alert('Nome e telefone sao obrigatorios.');
     if (!termoAceito) return alert('Aceite o termo LGPD para continuar.');
     setSalvando(true);
-    const { error } = await supabase.from('eleitores').insert([{ ...dados, consentimento_lgpd: true, data_consentimento: new Date().toISOString() }]);
+    const payload = { ...dados, lideranca_id: dados.lideranca_id || null, consentimento_lgpd: true, data_consentimento: new Date().toISOString() };
+    const { error } = await supabase.from('eleitores').insert([payload]);
     setSalvando(false);
     if (error) { alert('Erro: ' + error.message); return; }
     alert('Eleitor cadastrado!');
