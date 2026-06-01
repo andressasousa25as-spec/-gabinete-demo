@@ -9,7 +9,7 @@ const estiloInput = { width: '100%', padding: '12px 14px', borderRadius: '10px',
 const estiloBotao = (cor) => ({ width: '100%', padding: '14px', borderRadius: '10px', border: 'none', backgroundColor: cor, color: 'white', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '8px' });
 
 export default function CadastroEleitorDemo({ onFechar, onCadastrado }) {
-  const [dados, setDados] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: 'Macapa', lideranca_id: '' });
+  const [dados, setDados] = useState({ nome: '', telefone: '', bairro: '', zona_eleitoral: '', secao_eleitoral: '', municipio: 'Macapa', lideranca_id: '' });
   const [liderancas, setLiderancas] = useState([]);
   const [termoAceito, setTermoAceito] = useState(false);
   const [salvando, setSalvando] = useState(false);
@@ -40,8 +40,7 @@ export default function CadastroEleitorDemo({ onFechar, onCadastrado }) {
           <option value="">Selecione o bairro</option>
           {BAIRROS_AMAPA.map(b => <option key={b} value={b}>{b}</option>)}
         </select>
-        <input style={estiloInput} placeholder="Endereco completo" value={dados.endereco} onChange={e => setDados({ ...dados, endereco: e.target.value })} />
-        <input style={estiloInput} placeholder="Municipio" value={dados.municipio} onChange={e => setDados({ ...dados, municipio: e.target.value })} />
+<input style={estiloInput} placeholder="Municipio" value={dados.municipio} onChange={e => setDados({ ...dados, municipio: e.target.value })} />
         <div style={{ display: 'flex', gap: '12px' }}>
           <select style={{ ...estiloInput, flex: 1 }} value={dados.zona_eleitoral} onChange={e => setDados({ ...dados, zona_eleitoral: e.target.value })}>
             <option value="">Zona eleitoral</option>
