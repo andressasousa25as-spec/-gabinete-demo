@@ -69,7 +69,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [showLider, setShowLider] = useState(false);
   const [showReuniao, setShowReuniao] = useState(false);
   const [relatorio, setRelatorio] = useState(null);
-  const [foto, setFoto] = useState(null);
+  const [foto, setFoto] = useState(() => localStorage.getItem("demo_foto") || null);
   const [nomeAtual, setNomeAtual] = useState(candidato);
   const [nomeEdit, setNomeEdit] = useState(candidato);
   const [editandoNome, setEditandoNome] = useState(false);
@@ -90,7 +90,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   useEffect(()=>{fetchAll();},[]);
 
-  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>setFoto(ev.target.result); r.readAsDataURL(f); };
+  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ setFoto(ev.target.result); localStorage.setItem("demo_foto", ev.target.result); }; r.readAsDataURL(f); };
 
   const cadastrarLider = async () => {
     if(!novaLider.nome) return alert('Nome obrigatorio.');
