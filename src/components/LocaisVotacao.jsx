@@ -208,7 +208,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
       <button onClick={onVoltar} style={s.voltarBtn}>&#8592; Voltar</button>
 
       <div style={s.titulo}>
-        <span>&#x1F3EB;</span> Locais de Votacao
+        Locais de Votacao
         <span style={{ fontSize: 13, color: '#64748b', fontWeight: 400 }}>({locais.length} locais)</span>
       </div>
 
