@@ -31,7 +31,7 @@ export default function CenarioMunicipal({ onVoltar }) {
   const [filtroPartido, setFiltroPartido] = useState('TODOS')
 
   const candidato = DEPUTADOS[candidatoIdx]
-  const PARTIDO_CAND = candidato?.sg_partido || candidato?.partido || ''
+  const PARTIDO_CAND = '' // partido não disponível no TSE 2022
 
   const dados = municipio === 'macapa' ? VEREADORES_2024.macapa : VEREADORES_2024.santana
   const eleitos = useMemo(() => getEleitos(municipio), [municipio])
@@ -94,7 +94,7 @@ export default function CenarioMunicipal({ onVoltar }) {
         >
           {DEPUTADOS.map((d, i) => (
             <option key={i} value={i}>
-              {d.nome} — {d.sg_partido || d.partido || '?'} ({(d.total || 0).toLocaleString('pt-BR')} votos)
+              {d.nome} ({(d.total || 0).toLocaleString('pt-BR')} votos)
             </option>
           ))}
         </select>
@@ -108,9 +108,6 @@ export default function CenarioMunicipal({ onVoltar }) {
             </span>
             <span style={{ fontSize: '0.82rem', color: '#475569' }}>
               <strong>Santana:</strong> {getVotosMun(candidato, 'SANTANA').toLocaleString('pt-BR')}
-            </span>
-            <span style={{ fontSize: '0.82rem', background: corPartido(PARTIDO_CAND) + '22', color: corPartido(PARTIDO_CAND), padding: '2px 10px', borderRadius: 4, fontWeight: 700 }}>
-              {PARTIDO_CAND}
             </span>
           </div>
         )}
@@ -288,7 +285,7 @@ export default function CenarioMunicipal({ onVoltar }) {
             )
           })}
           <div style={{ background: '#fef3c7', border: '1px solid #fcd34d', borderRadius: 10, padding: '0.8rem', fontSize: '0.8rem', color: '#78350f', marginTop: 12 }}>
-            <strong>⚠️ Nota:</strong> Comparação entre eleições diferentes (dep. estadual 2022 × vereador 2024). Use como indicador territorial, não correlação direta.
+            <strong>⚠️ Nota metodológica:</strong> O cruzamento compara votos do deputado estadual (2022) com votos de vereador (2024) no mesmo município. Eleições diferentes — use como indicador de força territorial, não como correlação direta.
           </div>
         </div>
       )}
