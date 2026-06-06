@@ -59,6 +59,64 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
   );
 }
 
+// ── Componentes auxiliares (definidos fora do Dashboard) ──
+
+function WhatsAppRastreado({ eleitor, candidato }) {
+  const [enviado, setEnviado] = React.useState(false);
+  const abrirWhatsApp = async () => {
+    const { gerarRef, gerarLinkWhatsApp, registrarClique } = await import('../lib/rastreamento');
+    const ref = gerarRef(eleitor.nome, eleitor.telefone || '');
+    await registrarClique({ ref, nomeEleitor: eleitor.nome, telefone: eleitor.telefone, utmSource: 'whatsapp_eleitor' });
+    window.open(gerarLinkWhatsApp(eleitor.telefone, eleitor.nome, candidato || 'Candidato'), '_blank');
+    setEnviado(true); setTimeout(() => setEnviado(false), 2000);
+  };
+  return (
+    <button onClick={abrirWhatsApp} style={{background: enviado ? '#15803d' : '#16a34a', color:'white', border:'none', borderRadius:6, padding:'4px 8px', cursor:'pointer', fontSize:12, fontWeight:600}}>
+      {enviado ? 'Enviado!' : 'WhatsApp'}
+    </button>
+  );
+}
+
+function EdicaoEleitor({ eleitor, onFechar, onSalvo }) {
+  const [dados, setDados] = React.useState({
+    nome: eleitor.nome || '',
+    telefone: eleitor.telefone || '',
+    bairro: eleitor.bairro || '',
+    zona_eleitoral: eleitor.zona_eleitoral || '',
+    secao_eleitoral: eleitor.secao_eleitoral || '',
+  });
+  const [salvando, setSalvando] = React.useState(false);
+  const salvar = async () => {
+    try {
+      setSalvando(true);
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('eleitores').update(dados).eq('id', eleitor.id);
+      if (error) throw error;
+      onSalvo();
+    } catch (err) {
+      alert('Erro ao salvar: ' + err.message);
+    } finally {
+      setSalvando(false);
+    }
+  };
+  const inp = { width:'100%', padding:'8px 10px', borderRadius:8, border:'1px solid #334155', background:'#0f172a', color:'#f1f5f9', fontSize:13, marginBottom:10, boxSizing:'border-box' };
+  return (
+    <div>
+      <input style={inp} placeholder="Nome" value={dados.nome} onChange={e=>setDados(p=>({...p,nome:e.target.value}))} />
+      <input style={inp} placeholder="Telefone" value={dados.telefone} onChange={e=>setDados(p=>({...p,telefone:e.target.value}))} />
+      <input style={inp} placeholder="Bairro" value={dados.bairro} onChange={e=>setDados(p=>({...p,bairro:e.target.value}))} />
+      <input style={inp} placeholder="Zona eleitoral" value={dados.zona_eleitoral} onChange={e=>setDados(p=>({...p,zona_eleitoral:e.target.value}))} />
+      <input style={inp} placeholder="Secao eleitoral" value={dados.secao_eleitoral} onChange={e=>setDados(p=>({...p,secao_eleitoral:e.target.value}))} />
+      <div style={{display:'flex',gap:8,marginTop:4}}>
+        <button onClick={salvar} disabled={salvando} style={{flex:1,padding:'10px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:700,fontSize:13}}>
+          {salvando ? 'Salvando...' : 'Salvar'}
+        </button>
+        <button onClick={onFechar} style={{flex:1,padding:'10px',background:'#374151',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:700,fontSize:13}}>Cancelar</button>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard({ candidato, perfil, onLogout }) {
   const [aba, setAba] = useState('inicio');
   const [eleitores, setEleitores] = useState([]);
