@@ -48,7 +48,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
         </div>
         <div ref={ref}>
           <h1>{titulo}</h1>
-          <p>Gabinete Digital — Candidato Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
+          <p>Gabinete Digital ï¿½ Candidato Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
           <p><strong>Total:</strong> {dados.length}</p>
           <table>
             <thead><tr>{colunas.map(c=><th key={c.key}>{c.label}</th>)}</tr></thead>
