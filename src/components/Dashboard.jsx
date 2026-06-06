@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import MapaDemo from './MapaDemo';
 import LinkRastreavel from './LinkRastreavel';
@@ -67,6 +67,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [loading, setLoading] = useState(false);
   const [busca, setBusca] = useState('');
   const [showCadastro, setShowCadastro] = useState(false);
+  const [eleitorEditando, setEleitorEditando] = useState(null);
   const [showLider, setShowLider] = useState(false);
   const [showReuniao, setShowReuniao] = useState(false);
   const [relatorio, setRelatorio] = useState(null);
@@ -217,10 +218,10 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
                 <p style={{color:'#94a3b8',fontSize:12,margin:0}}>{e.telefone}{e.bairro?' | '+e.bairro:''}</p>
                 {e.zona_eleitoral&&<p style={{color:'#64748b',fontSize:11,margin:0}}>Zona {e.zona_eleitoral}{e.secao_eleitoral?' | Secao '+e.secao_eleitoral:''}</p>}
               </div>
-              <div style={{display:'flex',gap:4,marginLeft:6}}>
-                {wa&&<a href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" style={{background:'#dcfce7',color:'#16a34a',borderRadius:6,padding:'4px 8px',fontSize:12,textDecoration:'none',fontWeight:600}}>WA</a>}
-                <LinkRastreavel eleitor={e} candidato={nomeAtual} />
-                {perfil==='candidato'&&<button onClick={()=>excluir('eleitores',e.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>}
+              <div style={{display:'flex',gap:4,marginLeft:6,flexWrap:'wrap',justifyContent:'flex-end'}}>
+                {wa&&<WhatsAppRastreado eleitor={e} candidato={nomeAtual} />}
+                {perfil==='candidato'&&<button onClick={()=>setEleitorEditando(e)} style={{background:'#fef9c3',color:'#854d0e',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12,fontWeight:600}}>Editar</button>}
+                {perfil==='candidato'&&<button onClick={()=>excluir('eleitores',e.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12,fontWeight:600}}>Excluir</button>}
               </div>
             </div>);
           })}
@@ -242,6 +243,14 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
       {relatorio&&<RelatorioImpressao {...relatorio} onFechar={()=>setRelatorio(null)} />}
       {showCadastro&&<CadastroEleitorDemo onFechar={()=>setShowCadastro(false)} onCadastrado={fetchAll} />}
+      {eleitorEditando&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:16}}>
+          <div style={{background:'#1e293b',borderRadius:16,padding:28,width:'100%',maxWidth:420,border:'1px solid #334155'}}>
+            <h3 style={{color:'#60a5fa',marginBottom:20,fontSize:16,fontWeight:800}}>Editar Eleitor</h3>
+            <EdicaoEleitor eleitor={eleitorEditando} onFechar={()=>setEleitorEditando(null)} onSalvo={()=>{setEleitorEditando(null);fetchAll();}} />
+          </div>
+        </div>
+      )}
 
       {showLider&&<div style={estiloModal} onClick={e=>e.target===e.currentTarget&&setShowLider(false)}><div style={estiloCard}>
         <h2 style={{color:'#94a3b8',marginBottom:20}}>Cadastrar Lideranca</h2>
