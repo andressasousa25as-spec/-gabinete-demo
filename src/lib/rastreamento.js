@@ -15,6 +15,8 @@ export const capturarRefUrl = async () => {
 };
 export const gerarLinkEleitor = (ref) => window.location.origin + '?ref=' + ref;
 export const gerarLinkWhatsApp = (telefone, nomeEleitor, ref) => {
-  const texto = 'Ola ' + nomeEleitor + '! Acesse: ' + window.location.origin + '?ref=' + ref;
-  return 'https://wa.me/55' + telefone.replace(/D/g, '') + '?text=' + encodeURIComponent(texto);
+  // Mensagem personalizada — rastreio ja feito via registrarClique antes de abrir o WhatsApp
+  const primeiroNome = nomeEleitor ? nomeEleitor.split(' ')[0] : nomeEleitor;
+  const texto = 'Ola ' + primeiroNome + '! Aqui e a equipe do Dep. Paulinho Ramos 2026. Estamos em contato para fortalecer nossa campanha pelo Amapa. Conte conosco!';
+  return 'https://wa.me/55' + telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(texto);
 };
