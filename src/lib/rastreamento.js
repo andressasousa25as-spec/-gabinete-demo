@@ -14,9 +14,9 @@ export const capturarRefUrl = async () => {
   try { await supabase.from('links_rastreados').insert({ ref, utm_source: 'link_direto', utm_campaign: ref, user_agent: navigator.userAgent }); } catch (err) { console.warn(err.message); }
 };
 export const gerarLinkEleitor = (ref) => window.location.origin + '?ref=' + ref;
-export const gerarLinkWhatsApp = (telefone, nomeEleitor, ref) => {
-  // Mensagem personalizada — rastreio ja feito via registrarClique antes de abrir o WhatsApp
+export const gerarLinkWhatsApp = (telefone, nomeEleitor, nomeDeputado) => {
+  // Mensagem personalizada com primeiro nome do eleitor e nome do deputado selecionado
   const primeiroNome = nomeEleitor ? nomeEleitor.split(' ')[0] : nomeEleitor;
-  const texto = 'Ola ' + primeiroNome + '! Aqui e a equipe do Dep. Paulinho Ramos 2026. Estamos em contato para fortalecer nossa campanha pelo Amapa. Conte conosco!';
+  const texto = 'Ola ' + primeiroNome + '! Aqui e a equipe do Dep. ' + nomeDeputado + ' 2026. Estamos em contato para fortalecer nossa campanha pelo Amapa. Conte conosco!';
   return 'https://wa.me/55' + telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(texto);
 };

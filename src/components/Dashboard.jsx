@@ -219,7 +219,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
               </div>
               <div style={{display:'flex',gap:4,marginLeft:6}}>
                 {wa&&<a href={'https://wa.me/'+wa} target="_blank" rel="noreferrer" style={{background:'#dcfce7',color:'#16a34a',borderRadius:6,padding:'4px 8px',fontSize:12,textDecoration:'none',fontWeight:600}}>WA</a>}
-                <LinkRastreavel eleitor={e} />
+                <LinkRastreavel eleitor={e} candidato={nomeAtual} />
                 {perfil==='candidato'&&<button onClick={()=>excluir('eleitores',e.id)} style={{background:'#fee2e2',color:'#dc2626',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer',fontSize:12}}>X</button>}
               </div>
             </div>);

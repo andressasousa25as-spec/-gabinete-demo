@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { gerarRef, gerarLinkEleitor, gerarLinkWhatsApp, registrarClique } from '../lib/rastreamento';
-export default function LinkRastreavel({ eleitor }) {
+export default function LinkRastreavel({ eleitor, candidato }) {
   const [copiado, setCopiado] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const ref = gerarRef(eleitor.nome, eleitor.telefone || '');
@@ -11,7 +11,7 @@ export default function LinkRastreavel({ eleitor }) {
   };
   const abrirWhatsApp = async () => {
     await registrarClique({ ref, nomeEleitor: eleitor.nome, telefone: eleitor.telefone, utmSource: 'whatsapp' });
-    window.open(gerarLinkWhatsApp(eleitor.telefone, eleitor.nome, ref), '_blank');
+    window.open(gerarLinkWhatsApp(eleitor.telefone, eleitor.nome, candidato || 'Candidato'), '_blank');
     setEnviado(true); setTimeout(() => setEnviado(false), 2000);
   };
   return (
