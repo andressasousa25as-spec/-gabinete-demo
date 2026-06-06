@@ -197,7 +197,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
   const s = {
     container: { minHeight: '100vh', background: '#0f172a', color: 'white', padding: 24 },
     voltarBtn: { marginBottom: 20, padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 },
-    titulo: { fontSize: 22, fontWeight: 800, color: '#60a5fa', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 },
+    titulo: { fontSize: 22, fontWeight: 800, color: '#60a5fa', marginBottom: 20 },
     card: { background: '#1a2332', borderRadius: 10, padding: '12px 16px', border: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 },
     badge: (cor) => ({ background: cor + '22', color: cor, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700 }),
     tab: (ativo) => ({ padding: '8px 20px', border: 'none', borderRadius: '8px 8px 0 0', cursor: 'pointer', fontWeight: 700, fontSize: 13, background: ativo ? '#1e293b' : 'transparent', color: ativo ? '#60a5fa' : '#94a3b8', borderBottom: ativo ? '2px solid #3b82f6' : '2px solid transparent' }),
@@ -207,10 +207,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
     <div style={s.container}>
       <button onClick={onVoltar} style={s.voltarBtn}>&#8592; Voltar</button>
 
-      <div style={s.titulo}>
-        Locais de Votacao
-        <span style={{ fontSize: 13, color: '#64748b', fontWeight: 400 }}>({locais.length} locais)</span>
-      </div>
+      <h2 style={s.titulo}>Locais de Votacao <span style={{fontSize:14,color:'#64748b',fontWeight:400}}>({locais.length} locais)</span></h2>
 
       {/* Abas */}
       <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #1e293b', marginBottom: 20 }}>
