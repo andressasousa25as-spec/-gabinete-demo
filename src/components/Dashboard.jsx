@@ -7,6 +7,7 @@ import PainelRastreamento from './PainelRastreamento';
 import GestaoMidias from './GestaoMidias';
 import AnalyticsMidias from './AnalyticsMidias';
 import CentralRedesSociais from './CentralRedesSociais';
+import LocaisVotacao from './LocaisVotacao';
 import RankingEngajamento from './RankingEngajamento';
 import GestaoAnotacoes from './GestaoAnotacoes';
 import CenarioPolitico from './CenarioPolitico';
@@ -199,6 +200,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   if(aba==='cenario-municipal') return <CenarioMunicipal onVoltar={()=>setAba('inicio')} />;
   if(aba==='anotacoes') return <GestaoAnotacoes liderancaId={liderancas[0]?.id||null} onVoltar={()=>setAba('inicio')} />;
   if(aba==='mapa') return (<div style={{background:'#0f172a',minHeight:'100vh'}}><button onClick={()=>setAba('inicio')} style={{margin:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><MapaDemo token={MAPBOX_TOKEN} candidato={nomeAtual} /></div>);
+  if(aba==='locais') return <LocaisVotacao perfil={perfil} onVoltar={()=>setAba('inicio')} />;
   if(aba==='redes') return <CentralRedesSociais perfil={perfil} onVoltar={()=>setAba('inicio')} />;
   if(aba==='rastreamento') return (<div style={{minHeight:'100vh',background:'#0f172a',color:'white',padding:24}}><button onClick={()=>setAba('inicio')} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button><PainelRastreamento onVoltar={()=>setAba('inicio')} /></div>);
   if(aba==='relatorios') return (
@@ -216,7 +218,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   const eleitorFiltrados = eleitores.filter(e=>e.nome?.toLowerCase().includes(busca.toLowerCase())||e.bairro?.toLowerCase().includes(busca.toLowerCase())||e.telefone?.includes(busca));
   const botoesMenu = perfil==='candidato'
-    ? [{l:'Config',a:()=>alert('Configure seu nome em Configuracoes no Supabase')},{l:'ADMs',a:()=>setAba('admins')},{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Lideranca',a:()=>setShowLider(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Anotacoes',a:()=>setAba('anotacoes')},{l:'Midias',a:()=>setAba('midias')},{l:'Analytics',a:()=>setAba('analytics')},{l:'Ranking',a:()=>setAba('ranking')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Links',a:()=>setAba('rastreamento')},{l:'Cenario',a:()=>setAba('cenario')},{l:'🏛️ Cenario Municipal',a:()=>setAba('cenario-municipal')},{l:'Diagnostico',a:()=>setAba('diagnostico')},{l:'Mapa TSE',a:()=>setAba('mapaeleitoral')},{l:'Territorial',a:()=>setAba('territorial')},{l:'Oportunidades',a:()=>setAba('radar')},{l:'Vitoria',a:()=>setAba('caminho')},{l:'Projecao',a:()=>setAba('projecao')},{l:'Relatorios',a:()=>setAba('relatorios')}]
+    ? [{l:'Config',a:()=>alert('Configure seu nome em Configuracoes no Supabase')},{l:'ADMs',a:()=>setAba('admins')},{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Lideranca',a:()=>setShowLider(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Anotacoes',a:()=>setAba('anotacoes')},{l:'Midias',a:()=>setAba('midias')},{l:'Analytics',a:()=>setAba('analytics')},{l:'Ranking',a:()=>setAba('ranking')},{l:'Locais de Votacao',a:()=>setAba('locais')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Links',a:()=>setAba('rastreamento')},{l:'Cenario',a:()=>setAba('cenario')},{l:'🏛️ Cenario Municipal',a:()=>setAba('cenario-municipal')},{l:'Diagnostico',a:()=>setAba('diagnostico')},{l:'Mapa TSE',a:()=>setAba('mapaeleitoral')},{l:'Territorial',a:()=>setAba('territorial')},{l:'Oportunidades',a:()=>setAba('radar')},{l:'Vitoria',a:()=>setAba('caminho')},{l:'Projecao',a:()=>setAba('projecao')},{l:'Relatorios',a:()=>setAba('relatorios')}]
     : [{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Midias',a:()=>setAba('midias')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Relatorios',a:()=>setAba('relatorios')}];
 
   return (
