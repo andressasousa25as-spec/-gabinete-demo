@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import MapaDemo from './MapaDemo';
 import LinkRastreavel from './LinkRastreavel';
@@ -48,7 +48,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
         </div>
         <div ref={ref}>
           <h1>{titulo}</h1>
-          <p>Gabinete Digital — Candidato Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
+          <p>Gabinete Digital � Candidato Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
           <p><strong>Total:</strong> {dados.length}</p>
           <table>
             <thead><tr>{colunas.map(c=><th key={c.key}>{c.label}</th>)}</tr></thead>
@@ -60,7 +60,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
   );
 }
 
-// ── Componentes auxiliares (definidos fora do Dashboard) ──
+// -- Componentes auxiliares (definidos fora do Dashboard) --
 
 function WhatsAppRastreado({ eleitor, candidato }) {
   const [enviado, setEnviado] = React.useState(false);
@@ -218,7 +218,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
 
   const eleitorFiltrados = eleitores.filter(e=>e.nome?.toLowerCase().includes(busca.toLowerCase())||e.bairro?.toLowerCase().includes(busca.toLowerCase())||e.telefone?.includes(busca));
   const botoesMenu = perfil==='candidato'
-    ? [{l:'Config',a:()=>alert('Configure seu nome em Configuracoes no Supabase')},{l:'ADMs',a:()=>setAba('admins')},{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Lideranca',a:()=>setShowLider(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Anotacoes',a:()=>setAba('anotacoes')},{l:'Midias',a:()=>setAba('midias')},{l:'Analytics',a:()=>setAba('analytics')},{l:'Ranking',a:()=>setAba('ranking')},{l:'Locais de Votacao',a:()=>setAba('locais')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Links',a:()=>setAba('rastreamento')},{l:'Cenario',a:()=>setAba('cenario')},{l:'🏛️ Cenario Municipal',a:()=>setAba('cenario-municipal')},{l:'Diagnostico',a:()=>setAba('diagnostico')},{l:'Mapa TSE',a:()=>setAba('mapaeleitoral')},{l:'Territorial',a:()=>setAba('territorial')},{l:'Oportunidades',a:()=>setAba('radar')},{l:'Vitoria',a:()=>setAba('caminho')},{l:'Projecao',a:()=>setAba('projecao')},{l:'Relatorios',a:()=>setAba('relatorios')}]
+    ? [{l:'Config',a:()=>alert('Configure seu nome em Configuracoes no Supabase')},{l:'ADMs',a:()=>setAba('admins')},{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Lideranca',a:()=>setShowLider(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Anotacoes',a:()=>setAba('anotacoes')},{l:'Midias',a:()=>setAba('midias')},{l:'Analytics',a:()=>setAba('analytics')},{l:'Ranking',a:()=>setAba('ranking')},{l:'Votacao',a:()=>setAba('locais')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Links',a:()=>setAba('rastreamento')},{l:'Cenario',a:()=>setAba('cenario')},{l:'??? Cenario Municipal',a:()=>setAba('cenario-municipal')},{l:'Diagnostico',a:()=>setAba('diagnostico')},{l:'Mapa TSE',a:()=>setAba('mapaeleitoral')},{l:'Territorial',a:()=>setAba('territorial')},{l:'Oportunidades',a:()=>setAba('radar')},{l:'Vitoria',a:()=>setAba('caminho')},{l:'Projecao',a:()=>setAba('projecao')},{l:'Relatorios',a:()=>setAba('relatorios')}]
     : [{l:'+ Eleitor',a:()=>setShowCadastro(true)},{l:'+ Reuniao',a:()=>setShowReuniao(true)},{l:'Mapa',a:()=>setAba('mapa')},{l:'Midias',a:()=>setAba('midias')},{l:'Redes Sociais',a:()=>setAba('redes')},{l:'Relatorios',a:()=>setAba('relatorios')}];
 
   return (
