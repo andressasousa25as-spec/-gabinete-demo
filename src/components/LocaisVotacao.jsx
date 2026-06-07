@@ -233,7 +233,6 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
       {/* Abas */}
       <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #1e293b', marginBottom: 20 }}>
         <button style={s.tab(aba === 'lista')} onClick={() => setAba('lista')}>&#x1F4CB; Lista</button>
-        <button style={s.tab(aba === 'mapa')} onClick={() => setAba('mapa')}>&#x1F5FA;&#xFE0F; Mapa</button>
         <button style={s.tab(aba === 'apoiadores')} onClick={() => setAba('apoiadores')}>&#x1F465; Apoiadores</button>
       </div>
 
@@ -264,10 +263,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
         )}
       </div>
 
-      {/* Aba Mapa */}
-      {aba === 'mapa' && (
-        <MapaLocais locais={locaisFiltrados} />
-      )}
+
 
       {/* Aba Lista */}
       {aba === 'lista' && (
