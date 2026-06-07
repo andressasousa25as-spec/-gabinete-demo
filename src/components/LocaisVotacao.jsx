@@ -269,7 +269,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
                   </div>
                   {l.endereco && <p style={{ color: '#94a3b8', fontSize: 12, margin: '2px 0' }}>&#x1F4CD; {l.endereco}{l.bairro ? ' — ' + l.bairro : ''}</p>}
                   {l.secoes && <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0' }}>Secoes: {l.secoes}</p>}
-                  {l.observacao && <p style={{ color: '#fbbf24', fontSize: 12, margin: '2px 0' }}>{l.observacao}</p>}
+                  
                 </div>
                 <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                   {l.latitude && l.longitude && (
