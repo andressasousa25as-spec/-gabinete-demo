@@ -155,7 +155,9 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
   const [filtroZona, setFiltroZona] = useState('');
   const [modalAberto, setModalAberto] = useState(false);
   const [localEditando, setLocalEditando] = useState(null);
-  const [aba, setAba] = useState('lista'); // 'lista' | 'mapa'
+  const [aba, setAba] = useState('lista'); // 'lista' | 'mapa' | 'apoiadores'
+  const [eleitores, setEleitores] = useState([]);
+  const [localSel, setLocalSel] = useState(null);
 
   const podeEditar = perfil === 'candidato' || perfil === 'adm';
 
@@ -176,7 +178,26 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
     }
   };
 
-  useEffect(() => { carregar(); }, []);
+  useEffect(() => { carregar(); carregarEleitores(); }, []);
+
+  const carregarEleitores = async () => {
+    const { data } = await supabase
+      .from('eleitores')
+      .select('id, nome, telefone, zona_eleitoral, secao_eleitoral, bairro');
+    setEleitores(data || []);
+  };
+
+  // Cruzar eleitor com local: zona igual E secao contida na string de secoes
+  const eleitoresdoLocal = (local) => {
+    if (!local) return [];
+    return eleitores.filter(e => {
+      if (!e.zona_eleitoral || !e.secao_eleitoral) return false;
+      const mesmaZona = String(e.zona_eleitoral) === String(local.zona);
+      const secaoFormatada = String(e.secao_eleitoral).padStart(4, '0');
+      const secaoNaLista = local.secoes && local.secoes.split(',').map(s => s.trim()).includes(secaoFormatada);
+      return mesmaZona && secaoNaLista;
+    });
+  };
 
   const excluir = async (id) => {
     if (!confirm('Excluir este local?')) return;
@@ -213,6 +234,7 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
       <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #1e293b', marginBottom: 20 }}>
         <button style={s.tab(aba === 'lista')} onClick={() => setAba('lista')}>&#x1F4CB; Lista</button>
         <button style={s.tab(aba === 'mapa')} onClick={() => setAba('mapa')}>&#x1F5FA;&#xFE0F; Mapa</button>
+        <button style={s.tab(aba === 'apoiadores')} onClick={() => setAba('apoiadores')}>&#x1F465; Apoiadores</button>
       </div>
 
       {/* Filtros e cadastro */}
@@ -293,6 +315,73 @@ export default function LocaisVotacao({ onVoltar, perfil }) {
             ))}
           </div>
         )
+      )}
+
+      {/* Aba Apoiadores */}
+      {aba === 'apoiadores' && (
+        <div>
+          {/* Se um local estiver selecionado, mostra detalhes */}
+          {localSel ? (
+            <div>
+              <button onClick={() => setLocalSel(null)} style={{ marginBottom: 16, padding: '8px 16px', background: '#1e293b', color: '#94a3b8', border: '1px solid #334155', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+                &#8592; Voltar para lista
+              </button>
+              <div style={{ background: '#1a2332', borderRadius: 12, padding: '16px 20px', marginBottom: 16, border: '1px solid #1e293b' }}>
+                <p style={{ fontWeight: 800, color: '#60a5fa', fontSize: 15, margin: '0 0 4px' }}>{localSel.nome}</p>
+                <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>Zona {localSel.zona} — Secoes: {localSel.secoes}</p>
+              </div>
+              {(() => {
+                const apoiadores = eleitoresdoLocal(localSel);
+                return apoiadores.length === 0 ? (
+                  <p style={{ color: '#64748b', textAlign: 'center', padding: 40 }}>Nenhum apoiador cadastrado neste local.</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 8 }}>{apoiadores.length} apoiador(es) cadastrado(s)</p>
+                    {apoiadores.map(e => (
+                      <div key={e.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 14px', border: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <p style={{ fontWeight: 700, color: '#f1f5f9', fontSize: 13, margin: '0 0 2px' }}>{e.nome}</p>
+                          <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>Secao {e.secao_eleitoral}{e.bairro ? ' — ' + e.bairro : ''}</p>
+                        </div>
+                        {e.telefone && (
+                          <a href={'https://wa.me/55' + e.telefone.replace(/\D/g, '')} target="_blank" rel="noreferrer"
+                            style={{ background: '#dcfce7', color: '#16a34a', borderRadius: 6, padding: '4px 8px', fontSize: 12, textDecoration: 'none', fontWeight: 600 }}>
+                            WA
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          ) : (
+            /* Lista de locais com contagem de apoiadores */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 8 }}>
+                Clique em um local para ver os apoiadores cadastrados naquelas secoes.
+              </p>
+              {locaisFiltrados.length === 0 ? (
+                <p style={{ color: '#64748b', textAlign: 'center', padding: 40 }}>Nenhum local encontrado.</p>
+              ) : locaisFiltrados.map(l => {
+                const count = eleitoresdoLocal(l).length;
+                return (
+                  <div key={l.id} onClick={() => setLocalSel(l)}
+                    style={{ background: '#1a2332', borderRadius: 10, padding: '12px 16px', border: '1px solid ' + (count > 0 ? '#3b82f6' : '#1e293b'), cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <p style={{ fontWeight: 700, color: '#f1f5f9', fontSize: 14, margin: '0 0 4px' }}>{l.nome}</p>
+                      <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>Zona {l.zona} — {l.municipio}</p>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <p style={{ fontSize: 24, fontWeight: 800, color: count > 0 ? '#3b82f6' : '#334155', margin: 0 }}>{count}</p>
+                      <p style={{ fontSize: 11, color: '#64748b', margin: 0 }}>apoiador(es)</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Modal */}
