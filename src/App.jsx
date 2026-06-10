@@ -3,11 +3,12 @@ import Dashboard from './components/Dashboard';
 import LoginScreen from './components/LoginScreen';
 import VisualizarMidia from './components/VisualizarMidia';
 import CadastroPublico from './components/CadastroPublico';
+import { supabase } from './lib/supabase';
 
 function App() {
-  const [logado, setLogado] = useState(false);
-  const [perfil, setPerfil] = useState(null);
-  const [admLogado, setAdmLogado] = useState(null);
+  const [sessao, setSessao] = useState(null);
+  const [papel, setPapel] = useState(null);
+  const [membro, setMembro] = useState(null);
   const [candidato, setCandidato] = useState('');
   const [rotaMidia, setRotaMidia] = useState(null);
   const [rotaCadastro, setRotaCadastro] = useState(null);
@@ -20,49 +21,33 @@ function App() {
     const matchCadastro = hash.match(/^#\/cadastro\/([^/]+)/);
     if (matchCadastro) { setRotaCadastro({ liderancaId: matchCadastro[1] }); setIniciando(false); return; }
 
-    // Restaurar sessão do localStorage
-    const savedPerfil = localStorage.getItem('demo_perfil');
-    const savedLogado = localStorage.getItem('demo_logado');
-    const savedAdm = localStorage.getItem('demo_adm');
-    if (savedLogado === 'true' && savedPerfil) {
-      setPerfil(savedPerfil);
-      setLogado(true);
-      if (savedAdm) setAdmLogado(JSON.parse(savedAdm));
-    }
-
     const params = new URLSearchParams(window.location.search);
     setCandidato(params.get('candidato') || 'Candidato Demo');
-    setIniciando(false);
+
+    supabase.auth.getSession().then(({ data }) => { setSessao(data.session); setIniciando(false); });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSessao(s));
+    return () => sub.subscription.unsubscribe();
   }, []);
 
-  const handleLogin = (p, adm) => {
-    setPerfil(p);
-    setLogado(true);
-    setAdmLogado(adm || null);
-    localStorage.setItem('demo_logado', 'true');
-    localStorage.setItem('demo_perfil', p);
-    if (adm) localStorage.setItem('demo_adm', JSON.stringify(adm));
-  };
+  useEffect(() => {
+    if (!sessao?.user) { setPapel(null); setMembro(null); return; }
+    supabase.from('membros').select('*').eq('user_id', sessao.user.id).maybeSingle()
+      .then(({ data }) => { setMembro(data); setPapel(data?.papel || 'equipe'); });
+  }, [sessao]);
 
-  const handleLogout = () => {
-    setLogado(false);
-    setPerfil(null);
-    setAdmLogado(null);
-    localStorage.removeItem('demo_logado');
-    localStorage.removeItem('demo_perfil');
-    localStorage.removeItem('demo_adm');
-  };
+  const handleLogout = async () => { await supabase.auth.signOut(); };
 
   if (iniciando) return null;
   if (rotaMidia) return <VisualizarMidia midiaId={rotaMidia.midiaId} eleitorId={rotaMidia.eleitorId} />;
   if (rotaCadastro) return <CadastroPublico liderancaId={rotaCadastro.liderancaId} />;
-  if (!logado) return <LoginScreen candidato={candidato} onLogin={handleLogin} />;
+  if (!sessao) return <LoginScreen candidato={candidato} />;
+  if (!papel) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
 
   return (
     <Dashboard
       candidato={candidato}
-      perfil={perfil}
-      admLogado={admLogado}
+      perfil={papel}
+      admLogado={papel === 'adm' ? membro : null}
       onLogout={handleLogout}
     />
   );
