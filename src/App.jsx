@@ -4,6 +4,8 @@ import LoginScreen from './components/LoginScreen';
 import VisualizarMidia from './components/VisualizarMidia';
 import CadastroPublico from './components/CadastroPublico';
 import { supabase } from './lib/supabase';
+import TelaBloqueio from './components/TelaBloqueio';
+import { licencaVencida } from './lib/licenca';
 
 function App() {
   const [sessao, setSessao] = useState(null);
@@ -13,6 +15,8 @@ function App() {
   const [rotaMidia, setRotaMidia] = useState(null);
   const [rotaCadastro, setRotaCadastro] = useState(null);
   const [iniciando, setIniciando] = useState(true);
+  const [licenca, setLicenca] = useState(null);
+  const [licencaCarregada, setLicencaCarregada] = useState(false);
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -30,9 +34,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!sessao?.user) { setPapel(null); setMembro(null); return; }
+    if (!sessao?.user) { setPapel(null); setMembro(null); setLicenca(null); setLicencaCarregada(false); return; }
     supabase.from('membros').select('*').eq('user_id', sessao.user.id).maybeSingle()
       .then(({ data }) => { setMembro(data); setPapel(data?.papel || 'equipe'); });
+    supabase.from('licenca').select('*').eq('id', 1).maybeSingle()
+      .then(({ data }) => { setLicenca(data); setLicencaCarregada(true); });
   }, [sessao]);
 
   const handleLogout = async () => { await supabase.auth.signOut(); };
@@ -41,7 +47,10 @@ function App() {
   if (rotaMidia) return <VisualizarMidia midiaId={rotaMidia.midiaId} eleitorId={rotaMidia.eleitorId} />;
   if (rotaCadastro) return <CadastroPublico liderancaId={rotaCadastro.liderancaId} />;
   if (!sessao) return <LoginScreen candidato={candidato} />;
-  if (!papel) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
+  if (!papel || !licencaCarregada) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
+
+  const ehMaster = papel === 'master';
+  if (licencaVencida(licenca) && !ehMaster) return <TelaBloqueio onLogout={handleLogout} />;
 
   return (
     <Dashboard
