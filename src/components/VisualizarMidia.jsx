@@ -7,30 +7,13 @@ export default function VisualizarMidia({ midiaId, eleitorId }) {
   useEffect(() => {
     const registrar = async () => {
       try {
-        const { data: midia, error } = await supabase
-          .from('midias')
-          .select('id, arquivo_url, titulo')
-          .eq('id', midiaId)
-          .single();
-
-        if (error || !midia) { setStatus('erro'); return; }
-
-        const { data: eleitor } = await supabase
-          .from('eleitores')
-          .select('bairro, lideranca_id')
-          .eq('id', eleitorId)
-          .single();
-
-        await supabase.from('midias_cliques').insert({
-          midia_id: midiaId,
-          eleitor_id: eleitorId,
-          bairro: eleitor?.bairro || null,
-          lideranca_id: eleitor?.lideranca_id || null,
-          data_clique: new Date().toISOString(),
+        const { data: url, error } = await supabase.rpc('registrar_clique_midia', {
+          p_midia_id: midiaId,
+          p_eleitor_id: eleitorId,
         });
-
+        if (error || !url) { setStatus('erro'); return; }
         setStatus('redirecionando');
-        window.location.href = midia.arquivo_url;
+        window.location.href = url;
       } catch (err) {
         setStatus('erro');
       }
