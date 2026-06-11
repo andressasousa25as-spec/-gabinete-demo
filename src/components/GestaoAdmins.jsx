@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-const SENHA_MASTER = 'master2026';
-
 export default function GestaoAdmins({ onVoltar }) {
-  const [senhaInput, setSenhaInput] = useState('');
-  const [autenticado, setAutenticado] = useState(false);
-  const [erroSenha, setErroSenha] = useState(false);
+  // Tela já protegida pelo login (só master/candidato chega aqui). Sem senha extra.
+  const [autenticado] = useState(true);
   const [admins, setAdmins] = useState([]);
   const [logs, setLogs] = useState([]);
   const [aba, setAba] = useState('admins');
@@ -14,11 +11,6 @@ export default function GestaoAdmins({ onVoltar }) {
   const [loading, setLoading] = useState(false);
   const [filtroPor, setFiltroPor] = useState('');
   const [admEditando, setAdmEditando] = useState(null);
-
-  const entrar = () => {
-    if (senhaInput === SENHA_MASTER) { setAutenticado(true); setErroSenha(false); }
-    else setErroSenha(true);
-  };
 
   useEffect(() => {
     if (autenticado) { carregarAdmins(); carregarLogs(); }
@@ -71,22 +63,6 @@ export default function GestaoAdmins({ onVoltar }) {
   const logsFiltrados = filtroPor ? logs.filter(l => l.adm_nome === filtroPor) : logs;
   const admNomes = [...new Set(logs.map(l => l.adm_nome))].sort();
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', marginBottom: 16 };
-
-  if (!autenticado) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ background: '#fff', borderRadius: 20, padding: 40, width: 360, textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.3)' }}>
-        <div style={{ fontSize: 40, marginBottom: 16 }}>🔐</div>
-        <h2 style={{ color: '#1e293b', fontWeight: 800, fontSize: 20, margin: '0 0 8px' }}>Área Administrativa</h2>
-        <p style={{ color: '#64748b', fontSize: 13, margin: '0 0 24px' }}>Digite a senha master para acessar</p>
-        <input type="password" value={senhaInput} onChange={e => setSenhaInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && entrar()} placeholder="Senha master" autoFocus
-          style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `1px solid ${erroSenha ? '#ef4444' : '#cbd5e1'}`, fontSize: 15, marginBottom: 8, boxSizing: 'border-box', textAlign: 'center' }} />
-        {erroSenha && <p style={{ color: '#ef4444', fontSize: 12, margin: '0 0 8px' }}>Senha incorreta</p>}
-        <button onClick={entrar} style={{ width: '100%', padding: 14, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, cursor: 'pointer', marginBottom: 10 }}>Entrar</button>
-        <button onClick={onVoltar} style={{ width: '100%', padding: 12, background: '#f1f5f9', color: '#64748b', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Voltar</button>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 60px' }}>
