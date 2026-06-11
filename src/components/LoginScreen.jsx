@@ -32,6 +32,10 @@ export default function LoginScreen({ candidato }) {
           style={{ width: '100%', padding: 13, borderRadius: 10, background: '#1e40af', color: 'white', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
+        <button onClick={async()=>{ if(!email) return setErro('Digite seu e-mail acima.'); const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin}); setErro(error?'Erro ao enviar.':'Enviamos um link para definir sua senha.'); }}
+          style={{ width:'100%', padding:10, marginTop:10, borderRadius:10, background:'transparent', color:'#1e40af', border:'1px solid #1e40af', fontSize:13, fontWeight:600, cursor:'pointer' }}>
+          Criar / redefinir senha
+        </button>
         <p style={{ color: '#94a3b8', fontSize: 12, marginTop: 16 }}>Sistema de Gestão Eleitoral 2026</p>
       </div>
     </div>

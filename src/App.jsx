@@ -17,6 +17,7 @@ function App() {
   const [iniciando, setIniciando] = useState(true);
   const [licenca, setLicenca] = useState(null);
   const [licencaCarregada, setLicencaCarregada] = useState(false);
+  const [recovery, setRecovery] = useState(window.location.hash.includes('type=recovery'));
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -46,6 +47,18 @@ function App() {
   if (iniciando) return null;
   if (rotaMidia) return <VisualizarMidia midiaId={rotaMidia.midiaId} eleitorId={rotaMidia.eleitorId} />;
   if (rotaCadastro) return <CadastroPublico liderancaId={rotaCadastro.liderancaId} />;
+  if (recovery) {
+    return (
+      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#0f172a'}}>
+        <div style={{background:'white',padding:32,borderRadius:16,maxWidth:360,width:'100%'}}>
+          <h2 style={{marginTop:0,fontSize:18}}>Defina sua senha</h2>
+          <input id="nova" type="password" placeholder="Nova senha" style={{width:'100%',padding:12,borderRadius:8,border:'2px solid #e2e8f0',boxSizing:'border-box',marginBottom:12}} />
+          <button onClick={async()=>{ const v=document.getElementById('nova').value; const {error}=await supabase.auth.updateUser({password:v}); if(!error){ setRecovery(false); window.location.hash=''; } else alert(error.message); }}
+            style={{width:'100%',padding:12,borderRadius:8,background:'#1e40af',color:'white',border:'none',fontWeight:700,cursor:'pointer'}}>Salvar senha</button>
+        </div>
+      </div>
+    );
+  }
   if (!sessao) return <LoginScreen candidato={candidato} />;
   if (!papel || !licencaCarregada) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
 
