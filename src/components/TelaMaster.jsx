@@ -26,8 +26,8 @@ export default function TelaMaster({ onVoltar }) {
   return (
     <div style={{background:'#0a0f1c',minHeight:'100vh',padding:'24px',color:'#f1f5f9'}}>
       <button onClick={onVoltar} style={{marginBottom:20,padding:'10px 20px',background:'#1e40af',color:'white',border:'none',borderRadius:8,cursor:'pointer',fontWeight:'bold'}}>Voltar</button>
-      <div style={{background:'#0f172a',border:'1px solid #1e293b',borderRadius:16,padding:24,maxWidth:480}}>
-        <h2 style={{marginTop:0}}>👑 Painel Master — Assinatura</h2>
+      <div style={{background:'#0f172a',border:'1px solid #1e293b',borderRadius:16,padding:24,maxWidth:480,color:'#f1f5f9'}}>
+        <h2 style={{marginTop:0,color:'#f1f5f9'}}>👑 Painel Master — Assinatura</h2>
         <p>Status: <b style={{color:lic.status==='ativo'?'#22c55e':lic.status==='vencido'?'#ef4444':'#f59e0b'}}>{lic.status}</b></p>
         <p>Validade: <b>{lic.validade}</b></p>
         <div style={{display:'flex',gap:10,flexWrap:'wrap',marginTop:16}}>
