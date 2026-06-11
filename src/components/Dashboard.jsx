@@ -132,8 +132,8 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [showReuniao, setShowReuniao] = useState(false);
   const [relatorio, setRelatorio] = useState(null);
   const [foto, setFoto] = useState(() => localStorage.getItem("demo_foto") || null);
-  const [nomeAtual, setNomeAtual] = useState(candidato);
-  const [nomeEdit, setNomeEdit] = useState(candidato);
+  const [nomeAtual, setNomeAtual] = useState(() => localStorage.getItem("demo_nome") || candidato);
+  const [nomeEdit, setNomeEdit] = useState(() => localStorage.getItem("demo_nome") || candidato);
   const [editandoNome, setEditandoNome] = useState(false);
   const fotoInput = useRef(null);
   const [novaLider, setNovaLider] = useState({nome:'',telefone:'',bairro:'',demanda:''});
@@ -228,15 +228,15 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     <div style={{background:'#0a0f1c',minHeight:'100vh',padding:'20px 24px',display:'flex',flexDirection:'column',gap:14,color:'#f1f5f9'}}>
       <header style={{background:'#0f172a',padding:'16px 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,borderRadius:16,border:'1px solid #1e293b'}}>
         <div style={{display:'flex',alignItems:'center',gap:16}}>
-          <div onClick={()=>perfil==='candidato'&&fotoInput.current.click()} style={{width:56,height:56,borderRadius:'50%',background:foto?'transparent':'#1e293b',border:'2px solid #3b82f6',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',overflow:'hidden'}}>
+          <div onClick={()=>acessoTotal&&fotoInput.current.click()} style={{width:56,height:56,borderRadius:'50%',background:foto?'transparent':'#1e293b',border:'2px solid #3b82f6',display:'flex',alignItems:'center',justifyContent:'center',cursor:acessoTotal?'pointer':'default',overflow:'hidden'}}>
             {foto?<img src={foto} style={{width:'100%',height:'100%',objectFit:'cover'}} />:<span style={{fontSize:14,color:'#64748b'}}>Foto</span>}
           </div>
-          {perfil==='candidato'&&<input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{display:'none'}} />}
+          {acessoTotal&&<input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{display:'none'}} />}
           <div>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
-              {editandoNome?(<><input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} /><button onClick={()=>{setNomeAtual(nomeEdit);setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>OK</button><button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>X</button></>):(<><h1 style={{fontSize:18,fontWeight:800,margin:0,color:'white'}}>{nomeAtual}</h1>{perfil==='candidato'&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}</>)}
+              {editandoNome?(<><input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} /><button onClick={()=>{setNomeAtual(nomeEdit);localStorage.setItem("demo_nome",nomeEdit);setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>OK</button><button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>X</button></>):(<><h1 style={{fontSize:18,fontWeight:800,margin:0,color:'white'}}>{nomeAtual}</h1>{acessoTotal&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}</>)}
             </div>
-            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='candidato'?'Candidato':'Equipe'}</p>
+            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='master'?'Mestre':perfil==='candidato'?'Candidato':'Equipe'}</p>
           </div>
         </div>
         <button onClick={onLogout} style={{background:'#ef4444',color:'white',border:'none',borderRadius:8,padding:'8px 18px',cursor:'pointer',fontWeight:700}}>Sair</button>
