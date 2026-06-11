@@ -135,6 +135,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
   const [nomeAtual, setNomeAtual] = useState(() => localStorage.getItem("demo_nome") || candidato);
   const [nomeEdit, setNomeEdit] = useState(() => localStorage.getItem("demo_nome") || candidato);
   const [editandoNome, setEditandoNome] = useState(false);
+  const [configId, setConfigId] = useState(null);
   const fotoInput = useRef(null);
   const [novaLider, setNovaLider] = useState({nome:'',telefone:'',bairro:'',demanda:''});
   const [novaReuniao, setNovaReuniao] = useState({titulo:'',data:'',local:'',endereco:''});
@@ -148,11 +149,19 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
     if(e.data) setEleitores(e.data);
     if(l.data) setLiderancas(l.data);
     if(r.data) setReunioes(r.data);
+    const cfg = await supabase.from('config_candidato').select('id,nome,foto_url').limit(1).maybeSingle();
+    if(cfg.data){
+      setConfigId(cfg.data.id);
+      if(cfg.data.nome){ setNomeAtual(cfg.data.nome); setNomeEdit(cfg.data.nome); localStorage.setItem("demo_nome", cfg.data.nome); }
+      if(cfg.data.foto_url){ setFoto(cfg.data.foto_url); localStorage.setItem("demo_foto", cfg.data.foto_url); }
+    }
   };
 
   useEffect(()=>{fetchAll();},[]);
 
-  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ setFoto(ev.target.result); localStorage.setItem("demo_foto", ev.target.result); }; r.readAsDataURL(f); };
+  const salvarConfig = async (campos) => { if(configId) await supabase.from('config_candidato').update(campos).eq('id', configId); };
+
+  const handleFoto = (e) => { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ setFoto(ev.target.result); localStorage.setItem("demo_foto", ev.target.result); salvarConfig({foto_url: ev.target.result}); }; r.readAsDataURL(f); };
 
   const cadastrarLider = async () => {
     if(!novaLider.nome) return alert('Nome obrigatorio.');
@@ -234,7 +243,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
           {acessoTotal&&<input ref={fotoInput} type="file" accept="image/*" onChange={handleFoto} style={{display:'none'}} />}
           <div>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
-              {editandoNome?(<><input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} /><button onClick={()=>{setNomeAtual(nomeEdit);localStorage.setItem("demo_nome",nomeEdit);setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>OK</button><button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>X</button></>):(<><h1 style={{fontSize:18,fontWeight:800,margin:0,color:'white'}}>{nomeAtual}</h1>{acessoTotal&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}</>)}
+              {editandoNome?(<><input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} /><button onClick={()=>{setNomeAtual(nomeEdit);localStorage.setItem("demo_nome",nomeEdit);salvarConfig({nome:nomeEdit});setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>OK</button><button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>X</button></>):(<><h1 style={{fontSize:18,fontWeight:800,margin:0,color:'white'}}>{nomeAtual}</h1>{acessoTotal&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}</>)}
             </div>
             <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='master'?'Mestre':perfil==='candidato'?'Candidato':'Equipe'}</p>
           </div>
