@@ -245,7 +245,7 @@ export default function Dashboard({ candidato, perfil, onLogout }) {
             <div style={{display:'flex',alignItems:'center',gap:8}}>
               {editandoNome?(<><input value={nomeEdit} onChange={e=>setNomeEdit(e.target.value)} style={{padding:'4px 8px',borderRadius:6,border:'1px solid #3b82f6',background:'#1e293b',color:'white',fontSize:16,fontWeight:700}} /><button onClick={()=>{setNomeAtual(nomeEdit);localStorage.setItem("demo_nome",nomeEdit);salvarConfig({nome:nomeEdit});setEditandoNome(false);}} style={{background:'#16a34a',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>OK</button><button onClick={()=>setEditandoNome(false)} style={{background:'#ef4444',color:'white',border:'none',borderRadius:6,padding:'4px 8px',cursor:'pointer'}}>X</button></>):(<><h1 style={{fontSize:18,fontWeight:800,margin:0,color:'white'}}>{nomeAtual}</h1>{acessoTotal&&<button onClick={()=>setEditandoNome(true)} style={{background:'none',border:'none',color:'#60a5fa',cursor:'pointer',fontSize:12}}>editar</button>}</>)}
             </div>
-            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>{perfil==='master'?'Mestre':perfil==='candidato'?'Candidato':'Equipe'}</p>
+            <p style={{color:'#f59e0b',fontSize:13,margin:0,fontWeight:600}}>Candidato</p>
           </div>
         </div>
         <button onClick={onLogout} style={{background:'#ef4444',color:'white',border:'none',borderRadius:8,padding:'8px 18px',cursor:'pointer',fontWeight:700}}>Sair</button>
