@@ -41,7 +41,8 @@ Tabela `licenca` (linha única):
 | `plano` | texto (nullable) | opcional; futuro Mercado Pago (ex: "mensal") |
 | `atualizado_em` | timestamptz | log da última mudança |
 
-Default ao provisionar: `status='teste'`, `validade = hoje + 45 dias`.
+Default ao provisionar: `status='teste'`, `validade = hoje + 7 dias` (teste grátis = **máx. 7 dias**).
+Ao ativar (cliente pagou): renovação de **no mínimo 45 dias** (licença de uso).
 
 Tabela `membros` ganha o papel `master` (só o login da Andressa). Hierarquia de papéis:
 `master` (Andressa) > `candidato` / `adm` (cliente) > `equipe`.
@@ -65,7 +66,7 @@ trava não dá pra burlar pela API.
 
 Item de menu escondido para quem é `master`. Mostra status atual + validade, com ações:
 
-- **Ativar / renovar** → `status='ativo'` e estende `validade` (data digitada ou "+30 dias").
+- **Ativar / renovar** → `status='ativo'` e estende `validade` (data digitada ou atalho "+45 dias"; mínimo 45 dias da licença de uso).
 - **Bloquear agora** → `status='vencido'`.
 - **Gerenciar usuários** do gabinete (criar / bloquear logins, definir papel) — reaproveitando
   `GestaoAdmins.jsx` existente.
