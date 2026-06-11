@@ -17,6 +17,7 @@ function App() {
   const [iniciando, setIniciando] = useState(true);
   const [licenca, setLicenca] = useState(null);
   const [licencaCarregada, setLicencaCarregada] = useState(false);
+  const [erroConexao, setErroConexao] = useState(false);
   const [recovery, setRecovery] = useState(window.location.hash.includes('type=recovery'));
 
   useEffect(() => {
@@ -35,11 +36,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!sessao?.user) { setPapel(null); setMembro(null); setLicenca(null); setLicencaCarregada(false); return; }
+    if (!sessao?.user) { setPapel(null); setMembro(null); setLicenca(null); setLicencaCarregada(false); setErroConexao(false); return; }
+    let cancelado = false;
+    setErroConexao(false);
+    // Se o banco não responder em 10s, sai do "Carregando" com erro em vez de travar.
+    const timeout = setTimeout(() => { if (!cancelado) { setErroConexao(true); setLicencaCarregada(true); } }, 10000);
     supabase.from('membros').select('*').eq('user_id', sessao.user.id).maybeSingle()
-      .then(({ data }) => { setMembro(data); setPapel(data?.papel || 'equipe'); });
+      .then(({ data }) => { if (!cancelado) { setMembro(data); setPapel(data?.papel || 'equipe'); } });
     supabase.from('licenca').select('*').eq('id', 1).maybeSingle()
-      .then(({ data }) => { setLicenca(data); setLicencaCarregada(true); });
+      .then(({ data, error }) => { if (cancelado) return; clearTimeout(timeout); if (error) setErroConexao(true); setLicenca(data); setLicencaCarregada(true); })
+      .catch(() => { if (cancelado) return; clearTimeout(timeout); setErroConexao(true); setLicencaCarregada(true); });
+    return () => { cancelado = true; clearTimeout(timeout); };
   }, [sessao]);
 
   const handleLogout = async () => { await supabase.auth.signOut(); };
@@ -60,6 +67,17 @@ function App() {
     );
   }
   if (!sessao) return <LoginScreen candidato={candidato} />;
+  if (erroConexao) return (
+    <div style={{ minHeight:'100vh', background:'linear-gradient(135deg,#0f172a,#1e3a5f)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+      <div style={{ background:'white', borderRadius:20, padding:40, maxWidth:420, textAlign:'center', boxShadow:'0 25px 50px rgba(0,0,0,.5)' }}>
+        <div style={{ fontSize:48, marginBottom:12 }}>📡</div>
+        <h1 style={{ fontSize:20, fontWeight:800, color:'#0f172a', marginBottom:8 }}>Erro de conexão</h1>
+        <p style={{ color:'#475569', fontSize:14, marginBottom:24 }}>Não foi possível falar com o servidor. Verifique sua internet (ou se a rede/firewall bloqueia o acesso) e tente de novo.</p>
+        <button onClick={() => window.location.reload()} style={{ width:'100%', padding:13, borderRadius:10, background:'#1e40af', color:'white', border:'none', fontSize:15, fontWeight:700, cursor:'pointer', marginBottom:10 }}>Tentar novamente</button>
+        <button onClick={handleLogout} style={{ width:'100%', padding:11, borderRadius:10, background:'#f1f5f9', color:'#64748b', border:'none', fontSize:14, fontWeight:600, cursor:'pointer' }}>Sair</button>
+      </div>
+    </div>
+  );
   if (!papel || !licencaCarregada) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
 
   const ehMaster = papel === 'master';
