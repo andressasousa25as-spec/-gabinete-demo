@@ -311,7 +311,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
         <div>
           <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 12, padding: '1rem', marginBottom: '1rem' }}>
             <h3 style={{ fontWeight: 700, color: '#1e3a8a', marginBottom: 6, fontSize: '0.95rem' }}>
-              📊 Paulinho Ramos (Dep. Estadual 2022) × Câmara Municipal 2024
+              📊 Deputado Demo (Dep. Estadual 2022) × Câmara Municipal 2024
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <div style={{ background: '#fff', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
