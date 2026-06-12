@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
 
-// Destinos fixos por canal (informação pública).
-const DESTINOS = {
-  instagram: 'https://www.instagram.com/paulinhoramosap/',
-};
+// Resolve o destino do instagram dinamicamente via config_candidato.
+// Rota pública — anon user pode ou não ter acesso dependendo do RLS.
+async function resolverDestino(canal) {
+  if (canal === 'instagram') {
+    try {
+      const { data } = await supabase.from('config_candidato').select('instagram').limit(1).maybeSingle();
+      if (data?.instagram) return data.instagram;
+    } catch (err) {
+      console.warn('Não foi possível ler config_candidato (RLS?):', err);
+    }
+    return window.location.origin;
+  }
+  return null;
+}
 
 export default function LinkTracker({ canal, eleitorId }) {
   const [status, setStatus] = useState('carregando');
 
   useEffect(() => {
     const registrarERedirecionar = async () => {
-      const destino = DESTINOS[canal];
+      const destino = await resolverDestino(canal);
       if (!destino) { setStatus('erro'); return; }
       try {
         // Registra o clique (canal + quem/bairro/liderança) via função segura.

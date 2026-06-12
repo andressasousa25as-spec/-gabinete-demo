@@ -492,6 +492,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               { label: 'Estado', key: 'estado' },
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
+              { label: 'Instagram (URL)', key: 'instagram' },
               ].map(f => (
               <div key={f.key} style={{ marginBottom: 12 }}>
                 <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>{f.label}</label>

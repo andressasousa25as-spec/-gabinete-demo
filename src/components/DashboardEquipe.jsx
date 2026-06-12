@@ -125,6 +125,7 @@ export default function DashboardEquipe({ perfil }) {
   const [termoAceito, setTermoAceito] = useState(false);
   const [relatorio, setRelatorio] = useState(null);
 
+  const [config, setConfig] = useState(null);
   const [showEleitor, setShowEleitor] = useState(false);
   const [showLider, setShowLider] = useState(false);
   const [showReuniao, setShowReuniao] = useState(false);
@@ -139,7 +140,10 @@ export default function DashboardEquipe({ perfil }) {
 
   const LIDERANCA_ID = '9abe9897-068f-4dab-90eb-94d5ceb0a575';
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => {
+    fetchAll();
+    supabase.from('config_candidato').select('*').limit(1).maybeSingle().then(({ data }) => setConfig(data));
+  }, []);
 
   const fetchAll = async () => {
     const [e, l, r] = await Promise.all([
@@ -289,9 +293,9 @@ export default function DashboardEquipe({ perfil }) {
         <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '16px' }}>Todos os cliques são rastreados automaticamente.</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <div style={{ flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <a href="https://www.instagram.com/paulinhoramosap/" target="_blank" rel="noopener noreferrer"
-              onClick={() => { registrarClique('instagram', 'equipe'); }}
-              style={{ padding: '14px', borderRadius: '12px', background: 'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)', color: 'white', fontWeight: 'bold', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+            <a href={config?.instagram || '#'} target="_blank" rel="noopener noreferrer"
+              onClick={() => { if (config?.instagram) registrarClique('instagram', 'equipe'); }}
+              style={{ padding: '14px', borderRadius: '12px', background: 'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)', color: 'white', fontWeight: 'bold', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none', ...(!config?.instagram ? { opacity: 0.5, pointerEvents: 'none' } : {}) }}>
               📸 Instagram
             </a>
             <button onClick={() => setDisparoCanal('instagram')}
