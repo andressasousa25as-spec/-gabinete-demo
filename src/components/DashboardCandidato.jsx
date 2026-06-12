@@ -125,6 +125,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [rastreamento, setRastreamento] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
+  const [fotoSubindo, setFotoSubindo] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
   const [config, setConfig] = useState({ nome: 'Deputado Demo', cargo: 'Deputado Estadual — AP', estado: 'AP', bairro: '', endereco: '', latitude: '', longitude: '' });
   const [aba, setAba] = useState('inicio');
@@ -497,7 +498,6 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
               { label: 'Instagram (URL)', key: 'instagram' },
-              { label: 'Foto (URL da imagem)', key: 'foto_url' },
               ].map(f => (
               <div key={f.key} style={{ marginBottom: 12 }}>
                 <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>{f.label}</label>
@@ -505,6 +505,39 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                   style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' }} />
               </div>
             ))}
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>Foto do candidato</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                {config.foto_url ? (
+                  <img src={config.foto_url} alt="Foto" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', border: '2px solid #fbbf24', flexShrink: 0 }} />
+                ) : (
+                  <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#1e40af', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 22, flexShrink: 0 }}>{(config.nome || 'D')[0].toUpperCase()}</div>
+                )}
+                <label style={{ padding: '10px 14px', background: '#334155', color: '#f1f5f9', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+                  {fotoSubindo ? '⏳ Enviando...' : '📷 Escolher imagem'}
+                  <input type="file" accept="image/*" style={{ display: 'none' }} disabled={fotoSubindo}
+                    onChange={async e => {
+                      const arquivo = e.target.files?.[0];
+                      if (!arquivo) return;
+                      if (arquivo.size > 5 * 1024 * 1024) { alert('Imagem muito grande (máx. 5MB).'); return; }
+                      setFotoSubindo(true);
+                      const ext = arquivo.name.split('.').pop().toLowerCase();
+                      const caminho = `perfil/foto-candidato-${Date.now()}.${ext}`;
+                      const { error } = await supabase.storage.from('midias-campanha').upload(caminho, arquivo, { upsert: true });
+                      if (error) { alert('Erro ao enviar imagem: ' + error.message); }
+                      else {
+                        const { data } = supabase.storage.from('midias-campanha').getPublicUrl(caminho);
+                        setConfig(c => ({ ...c, foto_url: data.publicUrl }));
+                      }
+                      setFotoSubindo(false);
+                    }} />
+                </label>
+                {config.foto_url && (
+                  <button onClick={() => setConfig(c => ({ ...c, foto_url: null }))} style={{ padding: '10px 14px', background: 'transparent', color: '#f87171', border: '1px solid #7f1d1d', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>Remover</button>
+                )}
+              </div>
+              <p style={{ color: '#64748b', fontSize: 11, marginTop: 4 }}>A foto só é aplicada após clicar em 💾 Salvar.</p>
+            </div>
             <div style={{ marginBottom: 12 }}>
               <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>Bairro no mapa</label>
               <select value={config.bairro || ''} onChange={e => {
