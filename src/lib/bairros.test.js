@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { coordConfiavel, centroBairro, dentroAmapa, distanciaKm } from './bairros';
+import { coordConfiavel, centroBairro, centroMunicipio, dentroAmapa, distanciaKm } from './bairros';
 
 describe('coordConfiavel', () => {
   it('rejeita coord no rio (caso Jadson, Trem) e usa o centro do bairro', () => {
@@ -26,6 +26,31 @@ describe('coordConfiavel', () => {
   it('retorna null quando coord é inválida e bairro é desconhecido', () => {
     const oceano = { latitude: -20, longitude: -40 };
     expect(coordConfiavel(oceano, 'BairroInexistente')).toBeNull();
+  });
+
+  it('bairro desconhecido + coord-lixo no rio: ancora no centro do município (não deixa na água)', () => {
+    // Caso real: "Avenida Cabo Velho, 1575" (endereço no campo bairro) em Macapá,
+    // coord -0.04,-51.07 (~8km ao sul, no rio).
+    const rio = { latitude: -0.04, longitude: -51.07 };
+    expect(coordConfiavel(rio, 'Avenida Cabo Velho, 1575', 'Macapá')).toEqual(centroMunicipio('Macapá'));
+  });
+
+  it('bairro de outro município (Arco íris/Pedra Branca) ancora na cidade certa', () => {
+    const rio = { latitude: -0.04, longitude: -51.07 };
+    const r = coordConfiavel(rio, 'Arco íris', 'Pedra Branca do Amapari');
+    expect(r).toEqual(centroMunicipio('Pedra Branca do Amapari'));
+    expect(r.latitude).toBeGreaterThan(0.5); // Pedra Branca fica bem ao norte
+  });
+
+  it('"Renascer 1" resolve para o bairro Renascer (apelido)', () => {
+    expect(centroBairro('Renascer 1')).toEqual(centroBairro('Renascer'));
+  });
+
+  it('bairro homônimo de outra cidade: município vence (Nova Esperança/Oiapoque)', () => {
+    const rio = { latitude: -0.04, longitude: -51.07 };
+    const r = coordConfiavel(rio, 'Nova Esperança', 'Oiapoque');
+    expect(r).toEqual(centroMunicipio('Oiapoque'));
+    expect(r.latitude).toBeGreaterThan(3); // Oiapoque fica no extremo norte
   });
 });
 

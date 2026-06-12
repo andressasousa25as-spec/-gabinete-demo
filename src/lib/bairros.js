@@ -142,6 +142,32 @@ export const AMAPA_BBOX = { latMin: -1.5, latMax: 4.6, lngMin: -55.0, lngMax: -4
 // Centro de Macapá — usado como âncora de proximidade na busca do Mapbox.
 export const MACAPA_CENTRO = { latitude: 0.035, longitude: -51.07 };
 
+// Centro dos municípios do Amapá — rede de segurança quando o BAIRRO é
+// desconhecido (não está na tabela de centroides). Em vez de deixar uma
+// coordenada-lixo cair no rio, ancora a pessoa no centro da cidade dela.
+const COORDS_MUNICIPIOS = {
+  'macapa': [0.0349, -51.0694],
+  'santana': [-0.0583, -51.1811],
+  'mazagao': [-0.1153, -51.2894],
+  'oiapoque': [3.8413, -51.8347],
+  'pedra branca do amapari': [0.7771, -51.9504],
+  'serra do navio': [0.9014, -52.0036],
+  'laranjal do jari': [-0.8064, -52.5083],
+  'vitoria do jari': [-0.9386, -52.4239],
+  'porto grande': [0.7128, -51.4136],
+  'tartarugalzinho': [1.5061, -50.9097],
+  'amapa': [2.0525, -50.7961],
+  'calcoene': [2.5036, -50.9508],
+  'pracuuba': [1.7392, -50.7906],
+  'cutias': [0.9706, -50.8014],
+  'itaubal': [0.6022, -50.6997],
+  'ferreira gomes': [0.8569, -51.1797],
+};
+export function centroMunicipio(municipio) {
+  const c = COORDS_MUNICIPIOS[normalizar(municipio)];
+  return c ? { latitude: c[0], longitude: c[1] } : null;
+}
+
 // Distância máxima (km) que um endereço pode estar do centro do seu bairro.
 // Bairros de Macapá são pequenos; acima disso, a geocodificação é considerada errada.
 export const MAX_KM_DO_BAIRRO = 5;
@@ -177,6 +203,10 @@ const APELIDOS = {
   'km 9': 'KM 9',
   'conjunto habitacional miracema': 'Conjunto Miracema',
   'miracema': 'Conjunto Miracema',
+  'renascer 1': 'Renascer',
+  'renascer i': 'Renascer',
+  'renascer 2': 'Renascer',
+  'renascer ii': 'Renascer',
 };
 
 function indexar(tabela) {
@@ -224,7 +254,14 @@ export function distanciaKm(lat1, lng1, lat2, lng2) {
 // - senão (sem centro de bairro), a coord só se estiver no Amapá;
 // - senão, null (não dá pra posicionar com segurança).
 export function coordConfiavel(coord, bairro, municipio) {
-  const centro = centroBairro(bairro, municipio);
+  const cidade = centroMunicipio(municipio);
+  let centro = centroBairro(bairro, municipio);
+  // Se o bairro casou num centroide longe (>40km) do município declarado, é
+  // homônimo de outra cidade (ex.: "Nova Esperança" existe em Macapá e Oiapoque).
+  // O município é o campo mais confiável — descarta o bairro nesse caso.
+  if (centro && cidade && distanciaKm(centro.latitude, centro.longitude, cidade.latitude, cidade.longitude) > 40) {
+    centro = null;
+  }
   const valida = coord && dentroAmapa(coord.latitude, coord.longitude);
 
   if (valida && centro) {
@@ -232,6 +269,10 @@ export function coordConfiavel(coord, bairro, municipio) {
     return d <= MAX_KM_DO_BAIRRO ? coord : centro;
   }
   if (centro) return centro;          // coord ruim/ausente, mas temos o bairro
-  if (valida) return coord;           // sem centro de bairro, mas coord está no Amapá
+  // Bairro desconhecido: a coord veio de um geocode que não dá pra validar
+  // (não achamos o bairro). Ancora no centro do município declarado, evitando
+  // que uma coordenada-lixo caia no rio. Perde precisão, mas nunca erra a cidade.
+  if (cidade) return cidade;
+  if (valida) return coord;           // sem bairro nem município, mas coord no Amapá
   return null;                        // sem como posicionar com segurança
 }

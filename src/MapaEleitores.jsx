@@ -179,9 +179,13 @@ export default function MapaEleitores({ config }) {
           <strong style="font-size:14px;color:#1e40af">${e.nome}</strong>
           ${e.lideranca ? '<span style="margin-left:6px;background:#dc2626;color:white;font-size:10px;padding:2px 4px;border-radius:3px">LIDERANCA</span>' : ''}
           <hr style="margin:6px 0"/>
+          <div><strong>Endereço:</strong> ${e.logradouro || '-'}</div>
           <div><strong>Bairro:</strong> ${e.bairro || '-'}</div>
+          <div><strong>Cidade:</strong> ${e.cidade || e.municipio || '-'}</div>
+          ${e.telefone ? `<div><strong>Telefone:</strong> ${e.telefone}</div>` : ''}
           <div><strong>Zona:</strong> ${e.zona_eleitoral || '-'}</div>
-          <div><strong>Secao:</strong> ${e.secao_eleitoral || '-'}</div>
+          <div><strong>Seção:</strong> ${e.secao_eleitoral || '-'}</div>
+          ${!e.lideranca && e.lideranca_nome ? `<div style="margin-top:4px;color:#1e40af"><strong>Cadastrado por:</strong> ${e.lideranca_nome}</div>` : ''}
         </div>
       `);
 
