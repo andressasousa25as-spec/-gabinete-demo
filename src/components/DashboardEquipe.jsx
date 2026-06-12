@@ -299,17 +299,6 @@ export default function DashboardEquipe({ perfil }) {
               🎯 Gerar links rastreados
             </button>
           </div>
-          <div style={{ flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <a href="https://linktr.ee/paulinhoramos?utm_source=crm&utm_medium=equipe&utm_campaign=campanha2026" target="_blank" rel="noopener noreferrer"
-              onClick={() => registrarClique('linktree', 'equipe')}
-              style={{ padding: '14px', borderRadius: '12px', background: '#43E55E', color: 'white', fontWeight: 'bold', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
-              🌿 Linktree
-            </a>
-            <button onClick={() => setDisparoCanal('linktree')}
-              style={{ padding: '11px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
-              🎯 Gerar links rastreados
-            </button>
-          </div>
         </div>
         {disparoCanal && (
           <DisparoLink canal={disparoCanal} eleitores={eleitores} liderancas={liderancas} onClose={() => setDisparoCanal(null)} />

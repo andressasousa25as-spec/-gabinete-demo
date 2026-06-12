@@ -24,7 +24,7 @@ export default function AnalyticsMidias({ onVoltar }) {
     setLoading(false);
   };
 
-  // Cliques de link (Instagram/Linktree) atribuídos a uma liderança
+  // Cliques de link (Instagram) atribuídos a uma liderança
   const nomeLideranca = (id) => (liderancas.find(l => l.id === id)?.nome) || 'Sem liderança';
   const cliquesporLideranca = rastreamento.reduce((acc, r) => {
     if (r.lideranca_id) {
@@ -38,7 +38,6 @@ export default function AnalyticsMidias({ onVoltar }) {
 
   const totalDisparos = rastreamento.filter(r => r.canal?.includes('whatsapp')).length;
   const totalInstagram = rastreamento.filter(r => r.canal === 'instagram').length;
-  const totalLinktree = rastreamento.filter(r => r.canal === 'linktree').length;
   const totalMidias = cliques.length;
 
   const cliquesporBairro = cliques.reduce((acc, c) => {
@@ -72,7 +71,6 @@ export default function AnalyticsMidias({ onVoltar }) {
         {[
           { label: '📤 Disparos WhatsApp', valor: totalDisparos, cor: '#25D366', bg: '#f0fdf4' },
           { label: '📸 Cliques Instagram', valor: totalInstagram, cor: '#dc2743', bg: '#fff1f2' },
-          { label: '🌿 Cliques Linktree', valor: totalLinktree, cor: '#43E55E', bg: '#f0fdf4' },
           { label: '🖼️ Acessos Mídias', valor: totalMidias, cor: '#1e40af', bg: '#eff6ff' },
         ].map(c => (
           <div key={c.label} style={{ background: c.bg, borderRadius: '16px', padding: '20px', textAlign: 'center', border: `2px solid ${c.cor}22` }}>
@@ -148,7 +146,7 @@ export default function AnalyticsMidias({ onVoltar }) {
       {/* Cliques de link por liderança */}
       <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
         <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginBottom: '4px' }}>🔗 Cliques de Link por Liderança</h3>
-        <p style={{ color: '#9ca3af', fontSize: '12px', marginBottom: '16px' }}>Quem abriu os links rastreados de Instagram/Linktree, agrupado pela liderança do apoiador.</p>
+        <p style={{ color: '#9ca3af', fontSize: '12px', marginBottom: '16px' }}>Quem abriu os links rastreados de Instagram, agrupado pela liderança do apoiador.</p>
         {Object.keys(cliquesporLideranca).length === 0 ? (
           <p style={{ color: '#9ca3af', textAlign: 'center', padding: '12px' }}>Nenhum clique de link rastreado ainda. Gere links por pessoa na Central de Comunicação.</p>
         ) : (

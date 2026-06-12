@@ -4,7 +4,6 @@ import { supabase } from './lib/supabase';
 // Destinos fixos por canal (informação pública).
 const DESTINOS = {
   instagram: 'https://www.instagram.com/paulinhoramosap/',
-  linktree: 'https://linktr.ee/paulinhoramos?utm_source=crm&utm_medium=link&utm_campaign=campanha2026',
 };
 
 export default function LinkTracker({ canal, eleitorId }) {

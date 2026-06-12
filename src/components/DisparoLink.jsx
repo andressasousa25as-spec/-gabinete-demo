@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 const BASE = 'https://gabinete-demo.vercel.app';
-const ROTULO = { instagram: '📸 Instagram', linktree: '🌿 Linktree' };
+const ROTULO = { instagram: '📸 Instagram' };
 
-// Gera links rastreados POR PESSOA de um canal (Instagram/Linktree).
+// Gera links rastreados POR PESSOA de um canal (Instagram).
 // Cada destinatário recebe um link /#/r/<canal>/<id> que, ao ser aberto,
 // registra canal + quem + bairro + liderança e redireciona pro destino.
 export default function DisparoLink({ canal, eleitores, liderancas, onClose }) {
