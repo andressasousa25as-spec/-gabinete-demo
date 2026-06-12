@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+const btn = (bg) => ({ background:bg, color:'white', border:'none', borderRadius:8, padding:'10px 16px', cursor:'pointer', fontWeight:700, fontSize:14 });
+
 export default function TelaMaster({ onVoltar }) {
   const [lic, setLic] = useState(null);
   const [msg, setMsg] = useState('');
@@ -40,4 +42,3 @@ export default function TelaMaster({ onVoltar }) {
     </div>
   );
 }
-const btn = (bg) => ({background:bg,color:'white',border:'none',borderRadius:8,padding:'10px 16px',cursor:'pointer',fontWeight:700,fontSize:14});

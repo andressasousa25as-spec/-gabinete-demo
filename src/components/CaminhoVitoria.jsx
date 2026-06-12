@@ -1,78 +1,162 @@
-import { useState, useMemo } from 'react';
-import { useCandidatoTSE, calcularMetas } from '../hooks/useCandidatoTSE';
-import { CANDIDATOS_TSE } from '../candidatosTSE';
+import { useMemo } from 'react';
+import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
 
-const card = { background: '#fff', borderRadius: 14, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 20 };
-const azul = '#1d4ed8';
+const ELEITORADO_MUNICIPIO = {
+  'MACAPÁ': 310900, 'SANTANA': 83300, 'LARANJAL DO JARI': 28900,
+  'OIAPOQUE': 14200, 'MAZAGÃO': 19200, 'PORTO GRANDE': 14200,
+  'FERREIRA GOMES': 6100, 'PEDRA BRANCA DO AMAPARI': 10100,
+  'CALÇOENE': 8300, 'AMAPÁ': 6500, 'TARTARUGALZINHO': 6800,
+  'CUTIAS': 5000, 'ITAUBAL': 4400, 'PRACUÚBA': 3700,
+  'SERRA DO NAVIO': 3200, 'VITÓRIA DO JARI': 14000
+};
+
+const ABSTENCAO_MUNICIPIO = {
+  'MACAPÁ': 18.6, 'SANTANA': 16.4, 'LARANJAL DO JARI': 26.4,
+  'OIAPOQUE': 22.0, 'MAZAGÃO': 14.3, 'PORTO GRANDE': 25.3,
+  'FERREIRA GOMES': 17.2, 'PEDRA BRANCA DO AMAPARI': 25.0,
+  'CALÇOENE': 24.3, 'AMAPÁ': 19.0, 'TARTARUGALZINHO': 18.0,
+  'CUTIAS': 17.7, 'ITAUBAL': 18.0, 'PRACUÚBA': 20.0,
+  'SERRA DO NAVIO': 15.0, 'VITÓRIA DO JARI': 19.0
+};
+
+// Lider adversario por municipio (baseado nas imagens do EleitorAI)
+const LIDER_ADVERSARIO = {
+  'MACAPÁ': { nome: 'INACIO MONTEIRO', votos: '7.0k' },
+  'SANTANA': { nome: 'FRANCISCO PAULO', votos: '4.9k' },
+  'PEDRA BRANCA DO AMAPARI': { nome: 'PAULO PARANAGUA', votos: '1.8k' },
+  'PORTO GRANDE': { nome: 'JACK HOUAT', votos: '1.5k' },
+  'FERREIRA GOMES': { nome: 'JAIME DA', votos: '638' },
+  'CALÇOENE': { nome: 'LUCIANA ARAUJO', votos: '494' },
+  'LARANJAL DO JARI': { nome: 'ALLINY SOUSA', votos: '6.3k' },
+  'ITAUBAL': { nome: 'LUCIANA ARAUJO', votos: '417' },
+  'MAZAGÃO': { nome: 'ZENEIDE DA', votos: '7.1k' },
+  'CUTIAS': { nome: 'AMIRALDO DA', votos: '455' },
+  'PRACUÚBA': { nome: 'HILDEGARD DE', votos: '362' },
+};
+
+function getBadge(tipo) {
+  const cores = {
+    'Alto potencial': { bg: '#dbeafe', cor: '#1d4ed8' },
+    'Alta abstencao': { bg: '#fef3c7', cor: '#d97706' },
+    'Oportunidade': { bg: '#d1fae5', cor: '#065f46' },
+  };
+  const c = cores[tipo] || { bg: '#f1f5f9', cor: '#475569' };
+  return (
+    <span style={{ background: c.bg, color: c.cor, borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+      {tipo}
+    </span>
+  );
+}
 
 export default function CaminhoVitoria({ onVoltar }) {
-  const { candidato: auto, loading, nomeBuscado } = useCandidatoTSE();
-  const [manual, setManual] = useState(null);
-  const [busca, setBusca] = useState('');
-  const [metaCustom, setMetaCustom] = useState(null);
-  const candidato = auto || manual;
-  const meta = metaCustom || (candidato ? Math.round(candidato.total * 1.43) : 0);
-  const { municipios } = useMemo(() => calcularMetas(candidato, meta), [candidato, meta]);
+  const paulinho = useMemo(() => candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU')), []);
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Carregando...</div>;
-  if (!candidato) return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', padding: 24 }}>
-      <button onClick={onVoltar} style={{ marginBottom: 20, padding: '10px 20px', background: azul, color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Voltar</button>
-      <div style={{ ...card, maxWidth: 600, margin: '0 auto' }}>
-        <h2 style={{ color: azul, marginBottom: 8 }}>Selecione o Candidato</h2>
-        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar..."
-          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, marginBottom: 12, boxSizing: 'border-box' }} />
-        <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {CANDIDATOS_TSE.filter(c => c.nome.toLowerCase().includes(busca.toLowerCase())).map(c => (
-            <div key={c.nome} onClick={() => setManual(c)} style={{ padding: '12px 16px', borderRadius: 10, border: '1px solid #e2e8f0', cursor: 'pointer', background: '#f8fafc' }}>
-              <p style={{ fontWeight: 700, color: '#1e293b', margin: 0 }}>{c.nome}</p>
-              <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.cargo} - {c.total.toLocaleString('pt-BR')} votos</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  const dadosMunicipios = useMemo(() => {
+    if (!paulinho) return [];
+    const mapa = {};
+    for (const s of paulinho.secoes || []) {
+      if (!mapa[s.municipio]) mapa[s.municipio] = { municipio: s.municipio, votos: 0 };
+      mapa[s.municipio].votos += s.votos;
+    }
+    return Object.values(mapa).map(m => {
+      const eleitores = ELEITORADO_MUNICIPIO[m.municipio] || 5000;
+      const abs = ABSTENCAO_MUNICIPIO[m.municipio] || 19;
+      const pen = ((m.votos / eleitores) * 100).toFixed(1);
+      const aptos = Math.round(eleitores * (1 - abs / 100));
+      const conquistavel = Math.round(aptos * 0.005);
+      const tipo = abs > 22 ? 'Alta abstencao' : 'Alto potencial';
+      return { ...m, eleitores, abs, pen: parseFloat(pen), aptos, conquistavel, tipo };
+    }).sort((a, b) => b.votos - a.votos);
+  }, [paulinho]);
 
-  const top3 = municipios.slice(0, 3);
-  const cresc = (((meta - candidato.total) / candidato.total) * 100).toFixed(1);
-  const corStatus = { CRITICO: '#ef4444', ALTO: '#f97316', MEDIO: '#eab308' };
-  const etapas = [
-    { n: 1, t: 'Consolidar base principal', d: top3[0]?.municipio.charAt(0)+top3[0]?.municipio.slice(1).toLowerCase() + ' representa ' + top3[0]?.perc + '% dos votos. Presenca constante e essencial.', s: 'CRITICO', icon: 'domicilio' },
-    { n: 2, t: 'Expandir municipios medios', d: (top3[1]?.municipio.charAt(0)+top3[1]?.municipio.slice(1).toLowerCase()) + ' e ' + (top3[2]?.municipio.charAt(0)+top3[2]?.municipio.slice(1).toLowerCase()) + ' somam ' + (Number(top3[1]?.perc||0)+Number(top3[2]?.perc||0)).toFixed(1) + '%. Aumente penetracao.', s: 'ALTO', icon: 'crescimento' },
-    { n: 3, t: 'Conquistar municipios inexplorados', d: 'Municipios com menos de 2% de penetracao tem alto potencial de crescimento.', s: 'MEDIO', icon: 'alvo' },
-    { n: 4, t: 'Redes sociais e digital', d: 'Alcance eleitores jovens com conteudo direcionado por bairro e municipio.', s: 'MEDIO', icon: 'celular' },
-    { n: 5, t: 'Ativar rede de liderancas', d: 'Cada lideranca mobiliza 20-50 eleitores. Fortaleça a capilaridade.', s: 'ALTO', icon: 'rede' },
-  ];
+  const totalConquistavel = dadosMunicipios.reduce((s, m) => s + m.conquistavel, 0);
+
+  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', padding: 'clamp(12px,4vw,32px)' }}>
-      <button onClick={onVoltar} style={{ marginBottom: 20, padding: '10px 20px', background: azul, color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Voltar</button>
-      <h1 style={{ color: azul, fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Caminho da Vitoria</h1>
-      <p style={{ color: '#64748b', marginBottom: 24 }}>{candidato.nome} - Estrategia para {meta.toLocaleString('pt-BR')} votos</p>
-
-      <div style={{ ...card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
-        <p style={{ color: '#1e40af', fontSize: 14, margin: 0 }}>
-          Top 3 municipios representam <strong>{(top3.reduce((s,m) => s+m.votos2022,0)/candidato.total*100).toFixed(1)}%</strong> dos votos.
-          Crescimento necessario: <strong>{cresc}%</strong>
-        </p>
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
+      {/* Header */}
+      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+          Voltar
+        </button>
+        <div>
+          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Caminho da Vitoria</h1>
+          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Onde estao os votos que faltaram — secoes que voce pode virar na proxima eleicao</p>
+        </div>
       </div>
 
-      <div style={{ ...card }}>
-        <h3 style={{ color: azul, marginBottom: 16 }}>Etapas do Plano</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {etapas.map(e => (
-            <div key={e.n} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: (corStatus[e.s]||'#64748b')+'22', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: corStatus[e.s]||'#64748b', flexShrink: 0, fontSize: 16 }}>{e.n}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                  <p style={{ fontWeight: 700, color: '#1e293b', margin: 0 }}>{e.t}</p>
-                  <span style={{ background: (corStatus[e.s]||'#64748b')+'22', color: corStatus[e.s]||'#64748b', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{e.s}</span>
+      <div style={{ padding: '24px 32px' }}>
+        {/* Candidato card */}
+        <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 18 }}>P</div>
+          <div>
+            <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15, margin: 0 }}>Paulo Alceu Avila Ramos</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0 0' }}>DEPUTADO ESTADUAL · MDB · MACAPA/AP · 2022 · 1° turno</p>
+          </div>
+        </div>
+
+        {/* Cards de resumo */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16, marginBottom: 24 }}>
+          <div style={{ ...card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
+            <p style={{ color: '#3b82f6', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>POTENCIAL TOTAL</p>
+            <p style={{ color: '#1d4ed8', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>+{(totalConquistavel/1000).toFixed(1)}k</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>votos conquistaveis estimados</p>
+          </div>
+          <div style={{ ...card }}>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>DISPUTADAS</p>
+            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>0</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secoes · margem 30 vts · +0 votos</p>
+          </div>
+          <div style={{ ...card }}>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MOBILIZAVEIS</p>
+            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>3</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secoes · 17.9k eleitores ausentes</p>
+          </div>
+          <div style={{ ...card }}>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>ABANDONADAS</p>
+            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>1</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secao · menos de 10 votos cada</p>
+          </div>
+        </div>
+
+        {/* Lista de municipios */}
+        <div style={{ ...card }}>
+          <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>
+            OPORTUNIDADES — {dadosMunicipios.length} MUNICIPIOS
+          </p>
+
+          {dadosMunicipios.map((m, i) => {
+            const lider = LIDER_ADVERSARIO[m.municipio];
+            const penCor = m.pen < 1.5 ? '#ef4444' : '#f59e0b';
+            const absCor = m.abs > 22 ? '#ef4444' : '#64748b';
+
+            return (
+              <div key={m.municipio} style={{ borderBottom: '1px solid #f1f5f9', padding: '14px 0', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, width: 24, paddingTop: 2 }}>{i+1}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 14 }}>📍</span>
+                    <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15 }}>
+                      {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 13 }}>
+                    <span style={{ color: '#1e293b', fontWeight: 600 }}>{m.votos} seus</span>
+                    <span style={{ color: penCor, fontWeight: 600 }}>{m.pen}% pen.</span>
+                    <span style={{ color: absCor }}>{m.abs}% abs.</span>
+                    <span style={{ color: '#94a3b8' }}>{(m.aptos/1000).toFixed(1)}k aptos</span>
+                  </div>
+                  {lider && (
+                    <p style={{ color: '#64748b', fontSize: 12, margin: '4px 0 0' }}>
+                      Lider: <strong style={{ color: '#475569' }}>{lider.nome}</strong> ({lider.votos} vts)
+                    </p>
+                  )}
                 </div>
-                <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>{e.d}</p>
+                <div>{getBadge(m.tipo)}</div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

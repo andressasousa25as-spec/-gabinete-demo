@@ -1,104 +1,289 @@
 import { useState, useMemo } from 'react';
-import { useCandidatoTSE, calcularMetas, TOTAL_ELEITORES_AP } from '../hooks/useCandidatoTSE';
-import { CANDIDATOS_TSE } from '../candidatosTSE';
+import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
 
-const card = { background: '#fff', borderRadius: 14, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 20 };
-const azul = '#1d4ed8';
+// Dados fixos do Paulinho
+const PAULINHO_2018 = {
+  votos: 3783, ranking: 32, totalCandidatos: 455, partido: 'PR',
+  municipios: 16, zonas: 17
+};
+const PAULINHO_2022 = {
+  nome: 'PAULO ALCEU AVILA RAMOS', partido: 'MDB',
+  votos: 4880, ranking: 26, totalCandidatos: 343,
+  municipios: 16, zonas: 17,
+  totalEleitoresAptos: 578157, totalVotosValidos: 414123,
+  abstencao: 107234, abstencaoPerc: 18.55,
+  penetracao: 0.9,
+  // MDB 2022 dados
+  mdbCandidatos: 17, mdbEleitos: 2, mdbVotos: 28900, mdbPerc: 7.0,
+  quociente: 17230
+};
+
+const REGIOES = {
+  'Sul do Amapa': ['MACAPÁ','SANTANA','MAZAGÃO','PORTO GRANDE','ITAUBAL','CUTIAS','PEDRA BRANCA DO AMAPARI','FERREIRA GOMES','SERRA DO NAVIO'],
+  'Norte do Amapa': ['AMAPÁ','CALÇOENE','OIAPOQUE','LARANJAL DO JARI','VITÓRIA DO JARI','PRACUÚBA','TARTARUGALZINHO']
+};
+
+function getMunicipioRegiao(mun) {
+  for (const [reg, lista] of Object.entries(REGIOES)) {
+    if (lista.includes(mun)) return reg;
+  }
+  return 'Sul do Amapa';
+}
 
 export default function DiagnosticoEleitoral({ onVoltar }) {
-  const { candidato: candidatoAuto, loading, nomeBuscado } = useCandidatoTSE();
-  const [candidatoManual, setCandidatoManual] = useState(null);
-  const [busca, setBusca] = useState('');
-  const [metaCustom, setMetaCustom] = useState(null);
+  const [anoSelecionado, setAnoSelecionado] = useState('2022');
 
-  const candidato = candidatoAuto || candidatoManual;
-  const metaDefault = candidato ? Math.round(candidato.total * 1.43) : 0;
-  const meta = metaCustom || metaDefault;
-  const { municipios } = useMemo(() => calcularMetas(candidato, meta), [candidato, meta]);
+  const paulinho2022 = useMemo(() => {
+    const cand = candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU'));
+    if (!cand) return null;
+    return cand;
+  }, []);
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#6b7280' }}>Carregando...</div>;
+  const dadosMunicipios = useMemo(() => {
+    if (!paulinho2022) return [];
+    const mapa = {};
+    for (const s of paulinho2022.secoes || []) {
+      if (!mapa[s.municipio]) mapa[s.municipio] = { municipio: s.municipio, votos: 0, zonas: new Set() };
+      mapa[s.municipio].votos += s.votos;
+      mapa[s.municipio].zonas.add(s.zona);
+    }
+    return Object.values(mapa)
+      .map(m => ({ ...m, zonas: m.zonas.size }))
+      .sort((a, b) => b.votos - a.votos);
+  }, [paulinho2022]);
 
-  if (!candidato) return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', padding: 24 }}>
-      <button onClick={onVoltar} style={{ marginBottom: 20, padding: '10px 20px', background: azul, color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Voltar</button>
-      <div style={{ ...card, maxWidth: 600, margin: '0 auto' }}>
-        <h2 style={{ color: azul, marginBottom: 8 }}>Selecione o Candidato</h2>
-        {nomeBuscado && <p style={{ color: '#ef4444', fontSize: 13, marginBottom: 12 }}>"{nomeBuscado}" nao encontrado. Selecione manualmente:</p>}
-        <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Buscar por nome..."
-          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, marginBottom: 12, boxSizing: 'border-box' }} />
-        <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {CANDIDATOS_TSE.filter(c => c.nome.toLowerCase().includes(busca.toLowerCase())).map(c => (
-            <div key={c.nome} onClick={() => setCandidatoManual(c)}
-              style={{ padding: '12px 16px', borderRadius: 10, border: '1px solid #e2e8f0', cursor: 'pointer', background: '#f8fafc' }}>
-              <p style={{ fontWeight: 700, color: '#1e293b', margin: 0 }}>{c.nome}</p>
-              <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.cargo} - {c.total.toLocaleString('pt-BR')} votos</p>
+  const totalVotos2022 = dadosMunicipios.reduce((s, m) => s + m.votos, 0);
+
+  const dadosRegioes = useMemo(() => {
+    const mapa = {};
+    for (const m of dadosMunicipios) {
+      const reg = getMunicipioRegiao(m.municipio);
+      if (!mapa[reg]) mapa[reg] = 0;
+      mapa[reg] += m.votos;
+    }
+    return Object.entries(mapa)
+      .map(([reg, votos]) => ({ reg, votos, perc: Math.round((votos / totalVotos2022) * 100) }))
+      .sort((a, b) => b.votos - a.votos);
+  }, [dadosMunicipios, totalVotos2022]);
+
+  const ano = anoSelecionado === '2022' ? PAULINHO_2022 : PAULINHO_2018;
+  const crescimento = anoSelecionado === '2022'
+    ? { val: '+1.097', perc: '+29.0% vs 2018' }
+    : { val: '—', perc: 'Sem eleição anterior' };
+
+  // Cores estilo EleitorAI
+  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const badge = (cor) => ({ background: cor, color: '#fff', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 });
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
+      {/* Header */}
+      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+          Voltar
+        </button>
+        <div>
+          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Diagnostico Eleitoral</h1>
+          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Analise automatica do territorio — zonas, secoes e potencial de votos</p>
+        </div>
+      </div>
+
+      <div style={{ padding: '24px 32px' }}>
+        {/* Seletor de ano */}
+        <div style={{ background: '#1e293b', borderRadius: 10, padding: '12px 20px', display: 'flex', gap: 8, alignItems: 'center', marginBottom: 24, border: '1px solid #334155', maxWidth: 500 }}>
+          <span style={{ color: '#64748b', fontSize: 13, marginRight: 8 }}>CANDIDATO</span>
+          {['2022', '2018'].map(a => (
+            <button key={a} onClick={() => setAnoSelecionado(a)}
+              style={{ padding: '6px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                background: anoSelecionado === a ? '#2563eb' : 'transparent',
+                color: anoSelecionado === a ? '#fff' : '#94a3b8' }}>
+              {a}
+            </button>
+          ))}
+        </div>
+
+        {/* Card candidato */}
+        <div style={{ ...card, background: '#1e293b', border: '1px solid #334155', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#fff' }}>P</div>
+          <div style={{ flex: 1 }}>
+            <p style={{ color: '#f1f5f9', fontWeight: 800, fontSize: 16, margin: 0 }}>Paulo Alceu Avila Ramos</p>
+            <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>
+              DEPUTADO ESTADUAL · {anoSelecionado === '2022' ? 'MDB' : 'PR'} · MACAPA/AP
+            </p>
+          </div>
+          <span style={{ ...badge('#7c3aed'), fontSize: 13 }}>{anoSelecionado} · 1° turno</span>
+        </div>
+
+        {/* Cards de indicadores */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
+          {[
+            { label: 'VOTOS TOTAIS', valor: anoSelecionado === '2022' ? '4.880' : '3.783',
+              sub: anoSelecionado === '2022' ? '1.18% dos validos' : '0.97% dos validos', cor: '#0ea5e9' },
+            { label: 'POSICAO NO RANKING', valor: `${ano.ranking}°`,
+              sub: `de ${ano.totalCandidatos} candidatos`, cor: '#8b5cf6' },
+            { label: anoSelecionado === '2022' ? 'CRESCIMENTO' : 'VARIACAO',
+              valor: crescimento.val, sub: crescimento.perc, cor: '#10b981' },
+            { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? '0.9%' : '0.0%',
+              sub: 'dos eleitores aptos votaram', cor: '#f59e0b' },
+            { label: 'ABSTENCAO TOTAL', valor: anoSelecionado === '2022' ? '19.5%' : '0.0%',
+              sub: anoSelecionado === '2022' ? '107.234 ausentes' : 'Sem dado', cor: '#ef4444' },
+          ].map((c, i) => (
+            <div key={i} style={{ ...card }}>
+              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
+              <p style={{ color: c.cor, fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{c.valor}</p>
+              <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.sub}</p>
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  );
 
-  const percEleitorado = ((candidato.total / TOTAL_ELEITORES_AP) * 100).toFixed(2);
-  const crescNecessario = (((meta - candidato.total) / candidato.total) * 100).toFixed(1);
-  const municipioPrincipal = municipios[0];
-  const percPrincipal = municipioPrincipal ? ((municipioPrincipal.votos2022 / candidato.total) * 100).toFixed(1) : 0;
-
-  return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', padding: 'clamp(12px,4vw,32px)' }}>
-      <button onClick={onVoltar} style={{ marginBottom: 20, padding: '10px 20px', background: azul, color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Voltar</button>
-      <h1 style={{ color: azul, fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Diagnostico Eleitoral</h1>
-      <p style={{ color: '#64748b', marginBottom: 24 }}>{candidato.nome} - TSE 2022</p>
-
-      <div style={{ ...card, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-        <div>
-          <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>Meta 2026</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="number" value={meta} onChange={e => setMetaCustom(Number(e.target.value))}
-              style={{ width: 120, padding: '8px 12px', borderRadius: 8, border: '2px solid #93c5fd', background: '#eff6ff', fontSize: 18, fontWeight: 800, color: azul, textAlign: 'center' }} />
-            <button onClick={() => setMetaCustom(metaDefault)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#64748b' }}>Reset</button>
+        {/* Quociente Eleitoral */}
+        <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 20 }}>⚠</span>
+          <div>
+            <p style={{ color: '#92400e', fontWeight: 700, fontSize: 14, margin: 0 }}>Quociente Eleitoral</p>
+            <p style={{ color: '#78350f', fontSize: 13, margin: '2px 0 0' }}>
+              {anoSelecionado === '2022'
+                ? 'Necessarios 17.230 votos para garantir uma cadeira. Faltam 12.350 votos.'
+                : 'Necessarios 16.325 votos para garantir uma cadeira. Faltam 12.542 votos.'}
+            </p>
           </div>
         </div>
-        {[
-          { l: 'Resultado 2022', v: candidato.total.toLocaleString('pt-BR'), c: '#1e293b' },
-          { l: 'Crescimento necessario', v: '+' + crescNecessario + '%', c: '#16a34a' },
-          { l: '% do eleitorado AP', v: percEleitorado + '%', c: '#7c3aed' },
-        ].map((x, i) => (
-          <div key={i} style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 16 }}>
-            <p style={{ color: '#64748b', fontSize: 13, margin: 0 }}>{x.l}</p>
-            <p style={{ color: x.c, fontSize: 22, fontWeight: 800, margin: 0 }}>{x.v}</p>
+
+        {/* Meta + Forca do Partido */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
+          {/* Meta Eleitoral */}
+          <div style={{ ...card }}>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
+            <div style={{ position: 'relative', height: 10, background: '#e2e8f0', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '28%', background: '#2563eb', borderRadius: 99 }} />
+              <div style={{ position: 'absolute', left: '22%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
+              <div style={{ position: 'absolute', left: '98%', top: 0, height: '100%', width: '2px', background: '#94a3b8' }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8 }}>
+              {[
+                { label: 'Atual', val: anoSelecionado === '2022' ? '4.9k' : '3.8k', cor: '#2563eb' },
+                { label: 'Meta minima', val: anoSelecionado === '2022' ? '3.9k' : '2.6k', cor: '#f59e0b' },
+                { label: 'Meta segura', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: '#10b981' },
+                { label: 'Lideranca', val: anoSelecionado === '2022' ? '11.0k' : '8.3k', cor: '#64748b' },
+              ].map((m, i) => (
+                <div key={i} style={{ textAlign: 'center' }}>
+                  <p style={{ color: '#94a3b8', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
+                  <p style={{ color: m.cor, fontWeight: 800, fontSize: 16, margin: 0 }}>{m.val}</p>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', marginTop: 12 }}>
+              <p style={{ color: '#166534', fontSize: 12, margin: 0 }}>Acima da votacao minima dos eleitos</p>
+            </div>
           </div>
-        ))}
-      </div>
 
-      <div style={{ ...card }}>
-        <h3 style={{ color: azul, marginBottom: 16 }}>Desempenho por Municipio</h3>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead><tr>{['#','Municipio','Votos 2022','% Total','Meta 2026'].map(h => (
-              <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#64748b', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>{h}</th>
-            ))}</tr></thead>
-            <tbody>{municipios.map((m, i) => (
-              <tr key={m.municipio}>
-                <td style={{ padding: '9px 12px', borderBottom: '1px solid #f1f5f9', color: '#94a3b8', fontWeight: 700 }}>{i+1}</td>
-                <td style={{ padding: '9px 12px', borderBottom: '1px solid #f1f5f9', fontWeight: 600, color: '#1e293b' }}>{m.municipio.charAt(0)+m.municipio.slice(1).toLowerCase()}</td>
-                <td style={{ padding: '9px 12px', borderBottom: '1px solid #f1f5f9' }}>{m.votos2022.toLocaleString('pt-BR')}</td>
-                <td style={{ padding: '9px 12px', borderBottom: '1px solid #f1f5f9', color: '#7c3aed', fontWeight: 700 }}>{m.perc}%</td>
-                <td style={{ padding: '9px 12px', borderBottom: '1px solid #f1f5f9', color: azul, fontWeight: 700 }}>{m.meta2026.toLocaleString('pt-BR')}</td>
-              </tr>
-            ))}</tbody>
-          </table>
+          {/* Forca do Partido */}
+          <div style={{ ...card }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: 0 }}>FORCA DO PARTIDO</p>
+              <span style={{ ...badge('#2563eb') }}>{anoSelecionado === '2022' ? 'MDB' : 'PR'}</span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12 }}>
+              {[
+                { label: 'Candidatos', val: anoSelecionado === '2022' ? '17' : '36' },
+                { label: 'Eleitos', val: anoSelecionado === '2022' ? '2' : '4' },
+                { label: 'Votos do partido', val: anoSelecionado === '2022' ? '28.9k' : '44.6k' },
+                { label: '% do total', val: anoSelecionado === '2022' ? '7.0%' : '11.4%' },
+              ].map((f, i) => (
+                <div key={i} style={{ background: '#f8fafc', borderRadius: 8, padding: 12 }}>
+                  <p style={{ color: '#64748b', fontSize: 11, margin: '0 0 4px' }}>{f.label}</p>
+                  <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: 0 }}>{f.val}</p>
+                </div>
+              ))}
+            </div>
+            <p style={{ color: '#94a3b8', fontSize: 12, margin: '12px 0 0' }}>Media dos eleitos do partido
+              <strong style={{ color: '#1e293b', marginLeft: 8 }}>{anoSelecionado === '2022' ? '8.4k votos' : '4.9k votos'}</strong>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div style={{ ...card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
-        <h3 style={{ color: azul, marginBottom: 12 }}>Analise Estrategica Automatica</h3>
-        <ul style={{ color: '#1e40af', fontSize: 14, lineHeight: 1.8, paddingLeft: 20 }}>
-          <li>Base principal: <strong>{municipioPrincipal?.municipio.charAt(0)+municipioPrincipal?.municipio.slice(1).toLowerCase()}</strong> com {percPrincipal}% dos votos.</li>
-          <li>Para {meta.toLocaleString('pt-BR')} votos, crescimento necessario: <strong>{crescNecessario}%</strong></li>
-          <li>Representa <strong>{percEleitorado}%</strong> do eleitorado do estado.</li>
-          <li>{Object.keys(candidato.municipios).length} municipios com presenca eleitoral.</li>
-        </ul>
+        {/* Regioes + Municipios mais fortes */}
+        {anoSelecionado === '2022' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
+            {/* Regioes */}
+            <div style={{ ...card }}>
+              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>REGIOES MAIS FORTES</p>
+              {dadosRegioes.map((r, i) => (
+                <div key={r.reg} style={{ marginBottom: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 14 }}>{i === 0 ? '🥇' : '🥈'}</span>
+                      <span style={{ color: '#1e293b', fontWeight: 600, fontSize: 14 }}>{r.reg}</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 14 }}>{(r.votos/1000).toFixed(1)}k v</span>
+                      <span style={{ color: '#64748b', fontSize: 13, marginLeft: 8 }}>{r.perc}%</span>
+                    </div>
+                  </div>
+                  <div style={{ background: '#e2e8f0', borderRadius: 99, height: 6, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${r.perc}%`, background: '#2563eb', borderRadius: 99 }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Municipios mais fortes */}
+            <div style={{ ...card }}>
+              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>MUNICIPIOS MAIS FORTES</p>
+              {dadosMunicipios.slice(0, 10).map((m, i) => {
+                const perc = Math.round((m.votos / totalVotos2022) * 100);
+                const medals = ['🥇','🥈','🥉'];
+                return (
+                  <div key={m.municipio} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <span style={{ width: 20, textAlign: 'center', fontSize: 13 }}>{medals[i] || <span style={{ color: '#94a3b8', fontSize: 12 }}>{i+1}</span>}</span>
+                    <span style={{ flex: 1, color: '#1e293b', fontSize: 13, fontWeight: 500 }}>
+                      {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()} <span style={{ color: '#94a3b8', fontSize: 11 }}>AP</span>
+                    </span>
+                    <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 13 }}>{m.votos >= 1000 ? (m.votos/1000).toFixed(1)+'k' : m.votos} v</span>
+                    <span style={{ color: '#64748b', fontSize: 12, width: 36, textAlign: 'right' }}>{perc}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Concorrentes 2022 */}
+        {anoSelecionado === '2022' && (
+          <div style={{ ...card }}>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>CONCORRENTES — Ordenado por posicao 2022</p>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                    {['#','Candidato','Partido','Votos','% validos','Diferenca'].map(h => (
+                      <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: '#64748b', fontWeight: 600, fontSize: 12 }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { pos:'1°', nome:'INACIO MONTEIRO MACIEL', partido:'PDT', votos:'14.163', perc:'14.36%', dif:'+9.283' },
+                    { pos:'2°', nome:'JACK HOUAT HARB', partido:'SOLIDARIEDADE', votos:'12.539', perc:'12.71%', dif:'+7.659' },
+                    { pos:'3°', nome:'ZENEIDE DA SILVA COSTA', partido:'PODE', votos:'11.547', perc:'11.70%', dif:'+6.667' },
+                    { pos:'4°', nome:'RUZIELY DE JESUS PONTES', partido:'PDT', votos:'11.069', perc:'11.22%', dif:'+6.189' },
+                    { pos:'5°', nome:'ALLINY SOUSA DA ROCHA SERRAO', partido:'UNIAO', votos:'11.017', perc:'11.17%', dif:'+6.137' },
+                    { pos:'26°', nome:'PAULO ALCEU AVILA RAMOS', partido:'MDB', votos:'4.880', perc:'1.18%', dif:'—', destaque: true },
+                  ].map((c, i) => (
+                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: c.destaque ? '#eff6ff' : 'transparent' }}>
+                      <td style={{ padding: '10px 12px', color: '#94a3b8', fontWeight: 700 }}>{c.pos}</td>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#1d4ed8' : '#1e293b', fontWeight: c.destaque ? 700 : 400 }}>{c.nome}</td>
+                      <td style={{ padding: '10px 12px', color: '#64748b' }}>{c.partido}</td>
+                      <td style={{ padding: '10px 12px', color: '#1e293b', fontWeight: 600 }}>{c.votos}</td>
+                      <td style={{ padding: '10px 12px', color: '#64748b' }}>{c.perc}</td>
+                      <td style={{ padding: '10px 12px', color: c.dif === '—' ? '#64748b' : '#10b981', fontWeight: 600 }}>{c.dif}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
