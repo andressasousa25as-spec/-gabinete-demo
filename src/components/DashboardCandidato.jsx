@@ -471,9 +471,13 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
 
       {/* Header */}
       <div style={{background:"#ffffff",borderRadius:16,padding:"16px 20px",display:"flex",alignItems:"center",gap:16,color:"#0f172a",flexWrap:"nowrap"}}>
-        <div style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",background:"#1e40af",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:"clamp(24px,6vw,40px)",flexShrink:0}}>
-          {(config?.nome || 'Deputado Demo')[0].toUpperCase()}
-        </div>
+        {config?.foto_url ? (
+          <img src={config.foto_url} alt={config?.nome || 'Deputado Demo'} style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",objectFit:"cover",flexShrink:0}} />
+        ) : (
+          <div style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",background:"#1e40af",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:"clamp(24px,6vw,40px)",flexShrink:0}}>
+            {(config?.nome || 'Deputado Demo')[0].toUpperCase()}
+          </div>
+        )}
         <div>
           <h1 style={{margin:0,fontSize:"clamp(20px,5vw,32px)",fontWeight:700,color:"#0f172a"}}>{config?.nome || 'Deputado Demo'}</h1>
           <p style={{margin:"4px 0 8px",fontSize:16,color:"#64748b"}}>{config?.cargo || 'Deputado Estadual — AP'}</p>
@@ -493,6 +497,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
               { label: 'Instagram (URL)', key: 'instagram' },
+              { label: 'Foto (URL da imagem)', key: 'foto_url' },
               ].map(f => (
               <div key={f.key} style={{ marginBottom: 12 }}>
                 <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>{f.label}</label>

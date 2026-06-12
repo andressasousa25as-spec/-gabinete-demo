@@ -24,6 +24,12 @@ export default function CadastroPublico({ liderancaId }) {
   const [erro, setErro] = useState('');
   const [termoAceito, setTermoAceito] = useState(false);
   const [tipo, setTipo] = useState('apoiador'); // 'apoiador' | 'lideranca'
+  const [config, setConfig] = useState(null);
+
+  useEffect(() => {
+    supabase.from('config_candidato').select('nome, cargo, foto_url').limit(1).maybeSingle()
+      .then(({ data }) => setConfig(data));
+  }, []);
 
   const [form, setForm] = useState({
     nome: '', telefone: '', email: '', bairro: '',
@@ -123,9 +129,15 @@ export default function CadastroPublico({ liderancaId }) {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '24px', paddingTop: '20px' }}>
-          <div style={{ width: '90px', height: '90px', borderRadius: '50%', border: '3px solid #FFD700', marginBottom: '12px', background: '#1e40af', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '40px' }}>D</div>
-          <h1 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>Deputado Demo</h1>
-          <p style={{ color: '#bfdbfe', fontSize: '14px' }}>Deputado Estadual — AP 2026</p>
+          {config?.foto_url ? (
+            <img src={config.foto_url} alt={config?.nome || 'Deputado Demo'} style={{ width: '90px', height: '90px', borderRadius: '50%', border: '3px solid #FFD700', marginBottom: '12px', objectFit: 'cover', margin: '0 auto 12px', display: 'block' }} />
+          ) : (
+            <div style={{ width: '90px', height: '90px', borderRadius: '50%', border: '3px solid #FFD700', background: '#1e40af', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '40px', margin: '0 auto 12px' }}>
+              {(config?.nome || 'Deputado Demo')[0].toUpperCase()}
+            </div>
+          )}
+          <h1 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>{config?.nome || 'Deputado Demo'}</h1>
+          <p style={{ color: '#bfdbfe', fontSize: '14px' }}>{config?.cargo ? `${config.cargo} — AP 2026` : 'Deputado Estadual — AP 2026'}</p>
           {lideranca && <p style={{ color: '#93c5fd', fontSize: '13px', marginTop: '6px' }}>Indicado por: <strong>{lideranca.nome}</strong>{lideranca.bairro ? ` — ${lideranca.bairro}` : ''}</p>}
         </div>
 
