@@ -110,7 +110,7 @@ export default function CadastroPublico({ liderancaId }) {
         <p style={{ fontSize: '64px', marginBottom: '16px' }}>🎉</p>
         <h2 style={{ color: '#16a34a', fontSize: '24px', fontWeight: 'bold', marginBottom: '12px' }}>Cadastro realizado!</h2>
         <p style={{ color: '#374151', fontSize: '16px', marginBottom: '8px' }}>Obrigado por apoiar o</p>
-        <p style={{ color: '#1e40af', fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Dep. Paulinho Ramos 2026</p>
+        <p style={{ color: '#1e40af', fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Gabinete Demo 2026</p>
         <p style={{ color: '#6b7280', fontSize: '14px' }}>Seus dados foram registrados com segurança conforme a LGPD.</p>
         {lideranca && <p style={{ color: '#6b7280', fontSize: '13px', marginTop: '12px' }}>Indicado por: <strong>{lideranca.nome}</strong></p>}
       </div>
@@ -123,9 +123,8 @@ export default function CadastroPublico({ liderancaId }) {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '24px', paddingTop: '20px' }}>
-          <img src="/paulinho-ramos.jpg" alt="Paulinho Ramos"
-            style={{ width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #FFD700', marginBottom: '12px' }} />
-          <h1 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>Paulinho Ramos</h1>
+          <div style={{ width: '90px', height: '90px', borderRadius: '50%', border: '3px solid #FFD700', marginBottom: '12px', background: '#1e40af', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '40px' }}>D</div>
+          <h1 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>Deputado Demo</h1>
           <p style={{ color: '#bfdbfe', fontSize: '14px' }}>Deputado Estadual — AP 2026</p>
           {lideranca && <p style={{ color: '#93c5fd', fontSize: '13px', marginTop: '6px' }}>Indicado por: <strong>{lideranca.nome}</strong>{lideranca.bairro ? ` — ${lideranca.bairro}` : ''}</p>}
         </div>
@@ -206,7 +205,7 @@ export default function CadastroPublico({ liderancaId }) {
           <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
             <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>📋 TERMO DE CONSENTIMENTO — LGPD / TSE</p>
             <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
-              Autorizo o tratamento dos meus dados pessoais — nome, telefone, endereço, zona e seção eleitoral — para fins de comunicação, atendimento e ações políticas do mandato/campanha do Dep. <strong>Paulinho Ramos</strong>, nos termos da <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong> e das <strong>Resoluções do TSE</strong>.
+              Autorizo o tratamento dos meus dados pessoais — nome, telefone, endereço, zona e seção eleitoral — para fins de comunicação, atendimento e ações políticas do mandato/campanha do <strong>Deputado Demo</strong>, nos termos da <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong> e das <strong>Resoluções do TSE</strong>.
             </p>
             <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
               Os dados serão tratados com finalidade específica, não serão compartilhados com terceiros sem novo consentimento e podem ser revogados a qualquer momento respondendo <strong>SAIR</strong> para o WhatsApp da campanha.
@@ -223,7 +222,7 @@ export default function CadastroPublico({ liderancaId }) {
           {/* Botão */}
           <button onClick={salvar} disabled={salvando}
             style={{ width: '100%', padding: '16px', background: salvando ? '#93c5fd' : '#1e40af', color: 'white', border: 'none', borderRadius: '12px', fontSize: '17px', fontWeight: 'bold', cursor: salvando ? 'not-allowed' : 'pointer' }}>
-            {salvando ? '⏳ Cadastrando...' : '✅ Quero apoiar Paulinho Ramos!'}
+            {salvando ? '⏳ Cadastrando...' : '✅ Quero apoiar o Deputado Demo!'}
           </button>
 
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#9ca3af', marginTop: '12px' }}>
@@ -232,7 +231,7 @@ export default function CadastroPublico({ liderancaId }) {
         </div>
 
         <p style={{ textAlign: 'center', color: '#bfdbfe', fontSize: '12px', marginTop: '16px', paddingBottom: '20px' }}>
-          Gabinete Digital SF — Paulinho Ramos 2026
+          Gabinete Demo 2026
         </p>
       </div>
     </div>

@@ -111,7 +111,7 @@ export default function GestaoMidias({ onVoltar }) {
     const alvos = listaDoGrupo(grupoAlvo).filter(e => selecionados.includes(e.id));
     const links = alvos.map(e => {
       const numero = '55' + e.telefone.replace(/\D/g, '');
-      const msg = `Olá, ${e.nome}!\n\nO Candidato a Deputado Estadual *Paulinho Ramos* compartilhou uma novidade:\n\n*${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\nhttps://gabinete-asf.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair, responda *SAIR*.`;
+      const msg = `Olá, ${e.nome}!\n\nO *Deputado Demo* compartilhou uma novidade:\n\n*${midiaDisparo.titulo}*\n${midiaDisparo.descricao ? midiaDisparo.descricao + '\n' : ''}\nhttps://gabinete-demo.vercel.app/#/m/${midiaDisparo.id}/${e.id}\n\nPara sair, responda *SAIR*.`;
       return { nome: e.nome, bairro: e.bairro || '', id: e.id, eleitor_id: e.id, url: `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` };
     });
     // Registra o DISPARO (ato de enviar) na tabela de canais — NÃO em midias_cliques.

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const BASE = 'https://gabinete-asf.vercel.app';
+const BASE = 'https://gabinete-demo.vercel.app';
 const ROTULO = { instagram: '📸 Instagram', linktree: '🌿 Linktree' };
 
 // Gera links rastreados POR PESSOA de um canal (Instagram/Linktree).
@@ -23,7 +23,7 @@ export default function DisparoLink({ canal, eleitores, liderancas, onClose }) {
     const gerados = alvos.map(p => {
       const numero = '55' + p.telefone.replace(/\D/g, '');
       const rastreio = `${BASE}/#/r/${canal}/${p.id}`;
-      const msg = `Olá, ${p.nome}!\n\nO Candidato a Deputado Estadual *Paulinho Ramos* quer te mostrar uma novidade:\n\n${rastreio}\n\nPara sair, responda *SAIR*.`;
+      const msg = `Olá, ${p.nome}!\n\nO *Deputado Demo* quer te mostrar uma novidade:\n\n${rastreio}\n\nPara sair, responda *SAIR*.`;
       return { nome: p.nome, url: `https://wa.me/${numero}?text=${encodeURIComponent(msg)}` };
     });
     setLinks(gerados);

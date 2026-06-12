@@ -27,7 +27,7 @@ export default function LoginScreen() {
     <div style={{ minHeight: "100vh", background: "#0a0f1c", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ background: "#1e293b", borderRadius: 16, padding: "40px 32px", width: "100%", maxWidth: 420, border: "1px solid #334155" }}>
         <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", textAlign: "center", marginBottom: 4 }}>GABINETE DIGITAL SF</h1>
-        <p style={{ textAlign: "center", color: "#94a3b8", marginBottom: 28 }}>Paulinho Ramos 2026</p>
+        <p style={{ textAlign: "center", color: "#94a3b8", marginBottom: 28 }}>Deputado Demo 2026</p>
         <form onSubmit={handleLogin}>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}
             style={{ width: "100%", padding: "12px 14px", background: "white", border: "1px solid #334155", borderRadius: 10, color: "#0f172a", fontSize: 15, boxSizing: "border-box", marginBottom: 12 }}

@@ -81,7 +81,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
   const [termoAceito, setTermoAceito] = useState(false);
-  const [config, setConfig] = useState({ nome: 'Paulinho Ramos', cargo: 'Deputado Estadual', estado: 'AP' });
+  const [config, setConfig] = useState({ nome: 'Deputado Demo', cargo: 'Deputado Estadual', estado: 'AP' });
 
   useEffect(() => {
     const carregarConfig = async () => {
@@ -347,7 +347,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
           </div>
           <div>
             <h1 style={{ margin: 0, fontSize: 'clamp(14px, 4vw, 22px)', fontWeight: 700, color: "#0f172a", wordBreak: 'break-word' }}>{adm.nome}</h1>
-            <p style={{ margin: "4px 0 0", fontSize: 14, color: "#7c3aed", fontWeight: 600 }}>👮 Administrador — Gabinete Paulinho Ramos</p>
+            <p style={{ margin: "4px 0 0", fontSize: 14, color: "#7c3aed", fontWeight: 600 }}>👮 Administrador — Gabinete Demo</p>
             <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Apoiadores: {eleitores.length} | Lideranças: {liderancas.length} | Reuniões: {reunioes.length}</p>
           </div>
         </div>

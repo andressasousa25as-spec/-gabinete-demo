@@ -108,7 +108,7 @@ function App() {
   if (licencaVencida(licenca) && !ehMaster) return <TelaBloqueio onLogout={handleLogout} />;
   if (ehMaster && verMaster) return <TelaMaster onVoltar={() => setVerMaster(false)} />;
 
-  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? 'Paulinho Ramos' : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe de Campanha';
+  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? 'Deputado Demo' : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe de Campanha';
   // Master e Candidato veem o painel completo do candidato. ADMIN vê o DashboardADM. Demais, Equipe.
   const conteudo = (perfil === 'CANDIDATO' || ehMaster)
     ? <DashboardCandidato perfil={membro} ehMaster={ehMaster} />
@@ -122,7 +122,7 @@ function App() {
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <div>
             <h1 style={{ fontSize: "clamp(10px, 3vw, 24px)", fontWeight: 800, whiteSpace: "nowrap" }}>GABINETE DIGITAL SF</h1>
-            <p style={{ color: "#ffffff", fontSize: 13 }}>Paulinho Ramos</p>
+            <p style={{ color: "#ffffff", fontSize: 13 }}>Deputado Demo</p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             {ehMaster && (

@@ -103,13 +103,13 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
         </div>
         <div ref={ref}>
           <h1>{titulo}</h1>
-          <p>Gabinete Digital — Dep. Paulinho Ramos 2026 | {new Date().toLocaleString('pt-BR')}</p>
+          <p>Gabinete Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
           <p><strong>Total:</strong> {dados.length}</p>
           <table>
             <thead><tr>{colunas.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead>
             <tbody>{dados.map((item, i) => <tr key={i}>{colunas.map(c => <td key={c.key}>{item[c.key] || '—'}</td>)}</tr>)}</tbody>
           </table>
-          <div class="footer">Relatório — Gabinete Digital CRM Político | Paulinho Ramos 2026</div>
+          <div class="footer">Relatório — Gabinete Digital CRM Político | Gabinete Demo 2026</div>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [loading, setLoading] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
-  const [config, setConfig] = useState({ nome: 'Paulinho Ramos', cargo: 'Deputado Estadual', estado: 'AP', bairro: '', endereco: '', latitude: '', longitude: '' });
+  const [config, setConfig] = useState({ nome: 'Deputado Demo', cargo: 'Deputado Estadual — AP', estado: 'AP', bairro: '', endereco: '', latitude: '', longitude: '' });
   const [aba, setAba] = useState('inicio');
   const [relatorio, setRelatorio] = useState(null);
   const [busca, setBusca] = useState('');
@@ -431,7 +431,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             const w = window.open('', '_blank');
             const rows = rel.dados.map(d => '<tr>' + rel.colunas.map(col => '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb">' + (d[col] || '-') + '</td>').join('') + '</tr>').join('');
             const headers = rel.colunas.map(col => '<th style="padding:10px 12px;background:#1e40af;color:white;text-align:left">' + col + '</th>').join('');
-            w.document.write('<html><head><title>' + rel.label + '</title></head><body style="font-family:Arial;padding:20px"><h1 style="color:#1e40af">Gabinete Paulinho Ramos 2026 — ' + rel.label + '</h1><p>Total: ' + rel.dados.length + ' registros | ' + new Date().toLocaleString("pt-BR") + '</p><table style="width:100%;border-collapse:collapse"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></body></html>');
+            w.document.write('<html><head><title>' + rel.label + '</title></head><body style="font-family:Arial;padding:20px"><h1 style="color:#1e40af">Gabinete Demo 2026 — ' + rel.label + '</h1><p>Total: ' + rel.dados.length + ' registros | ' + new Date().toLocaleString("pt-BR") + '</p><table style="width:100%;border-collapse:collapse"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></body></html>');
             w.document.close();
             setTimeout(() => w.print(), 500);
           }} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 24, cursor: 'pointer', color: 'white', fontSize: 15, fontWeight: 700 }}>
@@ -471,10 +471,12 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
 
       {/* Header */}
       <div style={{background:"#ffffff",borderRadius:16,padding:"16px 20px",display:"flex",alignItems:"center",gap:16,color:"#0f172a",flexWrap:"nowrap"}}>
-        <img src="/paulinho-ramos.jpg" alt="Paulinho Ramos" style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",objectFit:"cover",flexShrink:0}} />
+        <div style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",background:"#1e40af",color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:"clamp(24px,6vw,40px)",flexShrink:0}}>
+          {(config?.nome || 'Deputado Demo')[0].toUpperCase()}
+        </div>
         <div>
-          <h1 style={{margin:0,fontSize:"clamp(20px,5vw,32px)",fontWeight:700,color:"#0f172a"}}>Paulinho Ramos</h1>
-          <p style={{margin:"4px 0 8px",fontSize:16,color:"#64748b"}}>Deputado Estadual — AP</p>
+          <h1 style={{margin:0,fontSize:"clamp(20px,5vw,32px)",fontWeight:700,color:"#0f172a"}}>{config?.nome || 'Deputado Demo'}</h1>
+          <p style={{margin:"4px 0 8px",fontSize:16,color:"#64748b"}}>{config?.cargo || 'Deputado Estadual — AP'}</p>
           <p style={{margin:0,fontSize:14,color:"#64748b"}}>Apoiadores: {eleitores.length} | Lideranças: {liderancas.length} | Reuniões: {reunioes.length}</p>
         </div>
       </div>
@@ -572,7 +574,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                     {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
                   </div>
                   <div style={{ display: 'flex', gap: '4px', flexShrink: 0, marginLeft: '6px' }}>
-                    {e.telefone && <a href={'https://wa.me/55' + e.telefone.replace(/\D/g,'') + '?text=' + encodeURIComponent('Ola ' + (e.nome ? e.nome.split(' ')[0] : '') + '! Aqui e a equipe do Dep. Paulinho Ramos 2026. Estamos em contato para fortalecer nossa campanha pelo Amapa. Conte conosco!')} target="_blank" rel="noreferrer" style={{ background: '#dcfce7', color: '#16a34a', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', textDecoration: 'none' }}>📲</a>}
+                    {e.telefone && <a href={'https://wa.me/55' + e.telefone.replace(/\D/g,'') + '?text=' + encodeURIComponent('Ola ' + (e.nome ? e.nome.split(' ')[0] : '') + '! Aqui e a equipe do Deputado Demo 2026. Estamos em contato para fortalecer nossa campanha. Conte conosco!')} target="_blank" rel="noreferrer" style={{ background: '#dcfce7', color: '#16a34a', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', textDecoration: 'none' }}>📲</a>}
                     {e.telefone && <a href={'https://wa.me/55' + e.telefone.replace(/D/g,'') + '?text=SAIR'} target="_blank" rel="noreferrer" style={{ background: '#fef9c3', color: '#854d0e', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', textDecoration: 'none' }}>🚫</a>}
                     <button onClick={() => setEleitorEditando(e)} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', marginRight: '4px' }}>✏️</button><button onClick={() => excluir('eleitores', e.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>🗑️</button>
                   </div>
@@ -597,7 +599,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                     {l.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {l.bairro}</p>}
                     {l.demanda && <p style={{ color: '#94a3b8', fontSize: '11px' }}>💬 {l.demanda}</p>}
                   </div>
-                  <button onClick={() => { navigator.clipboard.writeText('https://gabinete-asf.vercel.app/#/cadastro/' + l.id); alert('Link copiado!'); }} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', marginLeft: '6px' }}>🔗 Link</button><button onClick={() => abrirEditarLider(l)} style={{ background: '#fef9c3', color: '#a16207', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>✏️</button><button onClick={() => excluir('liderancas', l.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>🗑️</button>
+                  <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro/' + l.id); alert('Link copiado!'); }} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', marginLeft: '6px' }}>🔗 Link</button><button onClick={() => abrirEditarLider(l)} style={{ background: '#fef9c3', color: '#a16207', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>✏️</button><button onClick={() => excluir('liderancas', l.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>🗑️</button>
                 </div>
               </div>
             ))}

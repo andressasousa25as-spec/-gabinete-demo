@@ -22,7 +22,7 @@ const formatarWhatsApp = (telefone) => {
 const linkWhatsApp = (telefone, nome) => {
   const numero = formatarWhatsApp(telefone);
   if (!numero) return null;
-  const mensagem = `Olá, ${nome || 'apoiador'}! 👋\n\nVocê está recebendo novidades do Dep. *Paulinho Ramos* — Amapá 2026. 🗳️\n\nPara parar de receber mensagens, responda *SAIR* a qualquer momento. ✅`;
+  const mensagem = `Olá, ${nome || 'apoiador'}! 👋\n\nVocê está recebendo novidades do *Deputado Demo* 2026. 🗳️\n\nPara parar de receber mensagens, responda *SAIR* a qualquer momento. ✅`;
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
 };
 
@@ -94,13 +94,13 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
         </div>
         <div ref={ref}>
           <h1>{titulo}</h1>
-          <p>Gabinete Digital — Dep. Paulinho Ramos 2026 | {new Date().toLocaleString('pt-BR')}</p>
+          <p>Gabinete Demo 2026 | {new Date().toLocaleString('pt-BR')}</p>
           <p><strong>Total:</strong> {dados.length}</p>
           <table>
             <thead><tr>{colunas.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead>
             <tbody>{dados.map((item, i) => <tr key={i}>{colunas.map(c => <td key={c.key}>{item[c.key] || '—'}</td>)}</tr>)}</tbody>
           </table>
-          <div class="footer">Relatório — Gabinete Digital CRM Político | Paulinho Ramos 2026</div>
+          <div class="footer">Relatório — Gabinete Digital CRM Político | Gabinete Demo 2026</div>
         </div>
       </div>
     </div>
@@ -268,7 +268,7 @@ export default function DashboardEquipe({ perfil }) {
       {/* Header */}
       <div style={{ background: "#ffffff", borderRadius: 24, padding: "32px 40px", color: "white" }}>
         <h1 style={{ fontSize: 32, fontWeight: 800, color: "#0f172a" }}>👥 Equipe de Campanha</h1>
-        <p style={{ fontSize: 16, color: "#64748b", marginTop: 4 }}>Gabinete Digital — Dep. Paulinho Ramos 2026</p>
+        <p style={{ fontSize: 16, color: "#64748b", marginTop: 4 }}>Gabinete Demo 2026</p>
         <p style={{ color: "#64748b", marginTop: 8 }}>Apoiadores: {eleitores.length} | Lideranças: {liderancas.length} | Reuniões: {reunioes.length}</p>
       </div>
 
@@ -276,7 +276,7 @@ export default function DashboardEquipe({ perfil }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button onClick={() => setShowEleitor(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Apoiador</button>
         <button onClick={() => setShowLider(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Liderança</button>
-        <button onClick={() => { navigator.clipboard.writeText('https://gabinete-asf.vercel.app/#/cadastro'); registrarLog('Copiou link de cadastro', 'Link público genérico (apoiador/liderança)'); alert('🔗 Link de cadastro copiado!\n\nCole no WhatsApp ou redes — a pessoa escolhe se cadastrar como Apoiador ou Liderança.'); }} style={{ background: "#1e40af", border: "1px solid #2563eb", borderRadius: 8, color: "#fff", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🔗 Link de cadastro</button>
+        <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro'); registrarLog('Copiou link de cadastro', 'Link público genérico (apoiador/liderança)'); alert('🔗 Link de cadastro copiado!\n\nCole no WhatsApp ou redes — a pessoa escolhe se cadastrar como Apoiador ou Liderança.'); }} style={{ background: "#1e40af", border: "1px solid #2563eb", borderRadius: 8, color: "#fff", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🔗 Link de cadastro</button>
         <button onClick={() => setShowReuniao(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Reunião</button>
         <button onClick={() => setAba('mapa')} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🗺️ Mapa</button>
         <button onClick={() => setAba('anotacoes')} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📝 Anotações</button>
@@ -404,7 +404,7 @@ export default function DashboardEquipe({ perfil }) {
                         📱 WhatsApp
                       </a>
                     )}
-                      <button onClick={() => { navigator.clipboard.writeText('https://gabinete-asf.vercel.app/#/cadastro/' + l.id); alert('Link copiado!'); }} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', marginTop: '6px', display: 'inline-block' }}>🔗 Link</button>
+                      <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro/' + l.id); alert('Link copiado!'); }} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 10px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', marginTop: '6px', display: 'inline-block' }}>🔗 Link</button>
                     </div>
                 );
               })
@@ -457,7 +457,7 @@ export default function DashboardEquipe({ perfil }) {
             <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
               <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>📋 TERMO — LGPD / TSE</p>
               <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.6', marginBottom: '12px' }}>
-                Autorizo o tratamento dos meus dados para fins de comunicação política do Dep. Paulinho Ramos, conforme <strong>Lei nº 13.709/2018</strong> e <strong>Resoluções do TSE</strong>. Posso revogar respondendo <strong>SAIR</strong>.
+                Autorizo o tratamento dos meus dados para fins de comunicação política do Deputado Demo, conforme <strong>Lei nº 13.709/2018</strong> e <strong>Resoluções do TSE</strong>. Posso revogar respondendo <strong>SAIR</strong>.
               </p>
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
                 <input type="checkbox" checked={termoAceito} onChange={e => setTermoAceito(e.target.checked)} style={{ marginTop: '2px', width: '18px', height: '18px', accentColor: '#1e40af' }} />
