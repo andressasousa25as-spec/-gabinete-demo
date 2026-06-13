@@ -18,6 +18,7 @@ export const COORDS_BAIRROS = {
   'Americano': [0.052, -51.088],            // [estimado]
   'Área Portuária': [0.038, -51.062],       // [estimado] (a de Santana está na outra tabela)
   'Araxá': [0.0028, -51.0612],
+  'Ariri': [0.3221, -51.1288],              // [estimado] comunidade rural de Macapá, Rio Matapi (BR-210 km33)
   'Arsenal': [0.04, -51.058],               // [estimado]
   'Beirol': [0.0165, -51.0642],
   'Bella Ville': [0.0404, -51.1349],
