@@ -85,6 +85,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
       td{padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
       tr:nth-child(even){background:#f9fafb}
       .footer{margin-top:30px;font-size:12px;color:#9ca3af;text-align:center}
+      .conf{margin-top:16px;padding:10px 14px;border:1px solid #fca5a5;background:#fef2f2;color:#991b1b;border-radius:8px;font-size:12px;line-height:1.5}
       @media print{button{display:none}}
     </style></head><body>${conteudo}</body></html>`);
     janela.document.close();
@@ -109,6 +110,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
             <thead><tr>{colunas.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead>
             <tbody>{dados.map((item, i) => <tr key={i}>{colunas.map(c => <td key={c.key}>{item[c.key] || '—'}</td>)}</tr>)}</tbody>
           </table>
+          <div className="conf">🔒 <strong>DOCUMENTO INTERNO E CONFIDENCIAL — LGPD.</strong> Contém dados pessoais de apoiadores (Lei nº 13.709/2018). Uso restrito à equipe autorizada do gabinete, exclusivamente para a finalidade consentida. <strong>Proibido compartilhar, encaminhar (inclusive por WhatsApp), publicar ou repassar a terceiros.</strong></div>
           <div class="footer">Relatório — Gabinete Digital CRM Político | Gabinete Demo 2026</div>
         </div>
       </div>
@@ -432,7 +434,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             const w = window.open('', '_blank');
             const rows = rel.dados.map(d => '<tr>' + rel.colunas.map(col => '<td style="padding:8px 12px;border-bottom:1px solid #e5e7eb">' + (d[col] || '-') + '</td>').join('') + '</tr>').join('');
             const headers = rel.colunas.map(col => '<th style="padding:10px 12px;background:#1e40af;color:white;text-align:left">' + col + '</th>').join('');
-            w.document.write('<html><head><title>' + rel.label + '</title></head><body style="font-family:Arial;padding:20px"><h1 style="color:#1e40af">Gabinete Demo 2026 — ' + rel.label + '</h1><p>Total: ' + rel.dados.length + ' registros | ' + new Date().toLocaleString("pt-BR") + '</p><table style="width:100%;border-collapse:collapse"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></body></html>');
+            w.document.write('<html><head><title>' + rel.label + '</title></head><body style="font-family:Arial;padding:20px"><h1 style="color:#1e40af">Gabinete Demo 2026 — ' + rel.label + '</h1><p>Total: ' + rel.dados.length + ' registros | ' + new Date().toLocaleString("pt-BR") + '</p><div style="margin:12px 0;padding:10px 14px;border:1px solid #fca5a5;background:#fef2f2;color:#991b1b;border-radius:8px;font-size:12px;line-height:1.5">🔒 <strong>DOCUMENTO INTERNO E CONFIDENCIAL — LGPD (Lei 13.709/2018).</strong> Dados pessoais de apoiadores. Uso restrito à equipe autorizada. Proibido compartilhar, encaminhar (inclusive por WhatsApp) ou repassar a terceiros.</div><table style="width:100%;border-collapse:collapse"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></body></html>');
             w.document.close();
             setTimeout(() => w.print(), 500);
           }} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 24, cursor: 'pointer', color: 'white', fontSize: 15, fontWeight: 700 }}>

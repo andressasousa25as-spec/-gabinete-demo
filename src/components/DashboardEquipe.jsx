@@ -76,6 +76,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
       td{padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
       tr:nth-child(even){background:#f9fafb}
       .footer{margin-top:30px;font-size:12px;color:#9ca3af;text-align:center}
+      .conf{margin-top:16px;padding:10px 14px;border:1px solid #fca5a5;background:#fef2f2;color:#991b1b;border-radius:8px;font-size:12px;line-height:1.5}
       @media print{button{display:none}}
     </style></head><body>${conteudo}</body></html>`);
     janela.document.close();
@@ -100,6 +101,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
             <thead><tr>{colunas.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead>
             <tbody>{dados.map((item, i) => <tr key={i}>{colunas.map(c => <td key={c.key}>{item[c.key] || '—'}</td>)}</tr>)}</tbody>
           </table>
+          <div className="conf">🔒 <strong>DOCUMENTO INTERNO E CONFIDENCIAL — LGPD.</strong> Contém dados pessoais de apoiadores (Lei nº 13.709/2018). Uso restrito à equipe autorizada do gabinete, exclusivamente para a finalidade consentida. <strong>Proibido compartilhar, encaminhar (inclusive por WhatsApp), publicar ou repassar a terceiros.</strong></div>
           <div class="footer">Relatório — Gabinete Digital CRM Político | Gabinete Demo 2026</div>
         </div>
       </div>

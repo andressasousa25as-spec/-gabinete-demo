@@ -236,7 +236,7 @@ export default function CadastroPublico({ liderancaId }) {
               Autorizo o tratamento dos meus dados pessoais — nome, telefone, endereço, zona e seção eleitoral — para fins de comunicação, atendimento e ações políticas do mandato/campanha do <strong>Deputado Demo</strong>, nos termos da <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong> e das <strong>Resoluções do TSE</strong>.
             </p>
             <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
-              Os dados serão tratados com finalidade específica, não serão compartilhados com terceiros sem novo consentimento e podem ser revogados a qualquer momento respondendo <strong>SAIR</strong> para o WhatsApp da campanha.
+              Os dados serão tratados com finalidade específica, <strong>mantidos enquanto durar essa finalidade ou até a revogação do consentimento</strong>, não serão compartilhados com terceiros sem novo consentimento e podem ser revogados a qualquer momento respondendo <strong>SAIR</strong> para o WhatsApp da campanha.
             </p>
             <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
               <input type="checkbox" checked={termoAceito} onChange={e => setTermoAceito(e.target.checked)}
