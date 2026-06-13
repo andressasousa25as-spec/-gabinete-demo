@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { LISTA_BAIRROS } from './lib/bairros';
+import { LISTA_MUNICIPIOS, bairrosDoMunicipio } from './lib/bairros';
 import { supabase } from './lib/supabase';
-
-const BAIRROS_AMAPA = LISTA_BAIRROS;
 
 const ZONAS_AMAPA = Array.from({ length: 35 }, (_, i) => String(i + 1));
 
@@ -47,12 +45,20 @@ export default function CadastroPublico({ liderancaId }) {
     }
   }, [liderancaId]);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    // Trocar de município limpa o bairro (a lista de bairros muda).
+    if (name === 'municipio') setForm({ ...form, municipio: value, bairro: '' });
+    else setForm({ ...form, [name]: value });
+  };
+
+  const bairrosDisponiveis = bairrosDoMunicipio(form.municipio);
 
   const salvar = async () => {
     setErro('');
     if (!form.nome) return setErro('❌ Nome é obrigatório.');
     if (!form.telefone) return setErro('❌ Telefone é obrigatório.');
+    if (!form.municipio) return setErro('❌ Município é obrigatório.');
     if (!form.bairro) return setErro('❌ Bairro é obrigatório.');
     // Zona e seção obrigatórias para apoiador E liderança (cadastro igual)
     if (!form.zona_eleitoral) return setErro('❌ Zona eleitoral é obrigatória.');
@@ -177,24 +183,34 @@ export default function CadastroPublico({ liderancaId }) {
           <label style={estiloLabel}>E-mail (opcional)</label>
           <input name="email" type="email" placeholder="seu@email.com" value={form.email} onChange={handleChange} style={{ ...estiloInput, marginBottom: '14px' }} />
 
-          {/* Bairro — autocompletar: escolhe da lista OU digita o bairro real
-              (não precisa marcar "Outro"). */}
+          {/* Município — seletor: define qual lista de bairros aparece e ancora
+              a pessoa no mapa pelo centro da cidade certa. */}
+          <label style={estiloLabel}>Município *</label>
+          <select name="municipio" value={form.municipio} onChange={handleChange}
+            style={{ ...estiloInput, marginBottom: '14px', color: form.municipio ? '#111' : '#9ca3af' }}>
+            <option value="">Selecione o município...</option>
+            {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+
+          {/* Bairro — depende do município. Macapá/Santana têm lista; nos demais
+              municípios é texto livre (sem lista de bairros mapeada). */}
           <label style={estiloLabel}>Bairro *</label>
           <input name="bairro" list="lista-bairros" autoComplete="off"
-            placeholder="Digite ou escolha seu bairro"
+            placeholder={bairrosDisponiveis.length ? 'Digite ou escolha seu bairro' : 'Digite seu bairro'}
             value={form.bairro} onChange={handleChange}
-            style={{ ...estiloInput, marginBottom: '14px' }} />
+            style={{ ...estiloInput, marginBottom: bairrosDisponiveis.length ? '14px' : '4px' }} />
           <datalist id="lista-bairros">
-            {BAIRROS_AMAPA.filter(b => b !== 'Outro').map(b => <option key={b} value={b} />)}
+            {bairrosDisponiveis.map(b => <option key={b} value={b} />)}
           </datalist>
+          {!bairrosDisponiveis.length && form.municipio && (
+            <p style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '14px' }}>
+              Digite o nome do seu bairro.
+            </p>
+          )}
 
           {/* Endereço */}
           <label style={estiloLabel}>Endereço</label>
           <input name="endereco" type="text" placeholder="Rua, número, complemento" value={form.endereco} onChange={handleChange} style={{ ...estiloInput, marginBottom: '14px' }} />
-
-          {/* Município */}
-          <label style={estiloLabel}>Município</label>
-          <input name="municipio" type="text" placeholder="Macapá" value={form.municipio} onChange={handleChange} style={{ ...estiloInput, marginBottom: '14px' }} />
 
           {/* Zona e Seção (apoiador e liderança) */}
           <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>

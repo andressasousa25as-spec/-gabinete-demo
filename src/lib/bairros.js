@@ -136,6 +136,31 @@ export const LISTA_BAIRROS = [...new Set([
   ...Object.keys(COORDS_BAIRROS_SANTANA),
 ])].sort((a, b) => a.localeCompare(b, 'pt-BR')).concat('Outro');
 
+// Municípios do Amapá para o seletor do cadastro (nome de exibição).
+// Macapá e Santana primeiro (únicos com lista de bairros e os mais relevantes),
+// depois os demais em ordem alfabética.
+export const LISTA_MUNICIPIOS = [
+  'Macapá', 'Santana',
+  'Amapá', 'Calçoene', 'Cutias', 'Ferreira Gomes', 'Itaubal',
+  'Laranjal do Jari', 'Mazagão', 'Oiapoque', 'Pedra Branca do Amapari',
+  'Porto Grande', 'Pracuúba', 'Serra do Navio', 'Tartarugalzinho',
+  'Vitória do Jari',
+];
+
+// Lista de bairros do município escolhido (nomes de exibição), ordenada.
+// Macapá e Santana têm tabela própria; demais municípios não têm lista de
+// bairros mapeada → devolve [] (o campo vira texto livre e o trigger do banco
+// ancora a pessoa no centro do município).
+export function bairrosDoMunicipio(municipio) {
+  const ehSantana = String(municipio || '').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '').includes('santana');
+  const ehMacapa = String(municipio || '').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '').includes('macapa');
+  const tabela = ehSantana ? COORDS_BAIRROS_SANTANA : ehMacapa ? COORDS_BAIRROS : null;
+  if (!tabela) return [];
+  return Object.keys(tabela).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
 // Caixa delimitadora do estado do Amapá (eleição é estadual): minLng,minLat,maxLng,maxLat.
 export const AMAPA_BBOX = { latMin: -1.5, latMax: 4.6, lngMin: -55.0, lngMax: -49.8 };
 
