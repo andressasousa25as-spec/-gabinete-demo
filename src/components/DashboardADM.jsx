@@ -77,7 +77,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   const mapInstanceRef = useRef(null);
   const [showLider, setShowLider] = useState(false);
   const [showReuniao, setShowReuniao] = useState(false);
-  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: null });
+  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: null, observacao: '' });
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
   const [termoAceito, setTermoAceito] = useState(false);
@@ -263,6 +263,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
       zona_eleitoral: eleitorEditando.zona_eleitoral,
       secao_eleitoral: eleitorEditando.secao_eleitoral,
       lideranca_id: eleitorEditando.lideranca_id || null,
+      observacao: eleitorEditando.observacao || null,
     }).eq('id', eleitorEditando.eleitor_id || eleitorEditando.id);
     if (!error) {
       alert('Apoiador atualizado!');
@@ -396,6 +397,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
                       <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{e.nome}</p>
                       <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
                       {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
+                      {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
                     </div>
                     <button onClick={() => setEleitorEditando(e)} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', marginRight: '4px' }}>✏️</button><button onClick={() => excluir('eleitores', e.id, e.nome)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>🗑️</button>
                   </div>
@@ -499,6 +501,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Secao" value={eleitorEditando.secao_eleitoral || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, secao_eleitoral: e.target.value })} />
             </div>
+            <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={eleitorEditando.observacao || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, observacao: e.target.value })} />
             <button onClick={salvarEdicaoEleitor} disabled={loading} style={estiloBotao('#1d4ed8')}>{loading ? 'Salvando...' : 'Salvar Alteracoes'}</button>
             <button onClick={() => setEleitorEditando(null)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
@@ -567,6 +570,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
+            <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={novoEleitor.observacao || ''} onChange={e => setNovoEleitor({ ...novoEleitor, observacao: e.target.value })} />
             <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>
             <button onClick={() => setShowEleitor(false)} style={estiloBotao('#64748b')}>Cancelar</button>
