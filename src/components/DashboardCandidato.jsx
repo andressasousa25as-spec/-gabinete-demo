@@ -9,7 +9,7 @@ import GestaoMidias from '../GestaoMidias';
 import AnalyticsMidias from '../AnalyticsMidias';
 import GestaoUsuarios from './GestaoUsuarios';
 import { registrarLog as logBase } from '../lib/logAtividade';
-import { coordConfiavel, MACAPA_CENTRO, AMAPA_BBOX, COORDS_BAIRROS, LISTA_BAIRROS } from '../lib/bairros';
+import { coordConfiavel, MACAPA_CENTRO, AMAPA_BBOX, COORDS_BAIRROS, LISTA_BAIRROS, LISTA_MUNICIPIOS } from '../lib/bairros';
 import DiagnosticoEleitoral from './DiagnosticoEleitoral';
 import CaminhoVitoria from './CaminhoVitoria';
 import MapaEleitoral from './MapaEleitoral';
@@ -146,7 +146,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [showReuniao, setShowReuniao] = useState(false);
 
   const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: null, observacao: '' });
-  const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '' });
+  const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', municipio: '', zona_eleitoral: '', secao_eleitoral: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
   const [termoAceito, setTermoAceito] = useState(false);
 
@@ -203,11 +203,11 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       // Liderança também vira eleitor (aparece no mapa e na lista) — best-effort
       await supabase.from('eleitores').insert({
         nome: novaLider.nome, telefone: novaLider.telefone, bairro: novaLider.bairro,
-        endereco: novaLider.endereco, lideranca_id: nova.id, tags: ['liderança'],
+        endereco: novaLider.endereco, municipio: novaLider.municipio || null, lideranca_id: nova.id, tags: ['liderança'],
         zona_eleitoral: novaLider.zona_eleitoral || null, secao_eleitoral: novaLider.secao_eleitoral || null,
         consentimento_lgpd: true, data_consentimento: new Date().toISOString(),
       });
-      await registrarLog('Cadastrou liderança', `Nome: ${novaLider.nome} | Bairro: ${novaLider.bairro || '-'}`); alert('✅ Liderança salva!'); fetchAll(); setNovaLider({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '' }); setShowLider(false);
+      await registrarLog('Cadastrou liderança', `Nome: ${novaLider.nome} | Bairro: ${novaLider.bairro || '-'}`); alert('✅ Liderança salva!'); fetchAll(); setNovaLider({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', municipio: '', zona_eleitoral: '', secao_eleitoral: '' }); setShowLider(false);
     }
     else alert('Erro: ' + error.message);
     setLoading(false);
@@ -766,16 +766,17 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>➕ Cadastrar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={novoEleitor.nome} onChange={e => setNovoEleitor({ ...novoEleitor, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={novoEleitor.telefone} onChange={e => setNovoEleitor({ ...novoEleitor, telefone: e.target.value })} />
-            <select style={estiloInput} value={novoEleitor.bairro} onChange={e => setNovoEleitor({ ...novoEleitor, bairro: e.target.value })}>
-              <option value="">Selecione o bairro...</option>
-              {BAIRROS_AMAPA.map(b => <option key={b} value={b}>{b}</option>)}
+            <select style={estiloInput} value={novoEleitor.municipio} onChange={e => setNovoEleitor({ ...novoEleitor, municipio: e.target.value, bairro: '' })}>
+              <option value="">Selecione o município...</option>
+              {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
+            <input style={estiloInput} list="bairros-cand-eleitor" autoComplete="off" placeholder="Bairro / comunidade *" value={novoEleitor.bairro} onChange={e => setNovoEleitor({ ...novoEleitor, bairro: e.target.value })} />
+            <datalist id="bairros-cand-eleitor">{BAIRROS_AMAPA.map(b => <option key={b} value={b} />)}</datalist>
             <input style={estiloInput} placeholder="Endereço completo *" value={novoEleitor.endereco} onChange={e => setNovoEleitor({ ...novoEleitor, endereco: e.target.value })} />
             <select style={estiloInput} value={novoEleitor.lideranca_id} onChange={e => setNovoEleitor({...novoEleitor, lideranca_id: e.target.value})}>
                 <option value="">👥 Vincular Liderança (opcional)</option>
                 {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
               </select>
-              <input style={estiloInput} placeholder="Município" value={novoEleitor.municipio} onChange={e => setNovoEleitor({ ...novoEleitor, municipio: e.target.value })} />
             <div style={{ display: 'flex', gap: '12px' }}>
               <select style={{ ...estiloInput, flex: 1 }} value={novoEleitor.zona_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, zona_eleitoral: e.target.value })}>
                 <option value="">Zona...</option>
@@ -798,10 +799,12 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#94a3b8', marginBottom: '20px' }}>➕ Cadastrar Liderança</h2>
             <input style={estiloInput} placeholder="Nome *" value={novaLider.nome} onChange={e => setNovaLider({ ...novaLider, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp" value={novaLider.telefone} onChange={e => setNovaLider({ ...novaLider, telefone: e.target.value })} />
-            <select style={estiloInput} value={novaLider.bairro} onChange={e => setNovaLider({ ...novaLider, bairro: e.target.value })}>
-              <option value="">Selecione o bairro...</option>
-              {BAIRROS_AMAPA.map(b => <option key={b} value={b}>{b}</option>)}
+            <select style={estiloInput} value={novaLider.municipio} onChange={e => setNovaLider({ ...novaLider, municipio: e.target.value, bairro: '' })}>
+              <option value="">Selecione o município...</option>
+              {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
+            <input style={estiloInput} list="bairros-cand-lider" autoComplete="off" placeholder="Bairro / comunidade" value={novaLider.bairro} onChange={e => setNovaLider({ ...novaLider, bairro: e.target.value })} />
+            <datalist id="bairros-cand-lider">{BAIRROS_AMAPA.map(b => <option key={b} value={b} />)}</datalist>
             <div style={{ display: 'flex', gap: '10px' }}>
               <select style={{ ...estiloInput, flex: 1 }} value={novaLider.zona_eleitoral} onChange={e => setNovaLider({ ...novaLider, zona_eleitoral: e.target.value })}>
                 <option value="">Zona...</option>
