@@ -704,16 +704,13 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>Editar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={eleitorEditando.nome || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={eleitorEditando.telefone || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, telefone: e.target.value })} />
-            <select style={estiloInput} value={BAIRROS_AMAPA.includes(eleitorEditando.bairro) ? eleitorEditando.bairro : '__outro__'} onChange={e => { if (e.target.value === '__outro__') setEleitorEditando({ ...eleitorEditando, bairro: '' }); else setEleitorEditando({ ...eleitorEditando, bairro: e.target.value }); }}>
-              <option value="">Selecione o bairro...</option>
-              {BAIRROS_AMAPA.map(b => <option key={b} value={b}>{b}</option>)}
-              <option value="__outro__">Digitar bairro...</option>
+            <select style={estiloInput} value={eleitorEditando.municipio || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, municipio: e.target.value })}>
+              <option value="">Selecione o município...</option>
+              {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-            {(!eleitorEditando.bairro || !BAIRROS_AMAPA.includes(eleitorEditando.bairro)) && (
-              <input style={estiloInput} placeholder="Digite o nome do bairro" value={eleitorEditando.bairro || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, bairro: e.target.value })} />
-            )}
+            <input style={estiloInput} list="bairros-cand-edit-eleitor" autoComplete="off" placeholder="Bairro / comunidade" value={eleitorEditando.bairro || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, bairro: e.target.value })} />
+            <datalist id="bairros-cand-edit-eleitor">{BAIRROS_AMAPA.map(b => <option key={b} value={b} />)}</datalist>
             <input style={estiloInput} placeholder="Endereco completo" value={eleitorEditando.endereco || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, endereco: e.target.value })} />
-            <input style={estiloInput} placeholder="Municipio" value={eleitorEditando.municipio || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, municipio: e.target.value })} />
             <select style={estiloInput} value={eleitorEditando.lideranca_id || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, lideranca_id: e.target.value })}>
               <option value="">Vincular Lideranca (opcional)</option>
               {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
@@ -737,16 +734,13 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#a16207', marginBottom: '20px' }}>✏️ Editar Liderança</h2>
             <input style={estiloInput} placeholder="Nome *" value={liderEditando.nome || ''} onChange={e => setLiderEditando({ ...liderEditando, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp" value={liderEditando.telefone || ''} onChange={e => setLiderEditando({ ...liderEditando, telefone: e.target.value })} />
-            <select style={estiloInput} value={BAIRROS_AMAPA.includes(liderEditando.bairro) ? liderEditando.bairro : '__outro__'} onChange={e => { if (e.target.value === '__outro__') setLiderEditando({ ...liderEditando, bairro: '' }); else setLiderEditando({ ...liderEditando, bairro: e.target.value }); }}>
-              <option value="">Selecione o bairro...</option>
-              {BAIRROS_AMAPA.map(b => <option key={b} value={b}>{b}</option>)}
-              <option value="__outro__">Digitar bairro...</option>
+            <select style={estiloInput} value={liderEditando.municipio || ''} onChange={e => setLiderEditando({ ...liderEditando, municipio: e.target.value })}>
+              <option value="">Selecione o município...</option>
+              {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-            {(!liderEditando.bairro || !BAIRROS_AMAPA.includes(liderEditando.bairro)) && (
-              <input style={estiloInput} placeholder="Digite o nome do bairro" value={liderEditando.bairro || ''} onChange={e => setLiderEditando({ ...liderEditando, bairro: e.target.value })} />
-            )}
+            <input style={estiloInput} list="bairros-cand-edit-lider" autoComplete="off" placeholder="Bairro / comunidade" value={liderEditando.bairro || ''} onChange={e => setLiderEditando({ ...liderEditando, bairro: e.target.value })} />
+            <datalist id="bairros-cand-edit-lider">{BAIRROS_AMAPA.map(b => <option key={b} value={b} />)}</datalist>
             <input style={estiloInput} placeholder="Endereço completo" value={liderEditando.endereco || ''} onChange={e => setLiderEditando({ ...liderEditando, endereco: e.target.value })} />
-            <input style={estiloInput} placeholder="Município" value={liderEditando.municipio || ''} onChange={e => setLiderEditando({ ...liderEditando, municipio: e.target.value })} />
             <div style={{ display: 'flex', gap: '12px' }}>
               <select style={{ ...estiloInput, flex: 1 }} value={liderEditando.zona_eleitoral || ''} onChange={e => setLiderEditando({ ...liderEditando, zona_eleitoral: e.target.value })}>
                 <option value="">Zona...</option>
