@@ -17,6 +17,7 @@ import MapaEleitoral from './MapaEleitoral';
 import AnaliseTerritorial from './AnaliseTerritorial';
 import RadarOportunidade from './RadarOportunidade';
 import ProjecaoEstrategica from './ProjecaoEstrategica';
+import CenarioVereador2024 from './CenarioVereador2024';
 import CenarioMunicipal from '../CenarioMunicipal';
 
 
@@ -828,7 +829,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {aba === 'midias' && <GestaoMidias onVoltar={() => setAba(null)} />}
       {aba === 'analytics' && <AnalyticsMidias onVoltar={() => setAba(null)} />}
 
-      {aba === 'cenario' && <CenarioPolitico onVoltar={() => setAba(null)} />}
+      {aba === 'cenario' && <CenarioVereador2024 onVoltar={() => setAba(null)} />}
 
       {/* MODAL REUNIÃO */}
       {showReuniao && (

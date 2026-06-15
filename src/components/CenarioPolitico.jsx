@@ -15,6 +15,11 @@ const inputMeta = { width: 80, padding: '5px 8px', border: '1px solid #93c5fd', 
 const azul = '#1d4ed8';
 const cardStyle = { background: '#fff', borderRadius: 14, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 20 };
 
+// Referências reais de DEPUTADO ESTADUAL (AP, alvo de 2026). O quociente define as
+// cadeiras do partido; o que elege um candidato é a votação do último eleito (meta),
+// respeitado o piso individual de 10% do quociente. Metas continuam editáveis.
+const META_DEP_ESTADUAL = { piso: 1723, eleicao: 8500, quociente: 17230 };
+
 export default function CenarioPolitico({ onVoltar }) {
   const [candidatoSelecionado, setCandidatoSelecionado] = useState(null);
   const [busca, setBusca] = useState('');
@@ -33,7 +38,8 @@ export default function CenarioPolitico({ onVoltar }) {
 
   const selecionarCandidato = (c) => {
     setCandidatoSelecionado(c);
-    const meta = Math.round(c.total * 1.43);
+    // Meta-padrão = meta de eleição de deputado estadual (último eleito), editável.
+    const meta = Math.max(META_DEP_ESTADUAL.eleicao, Math.round(c.total * 1.2));
     setMetaGlobal(meta);
     const coef = meta / c.total;
     setMunicipios(
@@ -142,6 +148,9 @@ export default function CenarioPolitico({ onVoltar }) {
             </div>
           </div>
 
+          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', marginBottom: 20, fontSize: 12, color: '#92400e', lineHeight: 1.6 }}>
+            ⚖️ <strong>Referências de Deputado Estadual (alvo 2026):</strong> piso individual <strong>{META_DEP_ESTADUAL.piso.toLocaleString('pt-BR')}</strong> (10% do quociente) · meta de eleição <strong>~{META_DEP_ESTADUAL.eleicao.toLocaleString('pt-BR')}</strong> (votação do último eleito) · quociente <strong>{META_DEP_ESTADUAL.quociente.toLocaleString('pt-BR')}</strong> (define cadeiras do partido). A Meta 2026 acima já vem nessa base e continua editável.
+          </div>
           <div style={{ display: 'flex', gap: 6, marginBottom: 20, borderBottom: '2px solid #e2e8f0', flexWrap: 'wrap' }}>
             {[
               { key: 'municipios', label: 'Municipios' },
