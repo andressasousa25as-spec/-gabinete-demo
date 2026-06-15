@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
+import { TOTAL_APTOS_2022 } from '../lib/eleitoradoAP';
 
 // Dados fixos do Paulinho
 const PAULINHO_2018 = {
@@ -126,13 +127,13 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
         {/* Cards de indicadores */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
           {[
-            { label: 'VOTOS TOTAIS', valor: anoSelecionado === '2022' ? '4.880' : '3.783',
-              sub: anoSelecionado === '2022' ? '1.18% dos validos' : '0.97% dos validos', cor: '#0ea5e9' },
+            { label: 'VOTOS TOTAIS', valor: anoSelecionado === '2022' ? (paulinho2022?.total || 0).toLocaleString('pt-BR') : '3.783',
+              sub: anoSelecionado === '2022' ? `${((paulinho2022?.total || 0) / TOTAL_APTOS_2022 * 100).toFixed(1)}% dos aptos` : '0.97% dos validos', cor: '#0ea5e9' },
             { label: 'POSICAO NO RANKING', valor: `${ano.ranking}°`,
               sub: `de ${ano.totalCandidatos} candidatos`, cor: '#8b5cf6' },
             { label: anoSelecionado === '2022' ? 'CRESCIMENTO' : 'VARIACAO',
               valor: crescimento.val, sub: crescimento.perc, cor: '#10b981' },
-            { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? '0.9%' : '0.0%',
+            { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? `${((paulinho2022?.total || 0) / TOTAL_APTOS_2022 * 100).toFixed(1)}%` : '0.0%',
               sub: 'dos aptos votaram em você', cor: '#f59e0b' },
             { label: 'ABSTENCAO TOTAL', valor: anoSelecionado === '2022' ? '19.5%' : '0.0%',
               sub: anoSelecionado === '2022' ? '107.398 ausentes' : 'Sem dado', cor: '#ef4444' },
