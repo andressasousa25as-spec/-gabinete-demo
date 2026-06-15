@@ -4,16 +4,19 @@ import { extrairCandidato, gerarUpsertSQL } from './extrairCandidato.mjs';
 const FONTE = [
   { nome: 'PAULO ALCEU AVILA RAMOS', cargo: 'DEPUTADO ESTADUAL', partido: 'MDB', total: 4880,
     municipios: { 'MACAPÁ': 4221 }, zonas: { '2': 1000 },
-    secoes: [{ votos: 5, municipio: 'MACAPÁ', zona: '2', secao: '1', local: 'X', endereco: 'Y' }] },
+    secoes: [
+      { votos: 5, municipio: 'MACAPÁ', zona: '2', secao: '1', local: 'X', endereco: 'Y' },
+      { votos: 3, municipio: 'MACAPÁ', zona: '2', secao: '2', local: 'X', endereco: 'Y' },
+    ] },
 ];
 
 describe('extrairCandidato', () => {
-  it('acha por nome e tira local/endereco das secoes', () => {
+  it('faz rollup por município×zona (votos + nsecoes), sem local/endereco', () => {
     const c = extrairCandidato(FONTE, { nome: 'PAULO ALCEU', ano: 2022 });
     expect(c.nome).toBe('PAULO ALCEU AVILA RAMOS');
     expect(c.total).toBe(4880);
-    expect(c.secoes[0]).toEqual({ votos: 5, municipio: 'MACAPÁ', zona: '2', secao: '1' });
-    expect(c.secoes[0].local).toBeUndefined();
+    expect(c.secoes).toHaveLength(1);
+    expect(c.secoes[0]).toEqual({ municipio: 'MACAPÁ', zona: '2', votos: 8, nsecoes: 2 });
   });
 
   it('aplica nome de exibição quando passado', () => {

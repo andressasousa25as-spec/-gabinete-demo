@@ -5,9 +5,16 @@ export function extrairCandidato(fonte, { nome, numero, ano, cargo, nomeExibicao
     (nome && c.nome && c.nome.toUpperCase().includes(nome.toUpperCase()))
   );
   if (!alvo) return null;
-  const secoes = (alvo.secoes || []).map(s => ({
-    votos: s.votos, municipio: s.municipio, zona: s.zona, secao: s.secao,
-  }));
+  // Rollup compacto por município×zona (votos + nº de seções). Evita guardar
+  // centenas de seções cruas; as telas só agregam por município e por zona.
+  const roll = {};
+  for (const s of alvo.secoes || []) {
+    const k = `${s.municipio}|${s.zona}`;
+    if (!roll[k]) roll[k] = { municipio: s.municipio, zona: s.zona, votos: 0, nsecoes: 0 };
+    roll[k].votos += s.votos;
+    roll[k].nsecoes += 1;
+  }
+  const secoes = Object.values(roll);
   return {
     ano,
     cargo: cargo || alvo.cargo,
