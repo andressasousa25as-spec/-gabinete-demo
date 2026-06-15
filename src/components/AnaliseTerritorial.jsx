@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 
 const MESORREGIAO = {
   'Sul do Amapa': ['MACAPÁ','SANTANA','MAZAGÃO','PORTO GRANDE','ITAUBAL','CUTIAS','PEDRA BRANCA DO AMAPARI','FERREIRA GOMES','SERRA DO NAVIO'],
@@ -14,7 +14,7 @@ const MICRORREGIAO = {
 };
 
 export default function AnaliseTerritorial({ onVoltar }) {
-  const paulinho = useMemo(() => candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU')), []);
+  const { candidato: paulinho, loading, semDados } = useCandidatoAnalise();
 
   const dados = useMemo(() => {
     if (!paulinho) return { total: 0, meso: {}, micro: {} };
@@ -41,6 +41,19 @@ export default function AnaliseTerritorial({ onVoltar }) {
 
   const CORES_MESO = { 'Sul do Amapa': '#2563eb', 'Norte do Amapa': '#10b981' };
   const CORES_MICRO = ['#2563eb', '#7c3aed', '#f59e0b', '#ef4444'];
+
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+  );
+  if (semDados) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
+        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px' }}>

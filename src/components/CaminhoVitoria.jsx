@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 import { ELEITORADO_MUNICIPIO_2022, ABSTENCAO_MUNICIPIO_2022 } from '../lib/eleitoradoAP';
 
 // Eleitorado e abstenção REAIS (TSE, AP 2022). Fonte única.
@@ -36,7 +36,7 @@ function getBadge(tipo) {
 }
 
 export default function CaminhoVitoria({ onVoltar }) {
-  const paulinho = useMemo(() => candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU')), []);
+  const { candidato: paulinho, loading, semDados } = useCandidatoAnalise();
 
   const dadosMunicipios = useMemo(() => {
     if (!paulinho) return [];
@@ -67,6 +67,19 @@ export default function CaminhoVitoria({ onVoltar }) {
 
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+  );
+  if (semDados) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
+        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
       {/* Header */}
@@ -85,8 +98,8 @@ export default function CaminhoVitoria({ onVoltar }) {
         <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 18 }}>P</div>
           <div>
-            <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15, margin: 0 }}>Paulo Alceu Avila Ramos</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0 0' }}>DEPUTADO ESTADUAL · MDB · MACAPA/AP · 2022 · 1° turno</p>
+            <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15, margin: 0 }}>{paulinho?.nome}</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0 0' }}>{paulinho?.cargo} · {paulinho?.partido || '—'} · MACAPA/AP · {paulinho?.ano} · 1° turno</p>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 
 const PERFIL_MUNICIPIO = {
   'MACAPÁ': 'Capital do Amapa, maior eleitorado do estado com cerca de 310 mil eleitores aptos. Economia baseada em servicos publicos e comercio. Concentra 71% dos votos do candidato e e o principal territorio eleitoral.',
@@ -26,7 +26,7 @@ export default function MapaEleitoral({ onVoltar }) {
   const [municipioSel, setMunicipioSel] = useState(null);
   const [ordenacao, setOrdenacao] = useState('votos');
 
-  const paulinho = useMemo(() => candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU')), []);
+  const { candidato: paulinho, loading, semDados } = useCandidatoAnalise();
 
   const dadosMunicipios = useMemo(() => {
     if (!paulinho) return [];
@@ -51,6 +51,19 @@ export default function MapaEleitoral({ onVoltar }) {
 
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+  );
+  if (semDados) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
+        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+      </div>
+    </div>
+  );
+
   // Drill-down: detalhe do municipio
   if (municipioSel) {
     const m = dadosMunicipios.find(x => x.municipio === municipioSel);
@@ -58,7 +71,7 @@ export default function MapaEleitoral({ onVoltar }) {
     for (const s of m.secoes) {
       if (!zonasDados[s.zona]) zonasDados[s.zona] = { zona: s.zona, votos: 0, secoes: 0 };
       zonasDados[s.zona].votos += s.votos;
-      zonasDados[s.zona].secoes++;
+      zonasDados[s.zona].secoes += (s.nsecoes || 1);
     }
     const zonasList = Object.values(zonasDados).sort((a, b) => b.votos - a.votos);
     const maxZona = zonasList[0]?.votos || 1;
@@ -82,7 +95,7 @@ export default function MapaEleitoral({ onVoltar }) {
               <span style={{ background: '#eff6ff', color: '#3b82f6', borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>Dados TSE 2022</span>
             </div>
             <p style={{ color: '#475569', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
-              {PERFIL_MUNICIPIO[municipioSel] || `${municipioSel} e um municipio do estado do Amapa. Os dados eleitorais de 2022 mostram ${m.votos} votos para o candidato Paulo Alceu Avila Ramos em ${m.zonas} zona(s) eleitoral(is).`}
+              {PERFIL_MUNICIPIO[municipioSel] || `${municipioSel} e um municipio do estado do Amapa. Os dados eleitorais de 2022 mostram ${m.votos} votos para ${paulinho?.nome} em ${m.zonas} zona(s) eleitoral(is).`}
             </p>
           </div>
 

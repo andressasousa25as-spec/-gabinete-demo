@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 
 // Dados fixos do Paulinho
 const PAULINHO_2018 = {
@@ -33,11 +33,7 @@ function getMunicipioRegiao(mun) {
 export default function DiagnosticoEleitoral({ onVoltar }) {
   const [anoSelecionado, setAnoSelecionado] = useState('2022');
 
-  const paulinho2022 = useMemo(() => {
-    const cand = candidatos.find(c => c.nome && c.nome.includes('PAULO ALCEU'));
-    if (!cand) return null;
-    return cand;
-  }, []);
+  const { candidato: paulinho2022, loading, semDados } = useCandidatoAnalise();
 
   const dadosMunicipios = useMemo(() => {
     if (!paulinho2022) return [];
@@ -75,6 +71,19 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
   const badge = (cor) => ({ background: cor, color: '#fff', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 });
 
+  if (loading) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+  );
+  if (semDados) return (
+    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
+        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
       {/* Header */}
@@ -106,9 +115,9 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
         <div style={{ ...card, background: '#1e293b', border: '1px solid #334155', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#fff' }}>P</div>
           <div style={{ flex: 1 }}>
-            <p style={{ color: '#f1f5f9', fontWeight: 800, fontSize: 16, margin: 0 }}>Paulo Alceu Avila Ramos</p>
+            <p style={{ color: '#f1f5f9', fontWeight: 800, fontSize: 16, margin: 0 }}>{paulinho2022?.nome}</p>
             <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>
-              DEPUTADO ESTADUAL · {anoSelecionado === '2022' ? 'MDB' : 'PR'} · MACAPA/AP
+              {paulinho2022?.cargo} · {paulinho2022?.partido || (anoSelecionado === '2022' ? 'MDB' : 'PR')} · MACAPA/AP
             </p>
           </div>
           <span style={{ ...badge('#7c3aed'), fontSize: 13 }}>{anoSelecionado} · 1° turno</span>
