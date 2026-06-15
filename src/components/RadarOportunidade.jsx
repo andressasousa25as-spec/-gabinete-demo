@@ -19,9 +19,11 @@ const MUNICIPIOS_ZONA = {
 };
 
 function calcScore(pen, abs) {
-  const scorePen = Math.max(0, 100 - pen * 50);
-  const scoreAbs = abs * 1.5;
-  return Math.min(100, Math.round((scorePen + scoreAbs) / 2));
+  // Oportunidade = baixa penetração (espaço para crescer por persuasão) +
+  // abstenção (mobilização). Penetração pesa mais — é o motor real de votos.
+  const scorePen = Math.max(0, Math.min(100, (1 - pen / 3) * 100)); // pen 0%→100, ≥3%→0
+  const scoreAbs = Math.max(0, Math.min(100, (abs / 30) * 100));     // abs 30%→100
+  return Math.round(scorePen * 0.6 + scoreAbs * 0.4);
 }
 
 export default function RadarOportunidade({ onVoltar }) {
@@ -52,6 +54,16 @@ export default function RadarOportunidade({ onVoltar }) {
   const consolidadas = dadosZonas.filter(z => z.score < 50).length;
   const potencialTotal = dadosZonas.reduce((s, z) => s + z.potencial, 0);
 
+  // Insights calculados (não fixos) para a análise estratégica
+  const penGeral = (() => {
+    const v = dadosZonas.reduce((s, z) => s + z.votos, 0);
+    const e = dadosZonas.reduce((s, z) => s + z.eleitores, 0);
+    return e ? (v / e) * 100 : 0;
+  })();
+  const topZona = dadosZonas[0];
+  const maiorReserv = [...dadosZonas].sort((a, b) => b.aptos - a.aptos)[0];
+  const cap = (s) => s ? s.charAt(0) + s.slice(1).toLowerCase() : s;
+
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
   const maxScore = 100;
 
@@ -74,13 +86,15 @@ export default function RadarOportunidade({ onVoltar }) {
             <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, marginLeft: 'auto' }}>Dados TSE 2022</span>
           </div>
           <p style={{ color: '#334155', fontSize: 13, lineHeight: 1.7, margin: '0 0 10px' }}>
-            A votacao de Paulo Alceu esta pulverizada com penetracao media de apenas 0,9%, sinalizando ausencia de redutos eleitorais solidos. As zonas classificadas como ATENCAO — Oiapoque, Laranjal do Jari e Tartarugalzinho — concentram absten cao acima de 21% e penetracao de apenas 0,2%, revelando territorios quase intocados com potencial combinado de votos significativo.
+            A votação está pulverizada: penetração geral de apenas <strong>{penGeral.toFixed(1)}%</strong> dos eleitores, sinalizando ausência de redutos sólidos. {topZona && (<>A maior oportunidade é a <strong>Zona {topZona.zona}{MUNICIPIOS_ZONA[topZona.zona] ? ' (' + MUNICIPIOS_ZONA[topZona.zona].map(cap).join(', ') + ')' : ''}</strong> — score {topZona.score}, penetração de {topZona.pen}% e abstenção de {topZona.abs}%: espaço para crescer por persuasão.</>)}
           </p>
+          {maiorReserv && (
           <div style={{ background: '#fef9c3', border: '1px solid #fcd34d', borderRadius: 8, padding: '10px 14px' }}>
             <p style={{ color: '#92400e', fontSize: 13, margin: 0 }}>
-              ⚠️ A Zona 2 [MACAPA], com maior potencial absoluto e penetracao de apenas 1,3%, e o maior reservatorio eleitoral. Um acrescimo de 0,5 ponto percentual de penetracao em Macapa equivaleria a mais votos do que o total atual do candidato.
+              ⚠️ Por volume, a <strong>Zona {maiorReserv.zona}{MUNICIPIOS_ZONA[maiorReserv.zona] ? ' (' + MUNICIPIOS_ZONA[maiorReserv.zona].map(cap).join(', ') + ')' : ''}</strong> é o maior reservatório: ~{maiorReserv.aptos.toLocaleString('pt-BR')} compareceram e a penetração é de só {maiorReserv.pen}%. Ganhos de penetração aqui rendem o maior número absoluto de votos.
             </p>
           </div>
+          )}
         </div>
 
         {/* Cards resumo */}
@@ -101,9 +115,9 @@ export default function RadarOportunidade({ onVoltar }) {
             <p style={{ color: '#64748b', fontSize: 12 }}>de {dadosZonas.length} zonas</p>
           </div>
           <div style={{ ...card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
-            <p style={{ color: '#3b82f6', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>POTENCIAL</p>
+            <p style={{ color: '#3b82f6', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>POTENCIAL (EST.)</p>
             <p style={{ color: '#1d4ed8', fontSize: 32, fontWeight: 900, margin: '0 0 2px' }}>{potencialTotal.toLocaleString('pt-BR')}</p>
-            <p style={{ color: '#64748b', fontSize: 12 }}>votos potenciais</p>
+            <p style={{ color: '#64748b', fontSize: 12 }}>estimativa: 0,5% do comparecimento</p>
           </div>
         </div>
 

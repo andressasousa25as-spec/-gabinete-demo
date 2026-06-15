@@ -124,7 +124,7 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
             { label: anoSelecionado === '2022' ? 'CRESCIMENTO' : 'VARIACAO',
               valor: crescimento.val, sub: crescimento.perc, cor: '#10b981' },
             { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? '0.9%' : '0.0%',
-              sub: 'dos eleitores aptos votaram', cor: '#f59e0b' },
+              sub: 'dos aptos votaram em você', cor: '#f59e0b' },
             { label: 'ABSTENCAO TOTAL', valor: anoSelecionado === '2022' ? '19.5%' : '0.0%',
               sub: anoSelecionado === '2022' ? '107.234 ausentes' : 'Sem dado', cor: '#ef4444' },
           ].map((c, i) => (
@@ -140,11 +140,11 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
         <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 20 }}>⚠</span>
           <div>
-            <p style={{ color: '#92400e', fontWeight: 700, fontSize: 14, margin: 0 }}>Quociente Eleitoral</p>
-            <p style={{ color: '#78350f', fontSize: 13, margin: '2px 0 0' }}>
+            <p style={{ color: '#92400e', fontWeight: 700, fontSize: 14, margin: 0 }}>Quociente Eleitoral — como se elege de fato</p>
+            <p style={{ color: '#78350f', fontSize: 13, margin: '2px 0 0', lineHeight: 1.6 }}>
               {anoSelecionado === '2022'
-                ? 'Necessarios 17.230 votos para garantir uma cadeira. Faltam 12.350 votos.'
-                : 'Necessarios 16.325 votos para garantir uma cadeira. Faltam 12.542 votos.'}
+                ? 'O quociente (~17.230 votos) define quantas cadeiras o PARTIDO/federação ganha — não é a meta de um candidato sozinho. Piso individual: ~1.723 votos (10% do QE), que você já superou. Meta de eleição: a votação do último eleito do seu partido (no MDB, os eleitos tiveram ~8,4 mil em média). A alavanca real é somar votos ao partido/federação.'
+                : 'O quociente (~16.325 votos) define as cadeiras do PARTIDO, não de um candidato. Piso individual: ~1.633 votos (10% do QE). Meta de eleição: a votação do último eleito do seu partido. A alavanca é somar votos à legenda.'}
             </p>
           </div>
         </div>
@@ -156,15 +156,16 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
             <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
             <div style={{ position: 'relative', height: 10, background: '#e2e8f0', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
               <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '28%', background: '#2563eb', borderRadius: 99 }} />
-              <div style={{ position: 'absolute', left: '22%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
+              <div style={{ position: 'absolute', left: '10%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
+              <div style={{ position: 'absolute', left: '49%', top: 0, height: '100%', width: '2px', background: '#10b981' }} />
               <div style={{ position: 'absolute', left: '98%', top: 0, height: '100%', width: '2px', background: '#94a3b8' }} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8 }}>
               {[
                 { label: 'Atual', val: anoSelecionado === '2022' ? '4.9k' : '3.8k', cor: '#2563eb' },
-                { label: 'Meta minima', val: anoSelecionado === '2022' ? '3.9k' : '2.6k', cor: '#f59e0b' },
-                { label: 'Meta segura', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: '#10b981' },
-                { label: 'Lideranca', val: anoSelecionado === '2022' ? '11.0k' : '8.3k', cor: '#64748b' },
+                { label: 'Piso (10% QE)', val: anoSelecionado === '2022' ? '1.7k' : '1.6k', cor: '#f59e0b' },
+                { label: 'Meta eleição*', val: anoSelecionado === '2022' ? '8.4k' : '4.9k', cor: '#10b981' },
+                { label: 'Quociente', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: '#64748b' },
               ].map((m, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
                   <p style={{ color: '#94a3b8', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
@@ -173,7 +174,7 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
               ))}
             </div>
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', marginTop: 12 }}>
-              <p style={{ color: '#166534', fontSize: 12, margin: 0 }}>Acima da votacao minima dos eleitos</p>
+              <p style={{ color: '#166534', fontSize: 12, margin: 0 }}>Acima do piso individual (10% do QE); abaixo da meta de eleição. *Meta = votação do último eleito do partido/federação.</p>
             </div>
           </div>
 

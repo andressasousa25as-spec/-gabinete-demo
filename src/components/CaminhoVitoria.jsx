@@ -70,6 +70,13 @@ export default function CaminhoVitoria({ onVoltar }) {
   }, [paulinho]);
 
   const totalConquistavel = dadosMunicipios.reduce((s, m) => s + m.conquistavel, 0);
+  const penGeral = (() => {
+    const v = dadosMunicipios.reduce((s, m) => s + m.votos, 0);
+    const e = dadosMunicipios.reduce((s, m) => s + m.eleitores, 0);
+    return e ? (v / e) * 100 : 0;
+  })();
+  const maiorReserv = [...dadosMunicipios].sort((a, b) => b.aptos - a.aptos)[0];
+  const cap = (s) => s ? s.charAt(0) + s.slice(1).toLowerCase() : s;
 
   const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
@@ -101,22 +108,22 @@ export default function CaminhoVitoria({ onVoltar }) {
           <div style={{ ...card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
             <p style={{ color: '#3b82f6', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>POTENCIAL TOTAL</p>
             <p style={{ color: '#1d4ed8', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>+{(totalConquistavel/1000).toFixed(1)}k</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>votos conquistaveis estimados</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>estimativa: 0,5% do comparecimento</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>DISPUTADAS</p>
-            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>0</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secoes · margem 30 vts · +0 votos</p>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MUNICIPIOS</p>
+            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{dadosMunicipios.length}</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>com voto seu registrado</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MOBILIZAVEIS</p>
-            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>3</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secoes · 17.9k eleitores ausentes</p>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>PENETRACAO MEDIA</p>
+            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{penGeral.toFixed(1)}%</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>dos eleitores votaram em você</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>ABANDONADAS</p>
-            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>1</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>secao · menos de 10 votos cada</p>
+            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MAIOR RESERVATORIO</p>
+            <p style={{ color: '#1e293b', fontSize: 22, fontWeight: 900, margin: '0 0 4px' }}>{maiorReserv ? cap(maiorReserv.municipio) : '—'}</p>
+            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{maiorReserv ? (maiorReserv.aptos/1000).toFixed(1) + 'k compareceram' : ''}</p>
           </div>
         </div>
 
