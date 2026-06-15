@@ -9,6 +9,7 @@ import GestaoMidias from '../GestaoMidias';
 import AnalyticsMidias from '../AnalyticsMidias';
 import GestaoUsuarios from './GestaoUsuarios';
 import { registrarLog as logBase } from '../lib/logAtividade';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 import { coordConfiavel, MACAPA_CENTRO, AMAPA_BBOX, COORDS_BAIRROS, LISTA_BAIRROS, LISTA_MUNICIPIOS } from '../lib/bairros';
 import DiagnosticoEleitoral from './DiagnosticoEleitoral';
 import CaminhoVitoria from './CaminhoVitoria';
@@ -131,6 +132,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [showRanking, setShowRanking] = useState(false);
   const [config, setConfig] = useState({ nome: 'Deputado Demo', cargo: 'Deputado Estadual — AP', estado: 'AP', bairro: '', endereco: '', latitude: '', longitude: '' });
   const [aba, setAba] = useState('inicio');
+  const { candidato: analiseCand } = useCandidatoAnalise();
   const [relatorio, setRelatorio] = useState(null);
   const [busca, setBusca] = useState('');
   const [relLider, setRelLider] = useState(''); // filtro do relatório de apoiadores por liderança ('' = geral)
@@ -553,6 +555,14 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               {config.latitude && <p style={{ color: '#60a5fa', fontSize: 11, marginTop: 4 }}>📍 Coordenadas: {config.latitude}, {config.longitude}</p>}
             </div>
+            {ehMaster && (
+              <div style={{ marginTop: 16, padding: 12, background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}>
+                <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>CANDIDATO DE ANÁLISE (TSE)</p>
+                {analiseCand
+                  ? <p style={{ color: '#f1f5f9', fontSize: 13, margin: 0 }}>{analiseCand.nome} · {analiseCand.cargo} · {analiseCand.ano} · {analiseCand.total?.toLocaleString('pt-BR')} votos</p>
+                  : <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>Nenhum candidato importado. Rode o script de importação no onboarding.</p>}
+              </div>
+            )}
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button onClick={salvarConfig} style={{ flex: 1, padding: 12, background: '#1d4ed8', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>💾 Salvar</button>
               <button onClick={() => setShowConfig(false)} style={{ flex: 1, padding: 12, background: '#334155', color: '#f1f5f9', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>Cancelar</button>
