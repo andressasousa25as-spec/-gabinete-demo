@@ -1,18 +1,10 @@
 import { useMemo } from 'react';
 import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
-import { ELEITORADO_MUNICIPIO_2022 } from '../lib/eleitoradoAP';
+import { ELEITORADO_MUNICIPIO_2022, ABSTENCAO_MUNICIPIO_2022 } from '../lib/eleitoradoAP';
 
-// Eleitorado REAL (TSE — perfil do eleitor por seção, AP 2022). Fonte única.
+// Eleitorado e abstenção REAIS (TSE, AP 2022). Fonte única.
 const ELEITORADO_MUNICIPIO = ELEITORADO_MUNICIPIO_2022;
-
-const ABSTENCAO_MUNICIPIO = {
-  'MACAPÁ': 18.6, 'SANTANA': 16.4, 'LARANJAL DO JARI': 26.4,
-  'OIAPOQUE': 22.0, 'MAZAGÃO': 14.3, 'PORTO GRANDE': 25.3,
-  'FERREIRA GOMES': 17.2, 'PEDRA BRANCA DO AMAPARI': 25.0,
-  'CALÇOENE': 24.3, 'AMAPÁ': 19.0, 'TARTARUGALZINHO': 18.0,
-  'CUTIAS': 17.7, 'ITAUBAL': 18.0, 'PRACUÚBA': 20.0,
-  'SERRA DO NAVIO': 15.0, 'VITÓRIA DO JARI': 19.0
-};
+const ABSTENCAO_MUNICIPIO = ABSTENCAO_MUNICIPIO_2022;
 
 // Lider adversario por municipio (baseado nas imagens do EleitorAI)
 const LIDER_ADVERSARIO = {

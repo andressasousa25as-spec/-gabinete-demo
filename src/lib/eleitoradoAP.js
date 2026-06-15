@@ -1,7 +1,7 @@
-// Eleitorado (eleitores aptos) do Amapa — FONTE UNICA das analises eleitorais.
-// Fonte: TSE Dados Abertos — Perfil do eleitor por secao (AP), agregado por
-// municipio e por zona somando QT_ELEITORES_PERFIL. Numero REAL, nao estimativa.
-// 2022 = eleicao de deputado estadual/federal; 2024 = eleicao de vereadores.
+// Eleitorado e abstencao do Amapa — FONTE UNICA das analises eleitorais.
+// Fonte: TSE Dados Abertos. Aptos/abstencao 2022 do "perfil de comparecimento e
+// abstencao" (1o turno); aptos 2024 do "perfil do eleitor por secao". REAL.
+// 2022 = deputado estadual; 2024 = vereadores.
 
 export const ELEITORADO_MUNICIPIO_2022 = {
   "AMAPÁ": 6880,
@@ -34,6 +34,38 @@ export const ELEITORADO_ZONA_2022 = {
   "12": 20329
 };
 export const TOTAL_APTOS_2022 = 550687;
+
+// Abstencao REAL em % (1o turno 2022)
+export const ABSTENCAO_MUNICIPIO_2022 = {
+  "AMAPÁ": 20.1,
+  "CALÇOENE": 24.3,
+  "CUTIAS": 17.7,
+  "FERREIRA GOMES": 17.2,
+  "ITAUBAL": 18.4,
+  "LARANJAL DO JARI": 26.4,
+  "MACAPÁ": 18.5,
+  "MAZAGÃO": 14.3,
+  "OIAPOQUE": 31.6,
+  "PEDRA BRANCA DO AMAPARI": 24.9,
+  "PORTO GRANDE": 25.2,
+  "PRACUÚBA": 17.2,
+  "SANTANA": 16.4,
+  "SERRA DO NAVIO": 21.5,
+  "TARTARUGALZINHO": 21.1,
+  "VITÓRIA DO JARI": 23.4
+};
+export const ABSTENCAO_ZONA_2022 = {
+  "1": 21.4,
+  "2": 18.0,
+  "4": 31.6,
+  "5": 14.3,
+  "6": 16.4,
+  "7": 25.6,
+  "8": 21.1,
+  "10": 19.1,
+  "11": 24.0,
+  "12": 22.8
+};
 
 export const ELEITORADO_MUNICIPIO_2024 = {
   "AMAPÁ": 7751,

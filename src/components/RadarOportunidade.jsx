@@ -1,14 +1,10 @@
 import { useMemo } from 'react';
 import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
-import { ELEITORADO_ZONA_2022 } from '../lib/eleitoradoAP';
+import { ELEITORADO_ZONA_2022, ABSTENCAO_ZONA_2022 } from '../lib/eleitoradoAP';
 
-// Eleitorado REAL por zona (TSE — perfil do eleitor por seção, AP 2022). Fonte única.
+// Eleitorado e abstenção REAIS por zona (TSE, AP 2022). Fonte única.
 const ELEITORADO_ZONA = ELEITORADO_ZONA_2022;
-const ABSTENCAO_ZONA = {
-  '1': 19.0, '2': 18.6, '4': 22.0, '5': 14.3,
-  '6': 16.4, '7': 24.0, '8': 18.0, '10': 18.2,
-  '11': 25.0, '12': 22.5,
-};
+const ABSTENCAO_ZONA = ABSTENCAO_ZONA_2022;
 const MUNICIPIOS_ZONA = {
   '1': ['AMAPA','CALCOENE','PRACUUBA'],'2': ['MACAPA'],'4': ['OIAPOQUE'],
   '5': ['MAZAGAO'],'6': ['SANTANA'],'7': ['LARANJAL DO JARI','VITORIA DO JARI'],

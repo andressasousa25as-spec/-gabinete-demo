@@ -126,7 +126,7 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
             { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? '0.9%' : '0.0%',
               sub: 'dos aptos votaram em você', cor: '#f59e0b' },
             { label: 'ABSTENCAO TOTAL', valor: anoSelecionado === '2022' ? '19.5%' : '0.0%',
-              sub: anoSelecionado === '2022' ? '107.234 ausentes' : 'Sem dado', cor: '#ef4444' },
+              sub: anoSelecionado === '2022' ? '107.398 ausentes' : 'Sem dado', cor: '#ef4444' },
           ].map((c, i) => (
             <div key={i} style={{ ...card }}>
               <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
