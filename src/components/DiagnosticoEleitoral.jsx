@@ -9,8 +9,8 @@ const PAULINHO_2018 = {
 const PAULINHO_2022 = {
   nome: 'PAULO ALCEU AVILA RAMOS', partido: 'MDB',
   votos: 4880, ranking: 26, totalCandidatos: 343,
-  municipios: 16, zonas: 17,
-  totalEleitoresAptos: 578157, totalVotosValidos: 414123,
+  municipios: 16, zonas: 10,
+  totalEleitoresAptos: 550687, totalVotosValidos: 414123,
   abstencao: 107234, abstencaoPerc: 18.55,
   penetracao: 0.9,
   // MDB 2022 dados

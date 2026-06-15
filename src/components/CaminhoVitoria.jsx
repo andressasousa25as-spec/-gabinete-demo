@@ -1,14 +1,9 @@
 import { useMemo } from 'react';
 import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { ELEITORADO_MUNICIPIO_2022 } from '../lib/eleitoradoAP';
 
-const ELEITORADO_MUNICIPIO = {
-  'MACAPÁ': 310900, 'SANTANA': 83300, 'LARANJAL DO JARI': 28900,
-  'OIAPOQUE': 14200, 'MAZAGÃO': 19200, 'PORTO GRANDE': 14200,
-  'FERREIRA GOMES': 6100, 'PEDRA BRANCA DO AMAPARI': 10100,
-  'CALÇOENE': 8300, 'AMAPÁ': 6500, 'TARTARUGALZINHO': 6800,
-  'CUTIAS': 5000, 'ITAUBAL': 4400, 'PRACUÚBA': 3700,
-  'SERRA DO NAVIO': 3200, 'VITÓRIA DO JARI': 14000
-};
+// Eleitorado REAL (TSE — perfil do eleitor por seção, AP 2022). Fonte única.
+const ELEITORADO_MUNICIPIO = ELEITORADO_MUNICIPIO_2022;
 
 const ABSTENCAO_MUNICIPIO = {
   'MACAPÁ': 18.6, 'SANTANA': 16.4, 'LARANJAL DO JARI': 26.4,

@@ -1,11 +1,9 @@
 import { useMemo } from 'react';
 import { CANDIDATOS_TSE as candidatos } from '../candidatosTSE';
+import { ELEITORADO_ZONA_2022 } from '../lib/eleitoradoAP';
 
-const ELEITORADO_ZONA = {
-  '1': 14800, '2': 71000, '4': 14200, '5': 19200,
-  '6': 83300, '7': 42900, '8': 6800, '10': 58400,
-  '11': 14300, '12': 20300,
-};
+// Eleitorado REAL por zona (TSE — perfil do eleitor por seção, AP 2022). Fonte única.
+const ELEITORADO_ZONA = ELEITORADO_ZONA_2022;
 const ABSTENCAO_ZONA = {
   '1': 19.0, '2': 18.6, '4': 22.0, '5': 14.3,
   '6': 16.4, '7': 24.0, '8': 18.0, '10': 18.2,
