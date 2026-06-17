@@ -19,8 +19,6 @@ import RadarOportunidade from './RadarOportunidade';
 import ProjecaoEstrategica from './ProjecaoEstrategica';
 import CenarioVereador2024 from './CenarioVereador2024';
 import CenarioMunicipal from '../CenarioMunicipal';
-import CenarioVereador2024 from './CenarioVereador2024';
-import CenarioMunicipal from '../CenarioMunicipal';
 
 
 

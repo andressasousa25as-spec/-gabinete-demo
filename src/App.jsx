@@ -119,12 +119,12 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="text-white py-5 shadow-lg" style={{ background: "#0f172a", borderBottom: "1px solid #1e293b" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <div>
             <h1 style={{ fontSize: "clamp(10px, 3vw, 24px)", fontWeight: 800, whiteSpace: "nowrap" }}>GABINETE DIGITAL SF</h1>
             <p style={{ color: "#ffffff", fontSize: 13 }}>Deputado Demo</p>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
             {ehMaster && (
               <button onClick={() => setVerMaster(true)} style={{ background: "#f59e0b", color: "#0f172a", padding: "8px 14px", borderRadius: 999, fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
                 👑 Assinatura
