@@ -17,6 +17,8 @@ export default function Comunicado({ eleitores = [], liderancas = [], reunioes =
   const ativos = destinatarios.filter(p => !desmarcados.includes(p.id));
 
   const toggle = (id) => setDesmarcados(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  const todosMarcados = destinatarios.length > 0 && ativos.length === destinatarios.length;
+  const alternarTodos = () => setDesmarcados(todosMarcados ? destinatarios.map(p => p.id) : []);
 
   const gerar = () => {
     if (!lider) return alert('❌ Escolha uma liderança.');
@@ -60,7 +62,14 @@ export default function Comunicado({ eleitores = [], liderancas = [], reunioes =
 
             {lider && (
               <div style={{ marginBottom: 14 }}>
-                <span style={{ color: '#cbd5e1', fontSize: 13, fontWeight: 700 }}>{ativos.length} de {destinatarios.length} destinatários</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <span style={{ color: '#cbd5e1', fontSize: 13, fontWeight: 700 }}>{ativos.length} de {destinatarios.length} destinatários</span>
+                  {destinatarios.length > 0 && (
+                    <button onClick={alternarTodos} style={{ background: 'transparent', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
+                      {todosMarcados ? '✗ Desmarcar todos' : '✓ Marcar todos'}
+                    </button>
+                  )}
+                </div>
                 <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #1f2937', borderRadius: 10, padding: 8, marginTop: 6 }}>
                   {destinatarios.length === 0 ? <p style={{ color: '#64748b', textAlign: 'center', padding: 12, fontSize: 13 }}>Sem destinatários com telefone.</p> :
                     destinatarios.map(p => (
