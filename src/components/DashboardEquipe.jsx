@@ -7,6 +7,8 @@ import GestaoAnotacoes from '../GestaoAnotacoes';
 import GestaoMidias from '../GestaoMidias';
 import { registrarLog as logBase } from '../lib/logAtividade';
 import DisparoLink from './DisparoLink';
+import Comunicado from './Comunicado';
+import { linkMapaReuniao } from '../lib/mapa.js';
 
 const BAIRROS_AMAPA = LISTA_BAIRROS;
 
@@ -133,6 +135,7 @@ export default function DashboardEquipe({ perfil }) {
   const [showReuniao, setShowReuniao] = useState(false);
   const [showMidias, setShowMidias] = useState(false);
   const [disparoCanal, setDisparoCanal] = useState(null);
+  const [showComunicado, setShowComunicado] = useState(false);
 
   const [novoEleitor, setNovoEleitor] = useState({
     nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: ''
@@ -305,8 +308,17 @@ export default function DashboardEquipe({ perfil }) {
             </button>
           </div>
         </div>
+        <button onClick={() => setShowComunicado(true)}
+          style={{ marginTop: 12, padding: '11px 16px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+          📣 Comunicado por liderança
+        </button>
         {disparoCanal && (
           <DisparoLink canal={disparoCanal} eleitores={eleitores} liderancas={liderancas} onClose={() => setDisparoCanal(null)} />
+        )}
+        {showComunicado && (
+          <Comunicado eleitores={eleitores} liderancas={liderancas} reunioes={reunioes}
+            onEnviar={({ lideranca, total }) => registrarLog('Enviou comunicado', `Liderança: ${lideranca} | ${total} destinatários`)}
+            onClose={() => setShowComunicado(false)} />
         )}
       </div>
 
@@ -400,6 +412,10 @@ export default function DashboardEquipe({ perfil }) {
                   <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
                   <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
                   {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                  {linkMapaReuniao(r) && (
+                    <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
+                      style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
+                  )}
                 </div>
               ))
             }

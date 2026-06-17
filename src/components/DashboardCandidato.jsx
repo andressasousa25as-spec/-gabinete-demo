@@ -19,6 +19,8 @@ import RadarOportunidade from './RadarOportunidade';
 import ProjecaoEstrategica from './ProjecaoEstrategica';
 import CenarioVereador2024 from './CenarioVereador2024';
 import CenarioMunicipal from '../CenarioMunicipal';
+import Comunicado from './Comunicado';
+import { linkMapaReuniao } from '../lib/mapa.js';
 
 
 
@@ -135,6 +137,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [aba, setAba] = useState('inicio');
   const { candidato: analiseCand } = useCandidatoAnalise();
   const [relatorio, setRelatorio] = useState(null);
+  const [showComunicado, setShowComunicado] = useState(false);
   const [busca, setBusca] = useState('');
   const [relLider, setRelLider] = useState(''); // filtro do relatório de apoiadores por liderança ('' = geral)
 
@@ -663,6 +666,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         {/* Coluna Reuniões */}
         <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
+          <button onClick={() => setShowComunicado(true)}
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            📣 Comunicado por liderança
+          </button>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {reunioes.length === 0 ? (
               <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
@@ -673,6 +680,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                     <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
                     <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
                     {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                    {linkMapaReuniao(r) && (
+                      <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
+                        style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
+                    )}
                   </div>
                   <button onClick={() => excluir('reunioes', r.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>🗑️</button>
                 </div>
@@ -686,6 +697,11 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       <p className="text-center text-green-600 font-bold">✅ Conectado ao Supabase</p>
 
       {relatorio && <RelatorioImpressao {...relatorio} onFechar={() => setRelatorio(null)} />}
+      {showComunicado && (
+        <Comunicado eleitores={eleitores} liderancas={liderancas} reunioes={reunioes}
+          onEnviar={({ lideranca, total }) => registrarLog('Enviou comunicado', `Liderança: ${lideranca} | ${total} destinatários`)}
+          onClose={() => setShowComunicado(false)} />
+      )}
 
       {/* MODAL ELEITOR */}
 

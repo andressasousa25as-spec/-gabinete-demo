@@ -7,6 +7,8 @@ import MapaPage from '../MapaPage';
 import TermoLGPD from '../TermoLGPD';
 import { registrarLog as logBase } from '../lib/logAtividade';
 import { coordConfiavel, MACAPA_CENTRO, AMAPA_BBOX, LISTA_BAIRROS, LISTA_MUNICIPIOS } from '../lib/bairros';
+import Comunicado from './Comunicado';
+import { linkMapaReuniao } from '../lib/mapa.js';
 
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiZ2FiaW5ldGVkaWdpdGFsc2YiLCJhIjoiY21wb3o3cjBjMDY1djJzcHZyOXM4Y3JmZSJ9.S1a4VYKtkm_2Bn3Hxowugw';
@@ -65,6 +67,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   const [eleitores, setEleitores] = useState([]);
   const [liderancas, setLiderancas] = useState([]);
   const [reunioes, setReunioes] = useState([]);
+  const [showComunicado, setShowComunicado] = useState(false);
   const [loading, setLoading] = useState(false);
   const [aba, setAba] = useState('inicio');
   const [busca, setBusca] = useState('');
@@ -433,6 +436,10 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
         {/* Reuniões */}
         <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
+          <button onClick={() => setShowComunicado(true)}
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            📣 Comunicado por liderança
+          </button>
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {reunioes.length === 0
               ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
@@ -443,6 +450,10 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
                       <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
                       <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
                       {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                      {linkMapaReuniao(r) && (
+                        <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
+                          style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
+                      )}
                     </div>
                     <button onClick={() => excluir('reunioes', r.id, r.titulo)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>🗑️</button>
                   </div>
@@ -603,6 +614,12 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
             <button onClick={() => setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
         </div>
+      )}
+
+      {showComunicado && (
+        <Comunicado eleitores={eleitores} liderancas={liderancas} reunioes={reunioes}
+          onEnviar={({ lideranca, total }) => registrarLog('Enviou comunicado', `Liderança: ${lideranca} | ${total} destinatários`)}
+          onClose={() => setShowComunicado(false)} />
       )}
     </div>
   );
