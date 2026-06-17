@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 
 const MESORREGIAO = {
-  'Sul do Amapa': ['MACAPÁ','SANTANA','MAZAGÃO','PORTO GRANDE','ITAUBAL','CUTIAS','PEDRA BRANCA DO AMAPARI','FERREIRA GOMES','SERRA DO NAVIO'],
-  'Norte do Amapa': ['AMAPÁ','CALÇOENE','OIAPOQUE','LARANJAL DO JARI','VITÓRIA DO JARI','PRACUÚBA','TARTARUGALZINHO']
+  'Sul do Amapa': ['MACAPÁ','SANTANA','ITAUBAL','CUTIAS','PORTO GRANDE','FERREIRA GOMES','SERRA DO NAVIO','PEDRA BRANCA DO AMAPARI','MAZAGÃO','LARANJAL DO JARI','VITÓRIA DO JARI'],
+  'Norte do Amapa': ['AMAPÁ','PRACUÚBA','TARTARUGALZINHO','OIAPOQUE','CALÇOENE']
 };
 
 const MICRORREGIAO = {
-  'Macapa': ['MACAPÁ','SANTANA','MAZAGÃO','ITAUBAL','CUTIAS'],
-  'Serrana': ['PEDRA BRANCA DO AMAPARI','FERREIRA GOMES','SERRA DO NAVIO','PORTO GRANDE'],
-  'Oiapoque': ['OIAPOQUE','CALÇOENE','AMAPÁ','PRACUÚBA','TARTARUGALZINHO'],
-  'Laranjal do Jari': ['LARANJAL DO JARI','VITÓRIA DO JARI'],
+  'Macapa': ['MACAPÁ','SANTANA','ITAUBAL','CUTIAS','PORTO GRANDE','FERREIRA GOMES','SERRA DO NAVIO','PEDRA BRANCA DO AMAPARI'],
+  'Mazagao': ['MAZAGÃO','LARANJAL DO JARI','VITÓRIA DO JARI'],
+  'Amapa': ['AMAPÁ','PRACUÚBA','TARTARUGALZINHO'],
+  'Oiapoque': ['OIAPOQUE','CALÇOENE'],
 };
 
 export default function AnaliseTerritorial({ onVoltar }) {
