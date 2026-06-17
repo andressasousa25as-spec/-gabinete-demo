@@ -22,7 +22,7 @@ const formatarWhatsApp = (telefone) => {
 const linkWhatsApp = (telefone, nome) => {
   const numero = formatarWhatsApp(telefone);
   if (!numero) return null;
-  const mensagem = `Olá, ${nome || 'apoiador'}! 👋\n\nVocê está recebendo novidades do *Deputado Demo* 2026. 🗳️\n\nPara parar de receber mensagens, responda *SAIR* a qualquer momento. ✅`;
+  const mensagem = `Olá, ${nome || 'apoiador'}! 👋\n\nVocê está recebendo novidades de *Deputado Demo*.\n\nPara parar de receber mensagens, responda *SAIR* a qualquer momento. ✅`;
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
 };
 

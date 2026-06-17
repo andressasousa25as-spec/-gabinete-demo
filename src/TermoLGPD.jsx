@@ -13,7 +13,7 @@ export default function TermoLGPD({ aceito, onChange }) {
       <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
         Ao marcar esta opção, o titular autoriza, de forma livre, informada e inequívoca, o tratamento
         dos seus dados pessoais (nome, telefone, endereço, zona eleitoral e seção eleitoral) pelo
-        responsável pelo mandato/campanha, para as seguintes finalidades:
+        responsável pela comunicação política, para as seguintes finalidades:
         <br /><br />
         <strong>I.</strong> Comunicação política e eleitoral, incluindo envio de mensagens, materiais
         de campanha e convites para eventos;<br />

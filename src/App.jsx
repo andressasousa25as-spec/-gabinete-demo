@@ -108,7 +108,7 @@ function App() {
   if (licencaVencida(licenca) && !ehMaster) return <TelaBloqueio onLogout={handleLogout} />;
   if (ehMaster && verMaster) return <TelaMaster onVoltar={() => setVerMaster(false)} />;
 
-  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? 'Deputado Demo' : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe de Campanha';
+  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? 'Deputado Demo' : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe';
   // Master e Candidato veem o painel completo do candidato. ADMIN vê o DashboardADM. Demais, Equipe.
   const conteudo = (perfil === 'CANDIDATO' || ehMaster)
     ? <DashboardCandidato perfil={membro} ehMaster={ehMaster} />

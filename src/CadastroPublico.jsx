@@ -233,7 +233,7 @@ export default function CadastroPublico({ liderancaId }) {
           <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
             <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>📋 TERMO DE CONSENTIMENTO — LGPD / TSE</p>
             <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
-              Autorizo o tratamento dos meus dados pessoais — nome, telefone, endereço, zona e seção eleitoral — para fins de comunicação, atendimento e ações políticas do mandato/campanha do <strong>Deputado Demo</strong>, nos termos da <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong> e das <strong>Resoluções do TSE</strong>.
+              Autorizo o tratamento dos meus dados pessoais — nome, telefone, endereço, zona e seção eleitoral — para fins de comunicação e atendimento político de <strong>Deputado Demo</strong>, nos termos da <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong> e das <strong>Resoluções do TSE</strong>.
             </p>
             <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
               Os dados serão tratados com finalidade específica, <strong>mantidos enquanto durar essa finalidade ou até a revogação do consentimento</strong>, não serão compartilhados com terceiros sem novo consentimento e podem ser revogados a qualquer momento respondendo <strong>SAIR</strong> para o WhatsApp da campanha.

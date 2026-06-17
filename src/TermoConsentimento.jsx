@@ -20,7 +20,7 @@ export default function TermoConsentimento({ aceito, onChange, disabled = false 
           <br /><br />
           Eu autorizo o tratamento dos meus dados pessoais (nome, telefone, endereço, 
           geolocalização, zona e seção eleitoral) para fins de comunicação, 
-          atendimento e ações políticas do mandato/campanha, nos termos da 
+          atendimento e comunicação política, nos termos da
           Lei Geral de Proteção de Dados (LGPD) e das normas do TSE.
           <br /><br />
           <span style={{ fontSize: '12px', color: '#64748b' }}>
