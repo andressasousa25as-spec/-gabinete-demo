@@ -311,22 +311,6 @@ export default function DashboardEquipe({ perfil }) {
         )}
       </div>
 
-      {/* Relatórios */}
-      <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>🖨️ Relatórios — Imprimir / Salvar PDF</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-          {[
-            { tipo: 'eleitores', label: 'Apoiadores' },
-            { tipo: 'liderancas', label: 'Lideranças' },
-            { tipo: 'reunioes', label: 'Reuniões' },
-          ].map(b => (
-            <button key={b.tipo} onClick={() => abrirRelatorio(b.tipo)} style={{ flex: 1, minWidth: '140px', padding: '14px', borderRadius: '12px', background: '#1f2937', color: '#f1f5f9', border: '1px solid #334155'}}>
-              {b.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* GRID 3 COLUNAS */}
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px', alignItems: 'start' }}>
 
