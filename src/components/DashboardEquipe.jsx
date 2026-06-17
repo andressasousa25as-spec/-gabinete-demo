@@ -308,17 +308,8 @@ export default function DashboardEquipe({ perfil }) {
             </button>
           </div>
         </div>
-        <button onClick={() => setShowComunicado(true)}
-          style={{ marginTop: 12, padding: '11px 16px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
-          📣 Comunicado por liderança
-        </button>
         {disparoCanal && (
           <DisparoLink canal={disparoCanal} eleitores={eleitores} liderancas={liderancas} onClose={() => setDisparoCanal(null)} />
-        )}
-        {showComunicado && (
-          <Comunicado eleitores={eleitores} liderancas={liderancas} reunioes={reunioes}
-            onEnviar={({ lideranca, total }) => registrarLog('Enviou comunicado', `Liderança: ${lideranca} | ${total} destinatários`)}
-            onClose={() => setShowComunicado(false)} />
         )}
       </div>
 
@@ -405,6 +396,10 @@ export default function DashboardEquipe({ perfil }) {
         {/* Reuniões */}
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
+          <button onClick={() => setShowComunicado(true)}
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            📣 Comunicado por liderança
+          </button>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {reunioes.length === 0 ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p> :
               reunioes.map(r => (
@@ -427,6 +422,11 @@ export default function DashboardEquipe({ perfil }) {
       <p className="text-center text-green-600 font-bold">✅ Tudo que a Equipe cadastra aparece automaticamente no perfil do Deputado.</p>
 
       {relatorio && <RelatorioImpressao {...relatorio} onFechar={() => setRelatorio(null)} />}
+      {showComunicado && (
+        <Comunicado eleitores={eleitores} liderancas={liderancas} reunioes={reunioes}
+          onEnviar={({ lideranca, total }) => registrarLog('Enviou comunicado', `Liderança: ${lideranca} | ${total} destinatários`)}
+          onClose={() => setShowComunicado(false)} />
+      )}
 
       {/* MODAL ELEITOR */}
       {showEleitor && (
