@@ -273,8 +273,7 @@ export default function DashboardEquipe({ perfil }) {
 
       {/* Header */}
       <div style={{ background: "#ffffff", borderRadius: 24, padding: "32px 40px", color: "white" }}>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#0f172a" }}>👥 Equipe de Campanha</h1>
-        <p style={{ fontSize: 16, color: "#64748b", marginTop: 4 }}>Gabinete Demo 2026</p>
+        <h1 style={{ fontSize: 32, fontWeight: 800, color: "#0f172a" }}>{config?.nome || 'Deputado Demo'}</h1>
         <p style={{ color: "#64748b", marginTop: 8 }}>Apoiadores: {eleitores.length} | Lideranças: {liderancas.length} | Reuniões: {reunioes.length}</p>
       </div>
 
