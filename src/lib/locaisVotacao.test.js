@@ -13,6 +13,6 @@ describe('localDeVotacao', () => {
     expect(localDeVotacao(z, '0' + s)).toBe(LOCAIS_VOTACAO[chave].local);
   });
   it('retorna aviso quando não encontra', () => {
-    expect(localDeVotacao(99, 9999)).toBe('Local não localizado');
+    expect(localDeVotacao(99, 9999)).toBe('Local a confirmar no e-Título');
   });
 });

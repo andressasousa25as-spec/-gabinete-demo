@@ -9,5 +9,5 @@ export function localDeVotacao(zona, secao) {
   const s = parseInt(String(secao).trim(), 10);
   if (Number.isNaN(z) || Number.isNaN(s)) return null;
   const rec = LOCAIS_VOTACAO[`${z}-${s}`];
-  return rec ? rec.local : 'Local não localizado';
+  return rec ? rec.local : 'Local a confirmar no e-Título';
 }
