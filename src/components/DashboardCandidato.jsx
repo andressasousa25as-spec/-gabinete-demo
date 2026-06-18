@@ -21,6 +21,7 @@ import CenarioVereador2024 from './CenarioVereador2024';
 import CenarioMunicipal from '../CenarioMunicipal';
 import Comunicado from './Comunicado';
 import { linkMapaReuniao } from '../lib/mapa.js';
+import { localDeVotacao } from '../lib/locaisVotacao';
 
 
 
@@ -394,8 +395,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
     const configs = {
       eleitores: {
         titulo: 'Relatório de Apoiadores',
-        dados: eleitores.map(e => ({ nome: e.nome, telefone: e.telefone, bairro: e.bairro || '—', zona: e.zona_eleitoral ? `Zona ${e.zona_eleitoral}` : '—', secao: e.secao_eleitoral || '—', municipio: e.municipio || 'Macapá', data: e.created_at ? new Date(e.created_at).toLocaleDateString('pt-BR') : '—' })),
-        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'zona', label: 'Zona' }, { key: 'secao', label: 'Seção' }, { key: 'municipio', label: 'Município' }, { key: 'data', label: 'Cadastrado' }]
+        dados: eleitores.map(e => ({ nome: e.nome, telefone: e.telefone, bairro: e.bairro || '—', zona: e.zona_eleitoral ? `Zona ${e.zona_eleitoral}` : '—', secao: e.secao_eleitoral || '—', local: localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) || '—', municipio: e.municipio || 'Macapá', data: e.created_at ? new Date(e.created_at).toLocaleDateString('pt-BR') : '—' })),
+        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'zona', label: 'Zona' }, { key: 'secao', label: 'Seção' }, { key: 'local', label: 'Local de votação' }, { key: 'municipio', label: 'Município' }, { key: 'data', label: 'Cadastrado' }]
       },
       liderancas: {
         titulo: 'Relatório de Lideranças',
@@ -433,7 +434,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
         {[
-          { label: 'Apoiadores' + sufLider, dados: eleitoresRel.map(e => ({ nome: e.nome, telefone: e.telefone || '-', bairro: e.bairro || '-', zona: e.zona_eleitoral ? 'Zona ' + e.zona_eleitoral : '-', secao: e.secao_eleitoral || '-', municipio: e.municipio || '-', lideranca: lideById[e.lideranca_id] || '-' })), colunas: ['nome','telefone','bairro','zona','secao','municipio','lideranca'] },
+          { label: 'Apoiadores' + sufLider, dados: eleitoresRel.map(e => ({ nome: e.nome, telefone: e.telefone || '-', bairro: e.bairro || '-', zona: e.zona_eleitoral ? 'Zona ' + e.zona_eleitoral : '-', secao: e.secao_eleitoral || '-', local: localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) || '-', municipio: e.municipio || '-', lideranca: lideById[e.lideranca_id] || '-' })), colunas: ['nome','telefone','bairro','zona','secao','local','municipio','lideranca'] },
           { label: 'Lideranças', dados: liderancas.map(l => ({ nome: l.nome, telefone: l.telefone || '-', bairro: l.bairro || '-', demanda: l.demanda || '-' })), colunas: ['nome','telefone','bairro','demanda'] },
           { label: 'Reuniões', dados: reunioes.map(r => ({ titulo: r.titulo, data: r.data ? new Date(r.data).toLocaleString('pt-BR') : '-', local: r.local || '-' })), colunas: ['titulo','data','local'] },
         ].map((rel, i) => (
@@ -628,6 +629,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                     <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
                     {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
                     {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
+                    {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                     {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
                   </div>
                   <div style={{ display: 'flex', gap: '4px', flexShrink: 0, marginLeft: '6px' }}>
@@ -749,6 +751,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Secao" value={eleitorEditando.secao_eleitoral || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, secao_eleitoral: e.target.value })} />
             </div>
+            {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={eleitorEditando.observacao || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, observacao: e.target.value })} />
             <button onClick={salvarEdicaoEleitor} disabled={loading} style={estiloBotao('#1d4ed8')}>{loading ? 'Salvando...' : 'Salvar Alteracoes'}</button>
             <button onClick={() => setEleitorEditando(null)} style={estiloBotao('#64748b')}>Cancelar</button>
@@ -805,6 +808,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" min="1" max="9999" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
+            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={novoEleitor.observacao || ''} onChange={e => setNovoEleitor({ ...novoEleitor, observacao: e.target.value })} />
                         <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>

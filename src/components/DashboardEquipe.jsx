@@ -9,6 +9,7 @@ import { registrarLog as logBase } from '../lib/logAtividade';
 import DisparoLink from './DisparoLink';
 import Comunicado from './Comunicado';
 import { linkMapaReuniao } from '../lib/mapa.js';
+import { localDeVotacao } from '../lib/locaisVotacao';
 
 const BAIRROS_AMAPA = LISTA_BAIRROS;
 
@@ -226,8 +227,8 @@ export default function DashboardEquipe({ perfil }) {
     const configs = {
       eleitores: {
         titulo: 'Relatório de Apoiadores',
-        dados: eleitores.map(e => ({ nome: e.nome, telefone: e.telefone, bairro: e.bairro || '—', zona: e.zona_eleitoral ? `Zona ${e.zona_eleitoral}` : '—', secao: e.secao_eleitoral || '—', municipio: e.municipio || 'Macapá', data: e.created_at ? new Date(e.created_at).toLocaleDateString('pt-BR') : '—' })),
-        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'zona', label: 'Zona' }, { key: 'secao', label: 'Seção' }, { key: 'municipio', label: 'Município' }, { key: 'data', label: 'Cadastrado' }]
+        dados: eleitores.map(e => ({ nome: e.nome, telefone: e.telefone, bairro: e.bairro || '—', zona: e.zona_eleitoral ? `Zona ${e.zona_eleitoral}` : '—', secao: e.secao_eleitoral || '—', local: localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) || '—', municipio: e.municipio || 'Macapá', data: e.created_at ? new Date(e.created_at).toLocaleDateString('pt-BR') : '—' })),
+        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'zona', label: 'Zona' }, { key: 'secao', label: 'Seção' }, { key: 'local', label: 'Local de votação' }, { key: 'municipio', label: 'Município' }, { key: 'data', label: 'Cadastrado' }]
       },
       liderancas: {
         titulo: 'Relatório de Lideranças',
@@ -339,6 +340,7 @@ export default function DashboardEquipe({ perfil }) {
                         <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
                         {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
                         {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
+                        {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                         {e.opt_out && <p style={{ color: '#92400e', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
                       </div>
                       {e.opt_out ? (
@@ -449,6 +451,7 @@ export default function DashboardEquipe({ perfil }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" min="1" max="9999" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
+            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
             <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
               <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>📋 TERMO — LGPD / TSE</p>
               <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.6', marginBottom: '12px' }}>
