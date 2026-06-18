@@ -7,12 +7,7 @@ import { supabase } from './lib/supabase';
 const BAIRROS_AMAPA = LISTA_BAIRROS;
 
 // Zonas Eleitorais do Amapá (TRE-AP)
-const ZONAS_AMAPA = [
-  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-  "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-  "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
-  "31", "32", "33", "34", "35",
-];
+const ZONAS_AMAPA = ["1", "2", "4", "5", "6", "7", "8", "10", "11", "12"]; // zonas reais do AP (fonte: TSE)
 
 const inputStyle = {
   width: '100%',

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { LISTA_MUNICIPIOS, bairrosDoMunicipio } from './lib/bairros';
 import { supabase } from './lib/supabase';
 
-const ZONAS_AMAPA = Array.from({ length: 35 }, (_, i) => String(i + 1));
+const ZONAS_AMAPA = ["1", "2", "4", "5", "6", "7", "8", "10", "11", "12"]; // zonas reais do AP (fonte: TSE)
 
 const estiloInput = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
