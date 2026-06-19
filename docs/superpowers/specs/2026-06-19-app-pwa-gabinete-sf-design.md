@@ -37,7 +37,12 @@ Reaproveita 100% do código React+Vite+Supabase existente.
 ### 3.2 Offline
 - App shell: precache (abre sem internet).
 - Dados de leitura: runtime caching `NetworkFirst` para chamadas GET ao Supabase REST (última versão quando offline).
-- Gravações (insert/update/delete): exigem rede; sem conexão, exibir aviso "sem conexão" e não falhar silenciosamente.
+- **Gravações offline — ações de campo (incluído):** cadastrar eleitor e registrar/atualizar demanda funcionam sem internet via padrão **outbox**:
+  - A ação é gravada localmente (IndexedDB) numa fila `outbox` e a UI confirma de forma otimista ("salvo — será sincronizado").
+  - Ao reconectar (evento `online` / Background Sync quando disponível), a fila é reenviada ao Supabase em ordem; itens enviados saem da fila.
+  - **Conflitos:** estratégia simples — cadastro de eleitor é sempre `insert` (sem conflito); atualização de demanda usa "última gravação vence" (`updated_at`). Falhas de validação no servidor marcam o item como "erro" para revisão manual; não bloqueiam o resto da fila.
+  - Indicador visual de itens pendentes (badge "N aguardando envio").
+- **Demais gravações** (lideranças, reuniões, anotações, config, broadcast): exigem rede; sem conexão, exibir aviso "sem conexão" e não falhar silenciosamente.
 - Mapbox: sem cache (online apenas).
 
 ### 3.3 Push (Web Push + VAPID)
@@ -65,6 +70,8 @@ Web Push no iPhone exige iOS ≥ 16.4 **e** app instalado na tela inicial. Sem i
 
 ## 5. Componentes (unidades isoladas)
 - `pwa` config (vite-plugin-pwa) — manifest + service worker. Depende de: assets de ícone.
+- `outbox` (módulo offline) — fila de gravações em IndexedDB para cadastro de eleitor e demanda; enfileira, reenvia ao reconectar, expõe contagem de pendentes e itens com erro. Depende de: supabase, IndexedDB.
+- `useOnlineStatus` + indicador de pendências — mostra estado de conexão e badge "N aguardando envio".
 - `usePushSubscription` (hook) — pede permissão, assina, salva/remove em `push_subscriptions`. Depende de: supabase, VITE_VAPID_PUBLIC_KEY.
 - Botão `InstalarAppButton` — captura `beforeinstallprompt`, dispara instalação.
 - Tela `Broadcast` — UI de aviso manual. Depende de: Edge Function `send-push`.
@@ -74,11 +81,12 @@ Web Push no iPhone exige iOS ≥ 16.4 **e** app instalado na tela inicial. Sem i
 ## 6. Testes / verificação
 1. Build + Lighthouse PWA (instalável).
 2. Android: instalar, validar ícone SF / tela cheia / splash.
-3. Offline: modo avião abre e navega.
+3. Offline: modo avião abre e navega; cadastrar eleitor e atualizar demanda offline entram na fila; ao religar a rede, sincronizam e somem do badge de pendências.
 4. Push: conceder permissão e validar os 4 avisos (incl. broadcast) chegando.
 5. Repetir nos dois apps (demo + Paulinho).
 
 ## 7. Riscos / decisões
-- Sem sincronização offline de gravações (YAGNI). Reavaliar se houver demanda real de uso em campo sem sinal.
+- Offline de gravações limitado a ações de campo (cadastro de eleitor + demanda) via outbox. Demais gravações exigem rede. Reavaliar expansão se houver necessidade real.
+- Conflitos tratados de forma simples ("última gravação vence" para demanda; insert para eleitor). Itens com erro de validação ficam para revisão manual, sem travar a fila.
 - Push depende de `pg_cron`/`pg_net` habilitados nos dois projetos Supabase.
 - Aplicar tudo em DOIS repos (espelho) e DOIS bancos — verificar paridade.
