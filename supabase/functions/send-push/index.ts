@@ -4,8 +4,14 @@ import webpush from 'npm:web-push@3.6.7';
 // Chave pública VAPID (não é secreta — também usada no frontend).
 const VAPID_PUBLIC = 'BO7PsJi1VschyhNiHC1x1Hd_eLEhg5Nm_FRj_Lfju04aGtF7ssnQ9TEYQVQYVPsURbCr3xLkYpn8yk-il-PTrko';
 const clean = (v) => (v || '').replace(/\s/g, '');
+const cors = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+};
 
 Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
     const { titulo, corpo, url, user_ids } = await req.json();
     const supabase = createClient(
@@ -31,8 +37,8 @@ Deno.serve(async (req) => {
         if (e.statusCode === 404 || e.statusCode === 410) await supabase.from('push_subscriptions').delete().eq('id', s.id);
       }
     }
-    return new Response(JSON.stringify({ enviados }), { headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ enviados }), { headers: { ...cors, 'Content-Type': 'application/json' } });
   } catch (e) {
-    return new Response(JSON.stringify({ erro: String(e && e.message || e) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ erro: String(e && e.message || e) }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } });
   }
 });
