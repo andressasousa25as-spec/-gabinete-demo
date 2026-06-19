@@ -22,6 +22,7 @@ import CenarioMunicipal from '../CenarioMunicipal';
 import Comunicado from './Comunicado';
 import GestaoDemandas from './GestaoDemandas';
 import InstalarAppButton from './InstalarAppButton';
+import PendingBadge from './PendingBadge';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -582,6 +583,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {/* Botões principais */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <InstalarAppButton />
+        <PendingBadge />
         {[
           { label: "⚙️ Config", onClick: () => setShowConfig(true), bg: "#0f172a" },
           ...(ehMaster ? [{ label: "👥 Usuários", onClick: () => setAba("admins") }] : []),
