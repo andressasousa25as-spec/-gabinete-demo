@@ -23,6 +23,7 @@ import Comunicado from './Comunicado';
 import GestaoDemandas from './GestaoDemandas';
 import InstalarAppButton from './InstalarAppButton';
 import PendingBadge from './PendingBadge';
+import { ativarPush } from '../lib/push';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -591,6 +592,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "+ Liderança",      onClick: () => setShowLider(true)   },
           { label: "+ Reunião",        onClick: () => setShowReuniao(true) },
           { label: "Mapa",             onClick: () => setAba("mapa")       },
+          { label: "🔔 Ativar avisos", onClick: async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); } },
           { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
