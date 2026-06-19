@@ -24,6 +24,7 @@ import GestaoDemandas from './GestaoDemandas';
 import InstalarAppButton from './InstalarAppButton';
 import PendingBadge from './PendingBadge';
 import { ativarPush } from '../lib/push';
+import Broadcast from './Broadcast';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -477,6 +478,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
 
   if (aba === 'demandas') return <GestaoDemandas eleitores={eleitores} liderancas={liderancas} registrarLog={registrarLog} onVoltar={() => setAba('inicio')} />;
 
+  if (aba === 'broadcast') return <Broadcast registrarLog={registrarLog} onVoltar={() => setAba('inicio')} />;
+
   const eleitorFiltrados = eleitores.filter(e =>
     e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -593,6 +596,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "+ Reunião",        onClick: () => setShowReuniao(true) },
           { label: "Mapa",             onClick: () => setAba("mapa")       },
           { label: "🔔 Ativar avisos", onClick: async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); } },
+          { label: "📣 Enviar aviso", onClick: () => setAba("broadcast") },
           { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
