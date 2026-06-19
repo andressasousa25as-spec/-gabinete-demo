@@ -20,6 +20,7 @@ import ProjecaoEstrategica from './ProjecaoEstrategica';
 import CenarioVereador2024 from './CenarioVereador2024';
 import CenarioMunicipal from '../CenarioMunicipal';
 import Comunicado from './Comunicado';
+import GestaoDemandas from './GestaoDemandas';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -471,6 +472,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
 
   if (aba === 'anotacoes') return <GestaoAnotacoes liderancaId={LIDERANCA_ID} onVoltar={() => setAba('inicio')} />;
 
+  if (aba === 'demandas') return <GestaoDemandas eleitores={eleitores} liderancas={liderancas} registrarLog={registrarLog} onVoltar={() => setAba('inicio')} />;
+
   const eleitorFiltrados = eleitores.filter(e =>
     e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -584,6 +587,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "+ Liderança",      onClick: () => setShowLider(true)   },
           { label: "+ Reunião",        onClick: () => setShowReuniao(true) },
           { label: "Mapa",             onClick: () => setAba("mapa")       },
+          { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
           { label: "Analytics",        onClick: () => setAba("analytics")  },
