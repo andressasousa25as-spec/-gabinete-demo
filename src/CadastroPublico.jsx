@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { LISTA_MUNICIPIOS, bairrosDoMunicipio } from './lib/bairros';
 import { supabase } from './lib/supabase';
+import { gravarResiliente } from './lib/outbox';
 
 const ZONAS_AMAPA = Array.from({ length: 35 }, (_, i) => String(i + 1));
 
@@ -88,22 +89,24 @@ export default function CadastroPublico({ liderancaId }) {
     }
 
     // Todos (apoiador e liderança) entram em eleitores com zona/seção
-    const { error } = await supabase.from('eleitores').insert({
-      ...form,
-      lideranca_id: liderId,
-      tags: tipo === 'lideranca' ? ['liderança'] : null,
-      consentimento_aceito: true,
-      consentimento_lgpd: true,
-      data_consentimento: new Date().toISOString(),
-      versao_termo: '1.0',
+    const r = await gravarResiliente({
+      tabela: 'eleitores',
+      op: 'insert',
+      dados: {
+        ...form,
+        lideranca_id: liderId,
+        tags: tipo === 'lideranca' ? ['liderança'] : null,
+        consentimento_aceito: true,
+        consentimento_lgpd: true,
+        data_consentimento: new Date().toISOString(),
+        versao_termo: '1.0',
+      },
     });
 
-    if (error) {
-      if (error.code === '23505' || error.message.includes('unique')) {
-        setErro("Este telefone ja esta cadastrado no sistema. Cada pessoa so pode ser cadastrada uma vez.");
-      } else {
-        setErro("Erro ao cadastrar: " + error.message);
-      }
+    if (r.modo === 'fila') {
+      setErro('');
+      alert('Sem internet — seu cadastro foi salvo e será enviado automaticamente ao reconectar.');
+      setSucesso(true);
     } else {
       setSucesso(true);
     }

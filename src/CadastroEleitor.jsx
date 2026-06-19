@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LISTA_BAIRROS } from './lib/bairros';
 import TermoLGPD from "./TermoLGPD";
 import { supabase } from './lib/supabase';
+import { gravarResiliente } from './lib/outbox';
 
 // Bairros de Macapá e Santana - Amapá
 const BAIRROS_AMAPA = LISTA_BAIRROS;
@@ -55,19 +56,23 @@ export default function CadastroEleitor() {
     setCarregando(true);
 
     try {
-      const { error } = await supabase.from('eleitores').insert({
-        nome: formData.nome,
-        telefone: formData.telefone,
-        email: formData.email || null,
-        bairro: formData.bairro,
-        zona_eleitoral: formData.zona_eleitoral || null,
-        secao_eleitoral: formData.secao_eleitoral || null,
-        consentimento_aceito: true,
-        data_consentimento: new Date().toISOString(),
-        versao_termo: '1.0',
+      const r = await gravarResiliente({
+        tabela: 'eleitores',
+        op: 'insert',
+        dados: {
+          nome: formData.nome,
+          telefone: formData.telefone,
+          email: formData.email || null,
+          bairro: formData.bairro,
+          zona_eleitoral: formData.zona_eleitoral || null,
+          secao_eleitoral: formData.secao_eleitoral || null,
+          consentimento_aceito: true,
+          data_consentimento: new Date().toISOString(),
+          versao_termo: '1.0',
+        },
       });
 
-      if (error) throw error;
+      if (r.modo === 'fila') alert('Sem internet — cadastro salvo e será enviado automaticamente ao reconectar.');
 
       setSucesso(true);
       setFormData({ nome: '', telefone: '', email: '', bairro: '', zona_eleitoral: '', secao_eleitoral: '' });

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
+import { gravarResiliente } from '../lib/outbox';
 
 // Hook responsividade mobile (mesmo padrão do resto do sistema)
 function useIsMobile() {
@@ -79,19 +80,23 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
     setErro('');
     try {
       const eleitor = eleitores.find(el => el.id === form.eleitor_id);
-      const { error } = await supabase.from('demandas').insert([{
-        eleitor_id: form.eleitor_id || null,
-        lideranca_id: eleitor?.lideranca_id || null,
-        titulo: form.titulo,
-        descricao: form.descricao || null,
-        categoria: form.categoria || null,
-        prioridade: form.prioridade,
-        prazo: form.prazo || null,
-        responsavel: form.responsavel || null,
-        status: 'Aberta',
-      }]);
-      if (error) throw error;
+      const r = await gravarResiliente({
+        tabela: 'demandas',
+        op: 'insert',
+        dados: {
+          eleitor_id: form.eleitor_id || null,
+          lideranca_id: eleitor?.lideranca_id || null,
+          titulo: form.titulo,
+          descricao: form.descricao || null,
+          categoria: form.categoria || null,
+          prioridade: form.prioridade,
+          prazo: form.prazo || null,
+          responsavel: form.responsavel || null,
+          status: 'Aberta',
+        },
+      });
       if (registrarLog) registrarLog('Criou demanda', `${form.titulo}${eleitor ? ' — ' + eleitor.nome : ''}`);
+      if (r.modo === 'fila') alert('Sem internet — demanda salva e será enviada ao reconectar.');
       setForm(formVazio);
       setShowForm(false);
       await carregar();
@@ -107,8 +112,7 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
     try {
       const patch = { status: novoStatus, updated_at: new Date().toISOString() };
       if (novoStatus === 'Resolvida') patch.resolvida_em = new Date().toISOString();
-      const { error } = await supabase.from('demandas').update(patch).eq('id', demanda.id);
-      if (error) throw error;
+      await gravarResiliente({ tabela: 'demandas', op: 'update', dados: { id: demanda.id, ...patch } });
       if (registrarLog) registrarLog('Atualizou demanda', `${demanda.titulo} → ${novoStatus}`);
       setDemandas(prev => prev.map(d => d.id === demanda.id ? { ...d, ...patch } : d));
     } catch (err) {
