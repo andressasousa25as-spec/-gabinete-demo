@@ -26,6 +26,7 @@ Em vez de calcular ao vivo (matching de nome é ruidoso — deu falsos positivos
 - `cargo_ultima` text — ex.: 'Dep. Estadual 2022', 'Vereador Macapá 2024', 'Estreante'
 - `abrangencia` text — 'Estado' | 'Município' | '—' (para contextualizar a comparação)
 - `confirmado` boolean default false — true = número real do TSE; false = estreante/a confirmar
+- `risco` text default 'BAIXO' check in ('ALTISSIMO','ALTO','MEDIO','BAIXO') — nível de ameaça (editável)
 - `observacao` text
 - `ordem` int default 0
 - RLS: padrão do gabinete (`acesso_logado` gateado por licença).
@@ -63,6 +64,15 @@ Bia Pombo (obs: assistente social, sem histórico), Beth Pelaes (obs: ex-prefeit
 
 ## 5. Lógica (pura, testável)
 - `src/lib/comparativo.js`: dado o array + o registro `eh_nosso`, retorna `{ referencia, lista_ordenada, diffs }` (diferença de cada um vs. referência). Testar agregação/diff/ordenação.
+
+## 5b. Métrica e risco (seed do campo `risco`)
+- Número exibido = votos da última eleição (com selo de cargo/abrangência). Diferença vs. Paulinho só é destacada como comparação direta para quem é **Estadual** (mesma régua); vereador entra com selo "Município".
+- `risco` semeado:
+  - **ALTISSIMO:** Roberto Góes, Rodolfo Vale, Jorge Amanajás (estadual acima do Paulinho).
+  - **ALTO:** Aparecida Salomão (estadual encostada), Joselyo (vereador eleito), Beth Pelaes (ex-prefeita 2x + alcance digital, apesar de votos=0).
+  - **MEDIO:** Faraó, Alberto Negrão, Engenheiro Ângelo, Samuel (a confirmar).
+  - **BAIXO:** Bia Pombo, Roseli Matos, Anderson Almeida, Gracilene Barros, Ana Souza, Divino.
+- No quadro, o `risco` vira um selo colorido (vermelho/laranja/amarelo/cinza) e permite ordenar/filtrar por risco. Tudo editável.
 
 ## 6. Comparabilidade (nota de analista)
 Votos de **estadual 2022** (estado todo) são a régua direta do Paulinho. Votos de **vereador 2024** são de **um município** — exibidos com selo de abrangência para não induzir comparação 1:1. Não somar cargos diferentes.
