@@ -13,6 +13,7 @@ import GestaoUsuarios from './components/GestaoUsuarios';
 import { supabase } from './lib/supabase';
 import { licencaVencida } from './lib/licenca';
 import { registrarLog } from './lib/logAtividade';
+import AtualizacaoPWA from './components/AtualizacaoPWA';
 
 function App() {
   const hash = window.location.hash;
@@ -118,6 +119,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AtualizacaoPWA />
       <header className="text-white py-5 shadow-lg" style={{ background: "#0f172a", borderBottom: "1px solid #1e293b" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <div>
