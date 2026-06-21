@@ -42,13 +42,10 @@ Confirmados (`confirmado=true`):
 | Joselyo Mais Saúde | 2668 | Vereador Macapá 2024 | Município |
 | Faraó | 2413 | Vereador Macapá 2024 | Município |
 | Alberto Negrão | 1803 | Vereador Macapá 2024 | Município |
-| Samuel | 3088 | Vereador Macapá 2024 | Município |
 | Engenheiro Ângelo | 1205 | Vereador Macapá 2024 | Município |
 
-(Samuel = "Samuel" PDT, vereador Macapá 2024 — confirmado pelo usuário que NÃO é o Josiel Alcolumbre.)
-
-Estreantes (`confirmado=false`, votos=0, editável):
-Bia Pombo (obs: assistente social, sem histórico), Beth Pelaes (obs: ex-prefeita de Pedra Branca do Amapari, 2 mandatos), Roseli Matos, Anderson Almeida (Santana), Gracilene Barros, Ana Souza (obs: esposa do prefeito de Vitória do Jari), Divino.
+Estreantes / a confirmar (`confirmado=false`, votos=0, editável):
+Bia Pombo (obs: assistente social, sem histórico), Beth Pelaes (obs: ex-prefeita de Pedra Branca do Amapari, 2 mandatos), Roseli Matos, Anderson Almeida (Santana), Gracilene Barros, Ana Souza (obs: esposa do prefeito de Vitória do Jari), Divino, Samuel (obs: a confirmar — NÃO é Josiel Alcolumbre; pode ser "Samuel" PDT vereador 2024 com 3.088, mas não confirmado).
 
 ## 4. Componentes
 
