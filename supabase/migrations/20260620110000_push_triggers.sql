@@ -37,16 +37,6 @@ drop trigger if exists demanda_nova_push on public.demandas;
 create trigger demanda_nova_push after insert on public.demandas
   for each row execute function public.trg_demanda_nova();
 
-create or replace function public.trg_eleitor_publico() returns trigger language plpgsql as $$
-begin
-  if NEW.origem_cadastro = 'publico' or NEW.origem = 'publico' then
-    perform public.disparar_push('Novo cadastro', coalesce(NEW.nome,'Novo eleitor')||' se cadastrou', '/', null);
-  end if;
-  return NEW;
-end $$;
-drop trigger if exists eleitor_publico_push on public.eleitores;
-create trigger eleitor_publico_push after insert on public.eleitores
-  for each row execute function public.trg_eleitor_publico();
 
 select cron.schedule('demandas-atrasadas', '0 12 * * *', $$
   select public.disparar_push('Demanda atrasada', titulo||' venceu o prazo', '/', null)
