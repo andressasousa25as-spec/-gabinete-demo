@@ -25,6 +25,9 @@ import InstalarAppButton from './InstalarAppButton';
 import PendingBadge from './PendingBadge';
 import { ativarPush } from '../lib/push';
 import Broadcast from './Broadcast';
+import ApuracaoConfig from './ApuracaoConfig';
+import ApuracaoLancamento from './ApuracaoLancamento';
+import ApuracaoPainel from './ApuracaoPainel';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -479,6 +482,9 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'demandas') return <GestaoDemandas eleitores={eleitores} liderancas={liderancas} registrarLog={registrarLog} onVoltar={() => setAba('inicio')} />;
 
   if (aba === 'broadcast') return <Broadcast registrarLog={registrarLog} onVoltar={() => setAba('inicio')} />;
+  if (aba === 'apuracao-config') return <ApuracaoConfig onVoltar={() => setAba('inicio')} />;
+  if (aba === 'apuracao-lancar') return <ApuracaoLancamento perfil={perfil} onVoltar={() => setAba('inicio')} />;
+  if (aba === 'apuracao-painel') return <ApuracaoPainel onVoltar={() => setAba('inicio')} />;
 
   const eleitorFiltrados = eleitores.filter(e =>
     e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -597,6 +603,9 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "Mapa",             onClick: () => setAba("mapa")       },
           { label: "🔔 Ativar avisos", onClick: async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); } },
           { label: "📣 Enviar aviso", onClick: () => setAba("broadcast") },
+          { label: "🗳️ Apuração (lançar)", onClick: () => setAba("apuracao-lancar") },
+          { label: "📊 Apuração ao vivo", onClick: () => setAba("apuracao-painel") },
+          { label: "⚙️ Apuração: candidatos", onClick: () => setAba("apuracao-config") },
           { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
