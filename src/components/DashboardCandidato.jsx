@@ -619,6 +619,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "Analytics",        onClick: () => setAba("analytics")  },
           { label: "🏆 Ranking", onClick: () => setAba("ranking") },
           { label: "Cenário Político", onClick: () => setAba("cenario")    },
+          { label: "🗳️ Cenário Vereador 2024", onClick: () => setAba("cenario-vereador") },
           { label: "🖨️ Relatórios", onClick: () => setAba("relatorios") },
           { label: "Diagnostico Eleitoral", onClick: () => setAba("diagnostico") },
           { label: "Mapa Eleitoral TSE", onClick: () => setAba("mapaeleitoral") },
