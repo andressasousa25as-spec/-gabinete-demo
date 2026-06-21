@@ -613,8 +613,6 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "⚙️ Apuração: candidatos", onClick: () => setAba("apuracao-config") },
           { label: "🏆 Comparativo Interno", onClick: () => setAba("comparativo") },
           { label: "✏️ Comparativo: editar", onClick: () => setAba("comparativo-config") },
-          { label: "🏆 Comparativo Interno", onClick: () => setAba("comparativo") },
-          { label: "✏️ Comparativo: editar", onClick: () => setAba("comparativo-config") },
           { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
