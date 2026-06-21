@@ -9,6 +9,12 @@ export default function AtualizacaoPWA() {
   useEffect(() => {
     const updateSW = registerSW({
       onNeedRefresh() { setPrecisa(true); },
+      onRegisteredSW(_swUrl, r) {
+        // iOS não checa atualização sozinho — força verificação a cada 60s.
+        if (r) {
+          setInterval(() => { r.update().catch(() => {}); }, 60 * 1000);
+        }
+      },
     });
     setAtualizar(() => () => updateSW(true));
   }, []);
