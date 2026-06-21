@@ -1,23 +1,46 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
+// Mapa de alvo -> papéis (perfis_usuarios.perfil). 'geral' = todos (sem filtro).
+const ALVOS = {
+  geral: { label: '📣 Todos (geral)', papeis: null },
+  deputado: { label: '👤 Só o deputado', papeis: ['CANDIDATO', 'MASTER'] },
+  equipe: { label: '👥 Só a equipe', papeis: ['EQUIPE', 'ADMIN'] },
+};
+
 export default function Broadcast({ registrarLog, onVoltar }) {
   const [titulo, setTitulo] = useState('');
   const [corpo, setCorpo] = useState('');
+  const [alvo, setAlvo] = useState('geral');
   const [enviando, setEnviando] = useState(false);
 
   async function enviar() {
     setEnviando(true);
     try {
+      // Resolve os destinatários conforme o alvo escolhido.
+      let user_ids; // undefined = todos
+      const papeis = ALVOS[alvo].papeis;
+      if (papeis) {
+        const { data: perfis, error } = await supabase
+          .from('perfis_usuarios').select('user_id').in('perfil', papeis);
+        if (error) throw error;
+        user_ids = (perfis || []).map((p) => p.user_id).filter(Boolean);
+        if (user_ids.length === 0) {
+          alert('Nenhum usuário nesse grupo ainda.');
+          setEnviando(false);
+          return;
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-push`;
       const r = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ titulo, corpo, url: '/' }),
+        body: JSON.stringify({ titulo, corpo, url: '/', user_ids }),
       });
       const j = await r.json();
-      if (registrarLog) registrarLog('Enviou aviso (push)', `${titulo} — ${j.enviados} destinatários`);
+      if (registrarLog) registrarLog('Enviou aviso (push)', `[${ALVOS[alvo].label}] ${titulo} — ${j.enviados} destinatários`);
       alert(`Aviso enviado para ${j.enviados} aparelho(s).`);
       setTitulo(''); setCorpo('');
     } catch (e) {
@@ -34,11 +57,28 @@ export default function Broadcast({ registrarLog, onVoltar }) {
         <h2 style={{ color: '#CBA15C', margin: 0 }}>🔔 Enviar aviso</h2>
         {onVoltar && <button onClick={onVoltar} style={{ background: '#64748b', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 8, cursor: 'pointer' }}>← Voltar</button>}
       </div>
+
+      <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6 }}>Enviar para:</label>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+        {Object.entries(ALVOS).map(([chave, v]) => (
+          <button key={chave} onClick={() => setAlvo(chave)} style={{
+            flex: 1, minWidth: 130, padding: '10px 12px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 13,
+            border: alvo === chave ? '2px solid #CBA15C' : '1px solid #334155',
+            background: alvo === chave ? '#CBA15C' : '#0f172a',
+            color: alvo === chave ? '#0E2236' : '#f1f5f9',
+          }}>{v.label}</button>
+        ))}
+      </div>
+
       <input placeholder="Título (ex: Reunião amanhã)" value={titulo} onChange={e => setTitulo(e.target.value)} style={inp} />
       <textarea placeholder="Mensagem" value={corpo} onChange={e => setCorpo(e.target.value)} rows={4} style={inp} />
       <button onClick={enviar} disabled={enviando || !titulo} style={{ background: '#CBA15C', color: '#0E2236', border: 'none', padding: '12px 30px', borderRadius: 8, cursor: 'pointer', fontWeight: 700 }}>
-        {enviando ? 'Enviando...' : 'Disparar para todos'}
+        {enviando ? 'Enviando...' : `Disparar (${ALVOS[alvo].label})`}
       </button>
+
+      <p style={{ marginTop: 16, fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>
+        ℹ️ O aviso chega só em quem instalou o app (deputado/equipe). Para falar com lideranças e apoiadores, use o <strong>Comunicado</strong> (WhatsApp).
+      </p>
     </div>
   );
 }
