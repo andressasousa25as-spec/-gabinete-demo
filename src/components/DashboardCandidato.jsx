@@ -28,6 +28,8 @@ import Broadcast from './Broadcast';
 import ApuracaoConfig from './ApuracaoConfig';
 import ApuracaoLancamento from './ApuracaoLancamento';
 import ApuracaoPainel from './ApuracaoPainel';
+import ComparativoInterno from './ComparativoInterno';
+import ComparativoInternoConfig from './ComparativoInternoConfig';
 import { linkMapaReuniao } from '../lib/mapa.js';
 import { localDeVotacao } from '../lib/locaisVotacao';
 
@@ -486,6 +488,9 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'apuracao-lancar') return <ApuracaoLancamento perfil={perfil} onVoltar={() => setAba('inicio')} />;
   if (aba === 'apuracao-painel') return <ApuracaoPainel onVoltar={() => setAba('inicio')} />;
 
+  if (aba === 'comparativo') return <ComparativoInterno onVoltar={() => setAba('inicio')} />;
+  if (aba === 'comparativo-config') return <ComparativoInternoConfig onVoltar={() => setAba('inicio')} />;
+
   const eleitorFiltrados = eleitores.filter(e =>
     e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -606,6 +611,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           { label: "🗳️ Apuração (lançar)", onClick: () => setAba("apuracao-lancar") },
           { label: "📊 Apuração ao vivo", onClick: () => setAba("apuracao-painel") },
           { label: "⚙️ Apuração: candidatos", onClick: () => setAba("apuracao-config") },
+          { label: "🏆 Comparativo Interno", onClick: () => setAba("comparativo") },
+          { label: "✏️ Comparativo: editar", onClick: () => setAba("comparativo-config") },
           { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
           { label: "Anotações",        onClick: () => setAba("anotacoes")  },
           { label: "Mídias",           onClick: () => setAba("midias")     },
