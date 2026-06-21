@@ -74,7 +74,7 @@ insert into public.comparativo_internos (nome, eh_nosso, votos, cargo_ultima, ab
   ('Anderson Almeida', false, 0, 'Estreante', '—', false, 'BAIXO', 'Base em Santana (a confirmar).', 13),
   ('Roseli Matos', false, 0, 'Estreante', '—', false, 'BAIXO', 'A confirmar.', 14),
   ('Gracilene Barros', false, 0, 'Estreante', '—', false, 'BAIXO', 'A confirmar.', 15),
-  ('Divino', false, 0, 'Estreante', '—', false, 'BAIXO', 'A confirmar.', 16);
+  ('Divino Rocha', false, 0, 'Já concorreu (não estadual)', '—', false, 'MEDIO', 'Tem base política; já concorreu (não para estadual). Votos a confirmar — não localizados nos dados de Macapá/Santana nem na web; informar município/cargo/ano para buscar no TSE.', 16);
 ```
 
 - [ ] **Step 2: Aplicar nos 2 bancos via MCP**
