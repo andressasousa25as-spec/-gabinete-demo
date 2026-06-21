@@ -27,5 +27,14 @@ export async function ativarPush() {
     auth: json.keys.auth,
     user_agent: navigator.userAgent,
   }, { onConflict: 'endpoint' });
+
+  // Evita duplicatas: remove inscrições antigas do MESMO usuário + mesmo aparelho
+  // (mesmo user_agent) que tenham endpoint diferente do atual.
+  await supabase.from('push_subscriptions')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('user_agent', navigator.userAgent)
+    .neq('endpoint', json.endpoint);
+
   return { ok: true };
 }
