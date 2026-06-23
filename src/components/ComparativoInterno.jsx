@@ -46,6 +46,10 @@ export default function ComparativoInterno({ onVoltar }) {
 
       {semReferencia && <p style={{ color: '#f87171' }}>Defina o candidato de referência (marque "nosso") na configuração.</p>}
 
+      <div style={{ background: '#422006', border: '1px solid #854d0e', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#fde68a', lineHeight: 1.5 }}>
+        ⚠️ <strong>Cargos e eleições diferentes não são comparáveis 1:1.</strong> Votos de prefeito ou vereador refletem só o <em>"tamanho"</em> da base que o candidato alcançou na última eleição dele (concentrada num município) — não equivalem a voto de deputado estadual, que precisa estar espalhado pelo estado todo. Use os números como referência de força, não como placar direto.
+      </div>
+
       {referencia && (
         <div style={{ background: '#1e293b', border: '2px solid #CBA15C', borderRadius: 12, padding: 16, marginBottom: 20 }}>
           <div style={{ fontSize: 13, color: '#CBA15C', fontWeight: 700 }}>⭐ NOSSO CANDIDATO (referência)</div>
