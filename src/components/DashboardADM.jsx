@@ -109,6 +109,14 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
     if (r.data) setReunioes(r.data);
   };
 
+  // Opt-out LGPD: marca/desmarca o apoiador para não receber mídias/mensagens
+  const toggleOptOut = async (el) => {
+    await supabase.from('eleitores')
+      .update({ opt_out: !el.opt_out, data_opt_out: el.opt_out ? null : new Date().toISOString() })
+      .eq('id', el.id);
+    fetchAll();
+  };
+
   const cadastrarEleitor = async () => {
     if (!novoEleitor.endereco) return alert('Endereço obrigatório para posicionar no mapa.'); setLoading(false);
     if (!termoAceito) return alert('❌ Aceite o Termo LGPD/TSE.');
@@ -403,8 +411,11 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
                       {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
                       {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                       {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
+                      {e.opt_out && <p style={{ color: '#fbbf24', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
                     </div>
-                    <button onClick={() => setEleitorEditando(e)} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', marginRight: '4px' }}>✏️</button><button onClick={() => excluir('eleitores', e.id, e.nome)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>🗑️</button>
+                    <div style={{ display: 'flex', gap: '4px', flexShrink: 0, marginLeft: '6px' }}>
+                    <button onClick={() => toggleOptOut(e)} title={e.opt_out ? 'Reativar comunicação' : 'Marcar opt-out (LGPD)'} style={{ background: e.opt_out ? '#dcfce7' : '#fef3c7', color: e.opt_out ? '#166534' : '#92400e', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>{e.opt_out ? '✅' : '🚫'}</button>
+                    <button onClick={() => setEleitorEditando(e)} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>✏️</button><button onClick={() => excluir('eleitores', e.id, e.nome)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>🗑️</button></div>
                   </div>
                 </div>
               ))}
