@@ -18,13 +18,14 @@ export default function TermoConsentimento({ aceito, onChange, disabled = false 
         <div style={{ fontSize: '14px', lineHeight: '1.5', color: '#334155' }}>
           <strong>Termo de Consentimento para Tratamento de Dados</strong>
           <br /><br />
-          Eu autorizo o tratamento dos meus dados pessoais (nome, telefone, endereço, 
-          geolocalização, zona e seção eleitoral) para fins de comunicação, 
-          atendimento e comunicação política, nos termos da
-          Lei Geral de Proteção de Dados (LGPD) e das normas do TSE.
+          Eu autorizo o tratamento dos meus dados pessoais (nome, telefone, endereço,
+          geolocalização, zona e seção eleitoral) para fins de comunicação, relacionamento
+          com apoiadores e convites para eventos, nos termos da
+          Lei Geral de Proteção de Dados (LGPD) e das normas do TSE. Os dados são fornecidos
+          voluntariamente pelo titular e não são obtidos do cadastro eleitoral da Justiça Eleitoral.
           <br /><br />
           <span style={{ fontSize: '12px', color: '#64748b' }}>
-            Versão 1.0 | Maio/2026
+            Versão 2.0 | Junho/2026
           </span>
         </div>
       </div>
