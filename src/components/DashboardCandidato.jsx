@@ -691,7 +691,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#cbd5e1" }}>{g.titulo}</span>
             <span style={{ flex: 1, height: 1, background: "#1e293b" }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 8 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
             {g.itens.map((it, ii) => (
               <button key={ii} onClick={it.on} style={{ background: "#111c33", border: "1px solid #243b52", borderRadius: 10, color: "#e2e8f0", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
                 onMouseOver={e => e.currentTarget.style.background = "#1b2a47"}
