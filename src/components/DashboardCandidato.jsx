@@ -150,7 +150,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [relatorio, setRelatorio] = useState(null);
   const [showComunicado, setShowComunicado] = useState(false);
   const [busca, setBusca] = useState('');
-  const [relLider, setRelLider] = useState(''); // filtro do relatório de apoiadores por liderança ('' = geral)
+  const [relLider, setRelLider] = useState('');
+  const [showAniver, setShowAniver] = useState(false); // modal "ver todos" os aniversariantes do dia // filtro do relatório de apoiadores por liderança ('' = geral)
 
   const [showEleitor, setShowEleitor] = useState(false);
   const [eleitorEditando, setEleitorEditando] = useState(null);
@@ -162,7 +163,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [showLider, setShowLider] = useState(false);
   const [showReuniao, setShowReuniao] = useState(false);
 
-  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: null, observacao: '' });
+  const [novoEleitor, setNovoEleitor] = useState({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: null, data_nascimento: '', observacao: '' });
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', municipio: '', zona_eleitoral: '', secao_eleitoral: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
   const [termoAceito, setTermoAceito] = useState(false);
@@ -194,7 +195,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
     if (!termoAceito) return alert('❌ Aceite o Termo LGPD/TSE.');
     if (!novoEleitor.nome || !novoEleitor.telefone) return alert('❌ Nome e telefone obrigatórios.');
     setLoading(true);
-    const { error } = await supabase.from('eleitores').insert([{ ...novoEleitor, lideranca_id: novoEleitor.lideranca_id || null, consentimento_lgpd: true, data_consentimento: new Date().toISOString() }]);
+    const { error } = await supabase.from('eleitores').insert([{ ...novoEleitor, lideranca_id: novoEleitor.lideranca_id || null, data_nascimento: novoEleitor.data_nascimento || null, consentimento_lgpd: true, data_consentimento: new Date().toISOString() }]);
     if (!error) {
       const coords = await geocodificarEleitor(novoEleitor);
       if (coords) {
@@ -340,6 +341,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       secao_eleitoral: eleitorEditando.secao_eleitoral,
       lideranca_id: eleitorEditando.lideranca_id || null,
       observacao: eleitorEditando.observacao || null,
+      data_nascimento: eleitorEditando.data_nascimento || null,
     }).eq('id', eleitorEditando.eleitor_id || eleitorEditando.id);
     if (!error) {
       alert('Apoiador atualizado!');
@@ -497,6 +499,16 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
     e.telefone?.includes(busca)
   );
 
+  // 🎂 Aniversariantes de hoje (apoiadores com data de nascimento no dia/mês de hoje)
+  const _hojeMMDD = (() => { const d = new Date(); return String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+  const calcIdade = (iso) => { if (!iso) return null; const n = new Date(iso); const h = new Date(); let i = h.getFullYear() - n.getFullYear(); const m = h.getMonth() - n.getMonth(); if (m < 0 || (m === 0 && h.getDate() < n.getDate())) i--; return i; };
+  const aniversariantesHoje = eleitores.filter(e => e.data_nascimento && String(e.data_nascimento).slice(5, 10) === _hojeMMDD);
+  const msgAniversario = (nome) => 'Feliz aniversário, ' + (nome ? nome.split(' ')[0] : '') + '! 🎉 Hoje é um dia especial e a nossa equipe faz questão de te desejar muita saúde, paz e alegria ao lado de quem você ama. Conte sempre com a gente. Um forte abraço! 🎂';
+
+  // 🗳️ Apuração ganha destaque automático perto da eleição (até 7 dias antes / 2 dias depois)
+  const _diasEleicao = Math.ceil((new Date("2026-10-04T00:00:00") - new Date()) / 86400000);
+  const apuracaoEmDestaque = _diasEleicao <= 7 && _diasEleicao >= -2;
+
   return (
     <div style={{ background: "#0a0f1c", minHeight: "100vh", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14, fontFamily: "Inter, system-ui, sans-serif", color: "#f1f5f9" }}>
 
@@ -595,51 +607,101 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           </div>
         </div>
       )}
-      {/* Botões principais */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+      {/* Utilitários */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
         <InstalarAppButton />
         <PendingBadge />
-        {[
-          { label: "⚙️ Config", onClick: () => setShowConfig(true), bg: "#0f172a" },
-          ...(ehMaster ? [{ label: "👥 Usuários", onClick: () => setAba("admins") }] : []),
-          { label: "+ Apoiador",        onClick: () => setShowEleitor(true) },
-          { label: "+ Liderança",      onClick: () => setShowLider(true)   },
-          { label: "+ Reunião",        onClick: () => setShowReuniao(true) },
-          { label: "Mapa",             onClick: () => setAba("mapa")       },
-          { label: "🔔 Ativar avisos", onClick: async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); } },
-          { label: "📣 Enviar aviso", onClick: () => setAba("broadcast") },
-          { label: "🗳️ Apuração (lançar)", onClick: () => setAba("apuracao-lancar") },
-          { label: "📊 Apuração ao vivo", onClick: () => setAba("apuracao-painel") },
-          { label: "⚙️ Apuração: candidatos", onClick: () => setAba("apuracao-config") },
-          { label: "🏆 Comparativo Interno", onClick: () => setAba("comparativo") },
-          { label: "✏️ Comparativo: editar", onClick: () => setAba("comparativo-config") },
-          { label: "🗂️ Demandas",      onClick: () => setAba("demandas")   },
-          { label: "Anotações",        onClick: () => setAba("anotacoes")  },
-          { label: "Mídias",           onClick: () => setAba("midias")     },
-          { label: "Analytics",        onClick: () => setAba("analytics")  },
-          { label: "🏆 Ranking", onClick: () => setAba("ranking") },
-          { label: "Cenário Político", onClick: () => setAba("cenario")    },
-          { label: "🗳️ Cenário Vereador 2024", onClick: () => setAba("cenario-vereador") },
-          { label: "🖨️ Relatórios", onClick: () => setAba("relatorios") },
-          { label: "Diagnostico Eleitoral", onClick: () => setAba("diagnostico") },
-          { label: "Mapa Eleitoral TSE", onClick: () => setAba("mapaeleitoral") },
-          { label: "Analise Territorial", onClick: () => setAba("analise") },
-          { label: "Radar Oportunidade", onClick: () => setAba("radar") },
-          { label: "Caminho da Vitoria", onClick: () => setAba("caminho") },
-          { label: "Projecao 2026", onClick: () => setAba("projecao") },
-          { label: "🏛️ Cenario Municipal", onClick: () => setAba("cenario-municipal") },
-        ].map((b, i) => (
-          <button key={i} onClick={b.onClick} style={{
-            background: "#1e293b", border: "1px solid #334155",
-            borderRadius: 8, color: "#f1f5f9", padding: "10px 18px",
-            cursor: "pointer", fontWeight: 600, fontSize: 13,
-            whiteSpace: "nowrap", transition: "background 0.15s",
-          }}
-          onMouseOver={e => e.currentTarget.style.background = "#334155"}
-          onMouseOut={e => e.currentTarget.style.background = "#1e293b"}
-          >{b.label}</button>
-        ))}
+        <button onClick={() => setShowConfig(true)} style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>⚙️ Config</button>
+        <button onClick={async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); }} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>🔔 Ativar avisos</button>
       </div>
+
+      {/* 🎂 Aniversariante do dia */}
+      {aniversariantesHoje.length > 0 && (
+        <div style={{ background: "#17130a", border: "1px solid #5a4a1e", borderRadius: 16, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 34 }}>🎂</div>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#fbbf24" }}>Aniversariante{aniversariantesHoje.length > 1 ? 's' : ''} de hoje</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginTop: 2 }}>{aniversariantesHoje[0].nome}{calcIdade(aniversariantesHoje[0].data_nascimento) != null ? ` · ${calcIdade(aniversariantesHoje[0].data_nascimento)} anos` : ''}</div>
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniversariantesHoje[0].bairro || '—'}{aniversariantesHoje.length > 1 ? ` · +${aniversariantesHoje.length - 1} aniversariante${aniversariantesHoje.length - 1 > 1 ? 's' : ''} hoje` : ''}</div>
+          </div>
+          {aniversariantesHoje[0].telefone && (
+            <a href={'https://wa.me/55' + aniversariantesHoje[0].telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(aniversariantesHoje[0].nome))} target="_blank" rel="noreferrer" style={{ background: "#16a34a", color: "#fff", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>💚 Enviar carinho</a>
+          )}
+          {aniversariantesHoje.length > 1 && <button onClick={() => setShowAniver(true)} style={{ background: "transparent", color: "#fbbf24", border: "1px solid #5a4a1e", borderRadius: 10, padding: "11px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver todos</button>}
+        </div>
+      )}
+
+      {/* 🗳️ Apuração em destaque (perto da eleição) */}
+      {apuracaoEmDestaque && (
+        <div style={{ background: "linear-gradient(135deg,#1e1b4b,#312e81)", border: "1px solid #6d28d9", borderRadius: 16, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 30 }}>🗳️</div>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#c4b5fd" }}>Apuração</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>É hora da apuração — acompanhe ao vivo!</div>
+          </div>
+          <button onClick={() => setAba("apuracao-painel")} style={{ background: "#7c3aed", color: "#fff", border: "none", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>📊 Ao vivo</button>
+          <button onClick={() => setAba("apuracao-lancar")} style={{ background: "transparent", color: "#c4b5fd", border: "1px solid #6d28d9", borderRadius: 10, padding: "11px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>✏️ Lançar</button>
+        </div>
+      )}
+
+      {/* Menu agrupado por categoria */}
+      {[
+        { titulo: "Cadastro & base", cor: "#22c55e", itens: [
+          { lb: "➕ Apoiador", on: () => setShowEleitor(true) },
+          { lb: "➕ Liderança", on: () => setShowLider(true) },
+          { lb: "➕ Reunião", on: () => setShowReuniao(true) },
+          { lb: "🗂️ Demandas", on: () => setAba("demandas") },
+          { lb: "📝 Anotações", on: () => setAba("anotacoes") },
+        ] },
+        { titulo: "Comunicação", cor: "#3b82f6", itens: [
+          { lb: "📣 Enviar aviso", on: () => setAba("broadcast") },
+          { lb: "📷 Mídias", on: () => setAba("midias") },
+          { lb: "📊 Analytics", on: () => setAba("analytics") },
+          { lb: "🏆 Ranking", on: () => setAba("ranking") },
+        ] },
+        { titulo: "Mapa & território", cor: "#14b8a6", itens: [
+          { lb: "🗺️ Mapa", on: () => setAba("mapa") },
+          { lb: "🗺️ Mapa Eleitoral TSE", on: () => setAba("mapaeleitoral") },
+          { lb: "📈 Análise Territorial", on: () => setAba("analise") },
+        ] },
+        { titulo: "Estratégia 2026", cor: "#eab308", itens: [
+          { lb: "🩺 Diagnóstico Eleitoral", on: () => setAba("diagnostico") },
+          { lb: "🎯 Radar Oportunidade", on: () => setAba("radar") },
+          { lb: "🛣️ Caminho da Vitória", on: () => setAba("caminho") },
+          { lb: "📈 Projeção 2026", on: () => setAba("projecao") },
+          { lb: "🏛️ Cenário Político", on: () => setAba("cenario") },
+          { lb: "🏛️ Cenário Municipal", on: () => setAba("cenario-municipal") },
+          { lb: "🗳️ Cenário Vereador 2024", on: () => setAba("cenario-vereador") },
+          { lb: "🏆 Comparativo Interno", on: () => setAba("comparativo") },
+        ] },
+        { titulo: "Apuração", cor: "#a78bfa", itens: [
+          { lb: "✏️ Lançar", on: () => setAba("apuracao-lancar") },
+          { lb: "📊 Ao vivo", on: () => setAba("apuracao-painel") },
+          { lb: "⚙️ Candidatos", on: () => setAba("apuracao-config") },
+        ] },
+        { titulo: "Relatórios & gestão", cor: "#94a3b8", itens: [
+          { lb: "🖨️ Relatórios", on: () => setAba("relatorios") },
+          { lb: "✏️ Comparativo: editar", on: () => setAba("comparativo-config") },
+          ...(ehMaster ? [{ lb: "👥 Usuários", on: () => setAba("admins") }] : []),
+        ] },
+      ].map((g, gi) => (
+        <div key={gi}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: g.cor }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#cbd5e1" }}>{g.titulo}</span>
+            <span style={{ flex: 1, height: 1, background: "#1e293b" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 8 }}>
+            {g.itens.map((it, ii) => (
+              <button key={ii} onClick={it.on} style={{ background: "#111c33", border: "1px solid #243b52", borderRadius: 10, color: "#e2e8f0", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
+                onMouseOver={e => e.currentTarget.style.background = "#1b2a47"}
+                onMouseOut={e => e.currentTarget.style.background = "#111c33"}>
+                <span style={{ color: g.cor, fontSize: 14 }}>●</span>{it.lb}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
 
       {/* GRID LADO A LADO — 3 colunas */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', alignItems: 'start' }}>
@@ -764,6 +826,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>Editar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={eleitorEditando.nome || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={eleitorEditando.telefone || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, telefone: e.target.value })} />
+            <label style={{ display: 'block', fontSize: 12, color: '#64748b', margin: '2px 0 4px' }}>🎂 Data de nascimento</label>
+            <input style={estiloInput} type="date" value={eleitorEditando.data_nascimento ? String(eleitorEditando.data_nascimento).slice(0,10) : ''} onChange={e => setEleitorEditando({ ...eleitorEditando, data_nascimento: e.target.value })} />
             <select style={estiloInput} value={eleitorEditando.municipio || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, municipio: e.target.value })}>
               <option value="">Selecione o município...</option>
               {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
@@ -821,6 +885,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>➕ Cadastrar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={novoEleitor.nome} onChange={e => setNovoEleitor({ ...novoEleitor, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={novoEleitor.telefone} onChange={e => setNovoEleitor({ ...novoEleitor, telefone: e.target.value })} />
+            <label style={{ display: 'block', fontSize: 12, color: '#64748b', margin: '2px 0 4px' }}>🎂 Data de nascimento (para felicitar o apoiador)</label>
+            <input style={estiloInput} type="date" value={novoEleitor.data_nascimento || ''} onChange={e => setNovoEleitor({ ...novoEleitor, data_nascimento: e.target.value })} />
             <select style={estiloInput} value={novoEleitor.municipio} onChange={e => setNovoEleitor({ ...novoEleitor, municipio: e.target.value, bairro: '' })}>
               <option value="">Selecione o município...</option>
               {LISTA_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
@@ -893,6 +959,30 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <input style={estiloInput} placeholder="Endereço completo" value={novaReuniao.endereco} onChange={e => setNovaReuniao({ ...novaReuniao, endereco: e.target.value })} />
             <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading ? 'Salvando...' : '✅ Agendar Reunião'}</button>
             <button onClick={() => setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ANIVERSARIANTES DO DIA */}
+      {showAniver && (
+        <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowAniver(false)}>
+          <div style={estiloCard}>
+            <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Aniversariantes de hoje ({aniversariantesHoje.length})</h2>
+            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Mande uma mensagem de carinho. O texto já vai pronto — afeto, sem pedir voto.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '60vh', overflowY: 'auto' }}>
+              {aniversariantesHoje.map(a => (
+                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 12px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontWeight: 700, fontSize: 14, color: '#111827', margin: 0 }}>{a.nome}{calcIdade(a.data_nascimento) != null ? ` · ${calcIdade(a.data_nascimento)} anos` : ''}</p>
+                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>{a.bairro || '—'}{a.telefone ? ` · ${a.telefone}` : ''}</p>
+                  </div>
+                  {a.telefone && (
+                    <a href={'https://wa.me/55' + a.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(a.nome))} target="_blank" rel="noreferrer" style={{ background: '#16a34a', color: '#fff', borderRadius: 8, padding: '8px 12px', fontWeight: 700, fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap' }}>💚 Carinho</a>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setShowAniver(false)} style={estiloBotao('#64748b')}>Fechar</button>
           </div>
         </div>
       )}
