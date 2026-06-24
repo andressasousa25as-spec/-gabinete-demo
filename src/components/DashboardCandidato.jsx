@@ -499,11 +499,16 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
     e.telefone?.includes(busca)
   );
 
-  // 🎂 Aniversariantes de hoje (apoiadores com data de nascimento no dia/mês de hoje)
-  const _hojeMMDD = (() => { const d = new Date(); return String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
-  const calcIdade = (iso) => { if (!iso) return null; const n = new Date(iso); const h = new Date(); let i = h.getFullYear() - n.getFullYear(); const m = h.getMonth() - n.getMonth(); if (m < 0 || (m === 0 && h.getDate() < n.getDate())) i--; return i; };
-  const aniversariantesHoje = eleitores.filter(e => e.data_nascimento && String(e.data_nascimento).slice(5, 10) === _hojeMMDD);
-  const msgAniversario = (nome) => 'Feliz aniversário, ' + (nome ? nome.split(' ')[0] : '') + '! 🎉 Hoje é um dia especial e a nossa equipe faz questão de te desejar muita saúde, paz e alegria ao lado de quem você ama. Conte sempre com a gente. Um forte abraço! 🎂';
+  // 🎂 Próximos aniversariantes (hoje + chegando, janela de 31 dias, do mais perto ao mais distante)
+  const _hoje0 = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  const _diasAteAniver = (iso) => { const n = new Date(iso); let p = new Date(_hoje0.getFullYear(), n.getMonth(), n.getDate()); if (p < _hoje0) p = new Date(_hoje0.getFullYear() + 1, n.getMonth(), n.getDate()); return Math.round((p - _hoje0) / 86400000); };
+  const calcIdade = (iso) => { if (!iso) return null; const n = new Date(iso); let p = new Date(_hoje0.getFullYear(), n.getMonth(), n.getDate()); if (p < _hoje0) p = new Date(_hoje0.getFullYear() + 1, n.getMonth(), n.getDate()); return p.getFullYear() - n.getFullYear(); };
+  const _fmtDM = (iso) => { const n = new Date(iso); return String(n.getDate()).padStart(2, '0') + '/' + String(n.getMonth() + 1).padStart(2, '0'); };
+  const proximosAniver = eleitores.filter(e => e.data_nascimento).map(e => ({ ...e, _dias: _diasAteAniver(e.data_nascimento) })).filter(e => e._dias <= 31).sort((a, b) => a._dias - b._dias);
+  const aniverDestaque = proximosAniver[0] || null;
+  const msgAniversario = (nome, dias) => (dias === 0)
+    ? 'Feliz aniversário, ' + (nome ? nome.split(' ')[0] : '') + '! 🎉 Hoje é um dia especial e a nossa equipe faz questão de te desejar muita saúde, paz e alegria ao lado de quem você ama. Conte sempre com a gente. Um forte abraço! 🎂'
+    : 'Oi, ' + (nome ? nome.split(' ')[0] : '') + '! Passando aqui só para mandar um abraço carinhoso da nossa equipe e dizer que você é muito importante pra gente. Conte sempre conosco! 💚';
 
   // 🗳️ Apuração ganha destaque automático perto da eleição (até 7 dias antes / 2 dias depois)
   const _diasEleicao = Math.ceil((new Date("2026-10-04T00:00:00") - new Date()) / 86400000);
@@ -615,19 +620,19 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         <button onClick={async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); }} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>🔔 Ativar avisos</button>
       </div>
 
-      {/* 🎂 Aniversariante do dia */}
-      {aniversariantesHoje.length > 0 && (
+      {/* 🎂 Aniversariante (hoje ou o mais próximo do mês) */}
+      {aniverDestaque && (
         <div style={{ background: "#17130a", border: "1px solid #5a4a1e", borderRadius: 16, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           <div style={{ fontSize: 34 }}>🎂</div>
           <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#fbbf24" }}>Aniversariante{aniversariantesHoje.length > 1 ? 's' : ''} de hoje</div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginTop: 2 }}>{aniversariantesHoje[0].nome}{calcIdade(aniversariantesHoje[0].data_nascimento) != null ? ` · ${calcIdade(aniversariantesHoje[0].data_nascimento)} anos` : ''}</div>
-            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniversariantesHoje[0].bairro || '—'}{aniversariantesHoje.length > 1 ? ` · +${aniversariantesHoje.length - 1} aniversariante${aniversariantesHoje.length - 1 > 1 ? 's' : ''} hoje` : ''}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#fbbf24" }}>{aniverDestaque._dias === 0 ? 'Aniversariante de hoje' : 'Próximo aniversário'}</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginTop: 2 }}>{aniverDestaque.nome}{calcIdade(aniverDestaque.data_nascimento) != null ? ` · ${aniverDestaque._dias === 0 ? '' : 'faz '}${calcIdade(aniverDestaque.data_nascimento)} anos` : ''}</div>
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniverDestaque.bairro || '—'} · {aniverDestaque._dias === 0 ? 'é hoje! 🎉' : `em ${aniverDestaque._dias} dia${aniverDestaque._dias > 1 ? 's' : ''} (${_fmtDM(aniverDestaque.data_nascimento)})`}{proximosAniver.length > 1 ? ` · +${proximosAniver.length - 1} no mês` : ''}</div>
           </div>
-          {aniversariantesHoje[0].telefone && (
-            <a href={'https://wa.me/55' + aniversariantesHoje[0].telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(aniversariantesHoje[0].nome))} target="_blank" rel="noreferrer" style={{ background: "#16a34a", color: "#fff", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>💚 Enviar carinho</a>
+          {aniverDestaque.telefone && (
+            <a href={'https://wa.me/55' + aniverDestaque.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(aniverDestaque.nome, aniverDestaque._dias))} target="_blank" rel="noreferrer" style={{ background: "#16a34a", color: "#fff", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>{aniverDestaque._dias === 0 ? '💚 Enviar carinho' : '💬 Mandar mensagem'}</a>
           )}
-          {aniversariantesHoje.length > 1 && <button onClick={() => setShowAniver(true)} style={{ background: "transparent", color: "#fbbf24", border: "1px solid #5a4a1e", borderRadius: 10, padding: "11px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver todos</button>}
+          {proximosAniver.length > 1 && <button onClick={() => setShowAniver(true)} style={{ background: "transparent", color: "#fbbf24", border: "1px solid #5a4a1e", borderRadius: 10, padding: "11px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver todos</button>}
         </div>
       )}
 
@@ -967,17 +972,17 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {showAniver && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowAniver(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Aniversariantes de hoje ({aniversariantesHoje.length})</h2>
-            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Mande uma mensagem de carinho. O texto já vai pronto — afeto, sem pedir voto.</p>
+            <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Aniversariantes do mês ({proximosAniver.length})</h2>
+            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Próximos 31 dias, do mais perto ao mais distante. A mensagem de carinho já vai pronta — afeto, sem pedir voto.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '60vh', overflowY: 'auto' }}>
-              {aniversariantesHoje.map(a => (
+              {proximosAniver.map(a => (
                 <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 12px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 700, fontSize: 14, color: '#111827', margin: 0 }}>{a.nome}{calcIdade(a.data_nascimento) != null ? ` · ${calcIdade(a.data_nascimento)} anos` : ''}</p>
-                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>{a.bairro || '—'}{a.telefone ? ` · ${a.telefone}` : ''}</p>
+                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>{a._dias === 0 ? '🎉 hoje' : `em ${a._dias} dia${a._dias > 1 ? 's' : ''} (${_fmtDM(a.data_nascimento)})`}{a.bairro ? ` · ${a.bairro}` : ''}{a.telefone ? ` · ${a.telefone}` : ''}</p>
                   </div>
                   {a.telefone && (
-                    <a href={'https://wa.me/55' + a.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(a.nome))} target="_blank" rel="noreferrer" style={{ background: '#16a34a', color: '#fff', borderRadius: 8, padding: '8px 12px', fontWeight: 700, fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap' }}>💚 Carinho</a>
+                    <a href={'https://wa.me/55' + a.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(a.nome, a._dias))} target="_blank" rel="noreferrer" style={{ background: '#16a34a', color: '#fff', borderRadius: 8, padding: '8px 12px', fontWeight: 700, fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap' }}>💚 Carinho</a>
                   )}
                 </div>
               ))}
