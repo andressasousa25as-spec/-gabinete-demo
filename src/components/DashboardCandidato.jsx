@@ -512,7 +512,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const _diasAteAniver = (iso) => { const n = new Date(iso); let p = new Date(_hoje0.getFullYear(), n.getMonth(), n.getDate()); if (p < _hoje0) p = new Date(_hoje0.getFullYear() + 1, n.getMonth(), n.getDate()); return Math.round((p - _hoje0) / 86400000); };
   const calcIdade = (iso) => { if (!iso) return null; const n = new Date(iso); let p = new Date(_hoje0.getFullYear(), n.getMonth(), n.getDate()); if (p < _hoje0) p = new Date(_hoje0.getFullYear() + 1, n.getMonth(), n.getDate()); return p.getFullYear() - n.getFullYear(); };
   const _fmtDM = (iso) => { const n = new Date(iso); return String(n.getDate()).padStart(2, '0') + '/' + String(n.getMonth() + 1).padStart(2, '0'); };
-  const proximosAniver = eleitores.filter(e => e.data_nascimento).map(e => ({ ...e, _dias: _diasAteAniver(e.data_nascimento) })).filter(e => e._dias <= 31).sort((a, b) => a._dias - b._dias);
+  const proximosAniver = eleitores.filter(e => e.data_nascimento).map(e => ({ ...e, _dias: _diasAteAniver(e.data_nascimento) })).filter(e => e._dias <= 60).sort((a, b) => a._dias - b._dias);
   const aniverDestaque = proximosAniver[0] || null;
   const msgAniversario = (nome, dias) => (dias === 0)
     ? 'Feliz aniversário, ' + (nome ? nome.split(' ')[0] : '') + '! 🎉 Hoje é um dia especial e a nossa equipe faz questão de te desejar muita saúde, paz e alegria ao lado de quem você ama. Conte sempre com a gente. Um forte abraço! 🎂'
@@ -635,7 +635,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           <div style={{ flex: 1, minWidth: 180 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#fbbf24" }}>{aniverDestaque._dias === 0 ? 'Aniversariante de hoje' : 'Próximo aniversário'}</div>
             <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginTop: 2 }}>{aniverDestaque.nome}{calcIdade(aniverDestaque.data_nascimento) != null ? ` · ${aniverDestaque._dias === 0 ? '' : 'faz '}${calcIdade(aniverDestaque.data_nascimento)} anos` : ''}</div>
-            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniverDestaque.bairro || '—'} · {aniverDestaque._dias === 0 ? 'é hoje! 🎉' : `em ${aniverDestaque._dias} dia${aniverDestaque._dias > 1 ? 's' : ''} (${_fmtDM(aniverDestaque.data_nascimento)})`}{proximosAniver.length > 1 ? ` · +${proximosAniver.length - 1} no mês` : ''}</div>
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniverDestaque.bairro || '—'} · {aniverDestaque._dias === 0 ? 'é hoje! 🎉' : `em ${aniverDestaque._dias} dia${aniverDestaque._dias > 1 ? 's' : ''} (${_fmtDM(aniverDestaque.data_nascimento)})`}{proximosAniver.length > 1 ? ` · +${proximosAniver.length - 1} em breve` : ''}</div>
           </div>
           {aniverDestaque.telefone && (
             <a href={'https://wa.me/55' + aniverDestaque.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(aniverDestaque.nome, aniverDestaque._dias))} target="_blank" rel="noreferrer" style={{ background: "#16a34a", color: "#fff", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>{aniverDestaque._dias === 0 ? '💚 Enviar carinho' : '💬 Mandar mensagem'}</a>
@@ -981,7 +981,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {showAniver && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowAniver(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Aniversariantes do mês ({proximosAniver.length})</h2>
+            <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Próximos aniversariantes ({proximosAniver.length})</h2>
             <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Próximos 31 dias, do mais perto ao mais distante. A mensagem de carinho já vai pronta — afeto, sem pedir voto.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '60vh', overflowY: 'auto' }}>
               {proximosAniver.map(a => (
