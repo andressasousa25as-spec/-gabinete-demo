@@ -34,6 +34,7 @@ export default function CadastroPublico({ liderancaId }) {
     nome: '', telefone: '', email: '', bairro: '',
     endereco: '', municipio: 'Macapá',
     zona_eleitoral: '', secao_eleitoral: '',
+    data_nascimento: '',
   });
 
   useEffect(() => {
@@ -94,6 +95,7 @@ export default function CadastroPublico({ liderancaId }) {
       op: 'insert',
       dados: {
         ...form,
+        data_nascimento: form.data_nascimento || null,
         lideranca_id: liderId,
         tags: tipo === 'lideranca' ? ['liderança'] : null,
         consentimento_aceito: true,
@@ -185,6 +187,10 @@ export default function CadastroPublico({ liderancaId }) {
           {/* Email */}
           <label style={estiloLabel}>E-mail (opcional)</label>
           <input name="email" type="email" placeholder="seu@email.com" value={form.email} onChange={handleChange} style={{ ...estiloInput, marginBottom: '14px' }} />
+
+          {/* Data de nascimento — usada para felicitar o apoiador no aniversário */}
+          <label style={estiloLabel}>🎂 Data de nascimento (opcional)</label>
+          <input name="data_nascimento" type="date" value={form.data_nascimento} onChange={handleChange} style={{ ...estiloInput, marginBottom: '14px' }} />
 
           {/* Município — seletor: define qual lista de bairros aparece e ancora
               a pessoa no mapa pelo centro da cidade certa. */}
