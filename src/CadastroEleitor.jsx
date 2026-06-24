@@ -64,8 +64,9 @@ export default function CadastroEleitor() {
           telefone: formData.telefone,
           email: formData.email || null,
           bairro: formData.bairro,
-          zona_eleitoral: formData.zona_eleitoral || null,
-          secao_eleitoral: formData.secao_eleitoral || null,
+          // normaliza: remove zeros à esquerda para casar com a referência do TRE (ex: 0042 -> 42)
+          zona_eleitoral: formData.zona_eleitoral?.replace(/^0+/, '') || null,
+          secao_eleitoral: formData.secao_eleitoral?.replace(/^0+/, '') || null,
           consentimento_aceito: true,
           data_consentimento: new Date().toISOString(),
           versao_termo: '1.0',
@@ -173,7 +174,7 @@ export default function CadastroEleitor() {
             <input
               type="number"
               name="secao_eleitoral"
-              placeholder="Ex: 0042"
+              placeholder="Ex: 42"
               value={formData.secao_eleitoral}
               onChange={handleChange}
               min="1"

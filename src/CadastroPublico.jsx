@@ -95,6 +95,9 @@ export default function CadastroPublico({ liderancaId }) {
       op: 'insert',
       dados: {
         ...form,
+        // normaliza zona/seção: remove zeros à esquerda p/ casar com a referência do TRE (0042 -> 42)
+        zona_eleitoral: form.zona_eleitoral?.replace(/^0+/, '') || null,
+        secao_eleitoral: form.secao_eleitoral?.replace(/^0+/, '') || null,
         data_nascimento: form.data_nascimento || null,
         lideranca_id: liderId,
         tags: tipo === 'lideranca' ? ['liderança'] : null,
@@ -232,7 +235,7 @@ export default function CadastroPublico({ liderancaId }) {
             </div>
             <div style={{ flex: 1 }}>
               <label style={estiloLabel}>Seção Eleitoral *</label>
-              <input name="secao_eleitoral" type="number" placeholder="Ex: 0042" min="1" max="9999"
+              <input name="secao_eleitoral" type="number" placeholder="Ex: 42" min="1" max="9999"
                 value={form.secao_eleitoral} onChange={handleChange}
                 style={{ ...estiloInput, marginBottom: 0 }} />
             </div>
