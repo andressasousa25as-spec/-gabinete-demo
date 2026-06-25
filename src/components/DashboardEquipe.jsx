@@ -34,18 +34,18 @@ const linkWhatsApp = (telefone, nome) => {
 
 const estiloInput = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
-  border: '1px solid #cbd5e1', fontSize: '15px', marginBottom: '12px',
-  boxSizing: 'border-box',
+  border: '1px solid var(--border)', fontSize: '15px', marginBottom: '12px',
+  boxSizing: 'border-box', background: 'var(--surface)', color: 'var(--text)',
 };
 
 const estiloModal = {
   position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000,
+  backgroundColor: 'var(--overlay)', zIndex: 1000,
   display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
 };
 
 const estiloCard = {
-  backgroundColor: 'white', borderRadius: '20px', padding: '32px',
+  backgroundColor: 'var(--surface)', borderRadius: '20px', padding: '32px', color: 'var(--text)',
   width: '100%', maxWidth: '560px', maxHeight: '90vh', overflowY: 'auto',
   boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
 };
@@ -282,7 +282,7 @@ export default function DashboardEquipe({ perfil }) {
   if (aba === 'anotacoes') return <GestaoAnotacoes liderancaId={LIDERANCA_ID} onVoltar={() => setAba('inicio')} />;
 
   return (
-    <div style={{ background: "#0a0f1c", padding: 20, minHeight: "100vh", display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ background: "var(--bg)", padding: 20, minHeight: "100vh", display: "flex", flexDirection: "column", gap: 16 }}>
 
       {/* Header */}
       <div style={{ background: "#ffffff", borderRadius: 24, padding: "32px 40px", color: "white" }}>
@@ -292,19 +292,19 @@ export default function DashboardEquipe({ perfil }) {
 
       {/* Botões */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <button onClick={() => setShowEleitor(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Apoiador</button>
-        <button onClick={() => setShowLider(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Liderança</button>
+        <button onClick={() => setShowEleitor(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Apoiador</button>
+        <button onClick={() => setShowLider(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Liderança</button>
         <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro'); registrarLog('Copiou link de cadastro', 'Link público genérico (apoiador/liderança)'); alert('🔗 Link de cadastro copiado!\n\nCole no WhatsApp ou redes — a pessoa escolhe se cadastrar como Apoiador ou Liderança.'); }} style={{ background: "#1e40af", border: "1px solid #2563eb", borderRadius: 8, color: "#fff", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🔗 Link de cadastro</button>
-        <button onClick={() => setShowReuniao(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Reunião</button>
-        <button onClick={() => setAba('mapa')} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🗺️ Mapa</button>
-        <button onClick={() => setAba('anotacoes')} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📝 Anotações</button>
-        <button onClick={() => setShowMidias(true)} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📤 Mídias</button>
+        <button onClick={() => setShowReuniao(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Reunião</button>
+        <button onClick={() => setAba('mapa')} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🗺️ Mapa</button>
+        <button onClick={() => setAba('anotacoes')} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📝 Anotações</button>
+        <button onClick={() => setShowMidias(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📤 Mídias</button>
       </div>
 
       {/* Central de Comunicação */}
-      <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)' }}>
         <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#1e40af', marginBottom: '6px' }}>📣 Central de Comunicação</h3>
-        <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '16px' }}>Todos os cliques são rastreados automaticamente.</p>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>Todos os cliques são rastreados automaticamente.</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           <div style={{ flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <a href={config?.instagram || '#'} target="_blank" rel="noopener noreferrer"
@@ -313,7 +313,7 @@ export default function DashboardEquipe({ perfil }) {
               📸 Instagram
             </a>
             <button onClick={() => setDisparoCanal('instagram')}
-              style={{ padding: '11px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+              style={{ padding: '11px', borderRadius: '10px', border: '1px solid var(--border)', background: 'transparent', color: 'var(--text)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
               🎯 Gerar links rastreados
             </button>
           </div>
@@ -327,30 +327,30 @@ export default function DashboardEquipe({ perfil }) {
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px', alignItems: 'start' }}>
 
         {/* Apoiadores */}
-        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', margin: 0 }}>👥 Apoiadores ({eleitores.length})</h3>
-            <button onClick={dispararParaTodos} style={{ padding: "8px 14px", borderRadius: 6, background: "#1e293b", color: "#f1f5f9", border: "1px solid #334155", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
+            <button onClick={dispararParaTodos} style={{ padding: "8px 14px", borderRadius: 6, background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--border)", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
               📱 Disparar ({eleitorFiltrados.filter(e => !e.opt_out && formatarWhatsApp(e.telefone)).length})
             </button>
           </div>
           <input type="text" placeholder="🔍 Buscar..." value={busca} onChange={e => setBusca(e.target.value)}
-            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #334155', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: '#0a0f1c', color: '#f1f5f9' }} />
+            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: 'var(--bg)', color: 'var(--text)' }} />
           <FiltroStatusVoto value={filtroStatus} onChange={setFiltroStatus} eleitores={eleitores} />
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {loading ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center' }}>⏳ Carregando...</p> :
-              eleitorFiltrados.length === 0 ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p> :
+            {loading ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center' }}>⏳ Carregando...</p> :
+              eleitorFiltrados.length === 0 ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p> :
               eleitorFiltrados.map(e => {
                 const linkWA = !e.opt_out && linkWhatsApp(e.telefone, e.nome);
                 return (
-                  <div key={e.id} style={{ background: e.opt_out ? '#1e293b' : '#111827', borderRadius: '10px', padding: '10px', border: `1px solid ${e.opt_out ? '#334155' : '#1f2937'}` }}>
+                  <div key={e.id} style={{ background: e.opt_out ? 'var(--surface)' : 'var(--surface-2)', borderRadius: '10px', padding: '10px', border: `1px solid var(--border)` }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6px' }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{e.nome}</p>
-                        <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
-                        {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
-                        {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
-                        {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
+                        <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{e.nome}</p>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {e.telefone}</p>
+                        {e.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {e.bairro}</p>}
+                        {e.zona_eleitoral && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
+                        {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                         {e.opt_out && <p style={{ color: '#92400e', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
                         <div style={{ marginTop: '6px' }}><StatusVotoSelect value={e.status_voto} onChange={(v) => atualizarStatusVoto(e, v)} /></div>
                       </div>
@@ -367,7 +367,7 @@ export default function DashboardEquipe({ perfil }) {
                     {linkWA && (
                       <a href={linkWA} target="_blank" rel="noopener noreferrer"
                         onClick={() => registrarClique('whatsapp_eleitor', e.bairro || '', e.id)}
-                        style={{ padding: "8px 14px", borderRadius: 6, background: "#1e293b", color: "#f1f5f9", border: "1px solid #334155", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
+                        style={{ padding: "8px 14px", borderRadius: 6, background: "var(--surface)", color: "var(--text)", border: "1px solid var(--border)", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
                         📱 WhatsApp
                       </a>
                     )}
@@ -379,22 +379,22 @@ export default function DashboardEquipe({ perfil }) {
         </div>
 
         {/* Lideranças */}
-        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#94a3b8', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)' }}>
+          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text-muted)', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {liderancas.length === 0 ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p> :
+            {liderancas.length === 0 ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p> :
               liderancas.map(l => {
                 const linkWA = linkWhatsApp(l.telefone, l.nome);
                 return (
-                  <div key={l.id} style={{ background: '#111827', borderRadius: 8, padding: '10px', border: '1px solid #1f2937'}}>
-                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{l.nome}</p>
-                    {l.telefone && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {l.telefone}</p>}
-                    {l.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {l.bairro}</p>}
-                    {l.demanda && <p style={{ color: '#94a3b8', fontSize: '11px' }}>💬 {l.demanda}</p>}
+                  <div key={l.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px', border: '1px solid var(--border)'}}>
+                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{l.nome}</p>
+                    {l.telefone && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {l.telefone}</p>}
+                    {l.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {l.bairro}</p>}
+                    {l.demanda && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>💬 {l.demanda}</p>}
                     {linkWA && (
                       <a href={linkWA} target="_blank" rel="noopener noreferrer"
                         onClick={() => registrarClique('whatsapp_lider', l.bairro || '', l.id)}
-                        style={{ padding: "8px 14px", borderRadius: 6, background: "#1e293b", color: "#f1f5f9", border: "1px solid #334155", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
+                        style={{ padding: "8px 14px", borderRadius: 6, background: "var(--surface)", color: "var(--text)", border: "1px solid var(--border)", cursor: "pointer", fontWeight: 600, fontSize: 12, textDecoration: "none" }}>
                         📱 WhatsApp
                       </a>
                     )}
@@ -407,19 +407,19 @@ export default function DashboardEquipe({ perfil }) {
         </div>
 
         {/* Reuniões */}
-        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1f2937' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)' }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
           <button onClick={() => setShowComunicado(true)}
-            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid var(--border)', background: 'transparent', color: 'var(--text)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
             📣 Comunicado por liderança
           </button>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {reunioes.length === 0 ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p> :
+            {reunioes.length === 0 ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p> :
               reunioes.map(r => (
-                <div key={r.id} style={{ background: '#111827', borderRadius: 8, padding: 10, border: '1px solid #1f2937'}}>
-                  <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
-                  <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
-                  {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                <div key={r.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: 10, border: '1px solid var(--border)'}}>
+                  <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{r.titulo}</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
+                  {r.local && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {r.local}</p>}
                   {linkMapaReuniao(r) && (
                     <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
                       style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
@@ -466,7 +466,7 @@ export default function DashboardEquipe({ perfil }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" min="1" max="9999" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
-            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
+            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
             <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={salvando} style={estiloBotao('#16a34a')}>{salvando ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>
             <button onClick={() => setShowEleitor(false)} style={estiloBotao('#64748b')}>Cancelar</button>
