@@ -8,6 +8,7 @@ import LoginScreen from './components/LoginScreen';
 import DashboardCandidato from './components/DashboardCandidato';
 import DashboardEquipe from './components/DashboardEquipe';
 import DashboardADM from './components/DashboardADM';
+import BotaoTema from './components/BotaoTema';
 import TelaMaster from './components/TelaMaster';
 import TelaBloqueio from './components/TelaBloqueio';
 import GestaoUsuarios from './components/GestaoUsuarios';
@@ -71,7 +72,7 @@ function App() {
 
   if (recovery) {
     return (
-      <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0f172a' }}>
+      <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg)' }}>
         <div style={{ background:'white', padding:32, borderRadius:16, maxWidth:360, width:'100%' }}>
           <h2 style={{ marginTop:0, fontSize:18 }}>Defina sua senha</h2>
           <input id="nova" type="password" placeholder="Nova senha" style={{ width:'100%', padding:12, borderRadius:8, border:'2px solid #e2e8f0', boxSizing:'border-box', marginBottom:12 }} />
@@ -98,7 +99,7 @@ function App() {
   if (!perfil || !carregado) return <div style={{ padding: 40, fontFamily: 'system-ui' }}>Carregando...</div>;
 
   if (membro && membro.ativo === false) return (
-    <div style={{ minHeight:'100vh', background:'#0f172a', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
+    <div style={{ minHeight:'100vh', background:'var(--bg)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}>
       <div style={{ background:'#fff', borderRadius:20, padding:40, maxWidth:420, textAlign:'center', boxShadow:'0 25px 50px rgba(0,0,0,.5)' }}>
         <div style={{ fontSize:48, marginBottom:12 }}>🔒</div>
         <h1 style={{ fontSize:20, fontWeight:800, color:'#0f172a', marginBottom:8 }}>Acesso bloqueado</h1>
@@ -121,13 +122,13 @@ function App() {
       : <DashboardEquipe perfil={membro} />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <AtualizacaoPWA />
-      <header className="text-white py-5 shadow-lg" style={{ background: "#0f172a", borderBottom: "1px solid #1e293b" }}>
+      <header className="py-5 shadow-lg" style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <div>
-            <h1 style={{ fontSize: "clamp(10px, 3vw, 24px)", fontWeight: 800, whiteSpace: "nowrap" }}>GABINETE DIGITAL SF</h1>
-            <p style={{ color: "#ffffff", fontSize: 13 }}>Deputado Demo</p>
+            <h1 style={{ fontSize: "clamp(10px, 3vw, 24px)", fontWeight: 800, whiteSpace: "nowrap", color: 'var(--text)' }}>GABINETE DIGITAL SF</h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Deputado Demo</p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
             {ehMaster && (
@@ -138,6 +139,7 @@ function App() {
             <span style={{ background: "white", color: "#0f172a", padding: "7px 12px", borderRadius: 999, fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>
               {nomeHeader}
             </span>
+            <BotaoTema />
             <button onClick={handleLogout} style={{ background: "#ef4444", color: "white", padding: "8px 14px", borderRadius: 999, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", flexShrink: 0, whiteSpace: "nowrap" }}>
               Sair
             </button>

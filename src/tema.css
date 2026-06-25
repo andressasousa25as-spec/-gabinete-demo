@@ -1,0 +1,19 @@
+/* Tokens do tema. :root = ESCURO (padrão, idêntico ao app de hoje). */
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #334155;
+  --border: #334155;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --overlay: rgba(0,0,0,.6);
+}
+:root[data-theme="light"] {
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface-2: #e2e8f0;
+  --border: #cbd5e1;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --overlay: rgba(0,0,0,.4);
+}
