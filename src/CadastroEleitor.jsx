@@ -15,9 +15,11 @@ const inputStyle = {
   padding: '12px',
   marginBottom: '12px',
   borderRadius: '8px',
-  border: '1px solid #ccc',
+  border: '1px solid var(--border)',
   fontSize: '15px',
   boxSizing: 'border-box',
+  background: 'var(--surface)',
+  color: 'var(--text)',
 };
 
 export default function CadastroEleitor() {
@@ -88,7 +90,7 @@ export default function CadastroEleitor() {
   };
 
   return (
-    <div style={{ maxWidth: '620px', margin: '40px auto', padding: '30px' }}>
+    <div style={{ maxWidth: '620px', margin: '40px auto', padding: '30px', color: 'var(--text)' }}>
       <h2 style={{ color: '#1e40af', marginBottom: '24px' }}>📋 Cadastro de Apoiador</h2>
 
       {sucesso && (
@@ -106,7 +108,7 @@ export default function CadastroEleitor() {
       <form onSubmit={e => e.preventDefault()}>
 
         {/* Nome */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Nome Completo *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Nome Completo *</label>
         <input
           type="text"
           name="nome"
