@@ -10,7 +10,7 @@ export default function TermoLGPD({ aceito, onChange }) {
       <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>
         📋 TERMO DE CONSENTIMENTO PARA TRATAMENTO DE DADOS PESSOAIS
       </p>
-      <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.7', marginBottom: '12px' }}>
+      <p style={{ fontSize: '12px', color: '#1e293b', lineHeight: '1.7', marginBottom: '12px' }}>
         Ao marcar esta opção, o titular autoriza, de forma livre, informada e inequívoca, o tratamento
         dos seus dados pessoais (nome, telefone, endereço, zona e seção eleitoral) pelo
         responsável por este cadastro, para as seguintes finalidades:

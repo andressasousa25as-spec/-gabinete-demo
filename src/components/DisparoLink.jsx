@@ -29,36 +29,36 @@ export default function DisparoLink({ canal, eleitores, liderancas, onClose }) {
     setLinks(gerados);
   };
 
-  const card = { background: '#0f172a', borderRadius: 20, padding: 28, width: '100%', maxWidth: 560, maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.4)' };
+  const card = { background: 'var(--surface)', borderRadius: 20, padding: 28, width: '100%', maxWidth: 560, maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px rgba(0,0,0,0.4)' };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--overlay)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
       onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={card}>
-        <h2 style={{ color: '#f1f5f9', margin: '0 0 4px', fontSize: 18, fontWeight: 800 }}>🎯 Gerar links rastreados — {ROTULO[canal]}</h2>
-        <p style={{ color: '#94a3b8', fontSize: 13, margin: '0 0 16px' }}>Cada pessoa recebe um link único. Quando abrir, registramos quem, bairro e liderança.</p>
+        <h2 style={{ color: 'var(--text)', margin: '0 0 4px', fontSize: 18, fontWeight: 800 }}>🎯 Gerar links rastreados — {ROTULO[canal]}</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '0 0 16px' }}>Cada pessoa recebe um link único. Quando abrir, registramos quem, bairro e liderança.</p>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
           {[{ k: 'apoiadores', l: '👤 Apoiadores' }, { k: 'liderancas', l: '⭐ Lideranças' }].map(g => (
             <button key={g.k} onClick={() => trocarGrupo(g.k)}
-              style={{ flex: 1, padding: 9, borderRadius: 8, border: grupo === g.k ? '2px solid #3b82f6' : '1px solid #334155', background: grupo === g.k ? '#1e293b' : 'transparent', color: grupo === g.k ? '#fff' : '#94a3b8', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>{g.l}</button>
+              style={{ flex: 1, padding: 9, borderRadius: 8, border: grupo === g.k ? '2px solid #3b82f6' : '1px solid var(--border)', background: grupo === g.k ? 'var(--surface-2)' : 'transparent', color: grupo === g.k ? 'var(--text)' : 'var(--text-muted)', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>{g.l}</button>
           ))}
         </div>
 
         {links.length === 0 ? (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ color: '#cbd5e1', fontSize: 13, fontWeight: 700 }}>{selecionados.length} de {lista.length} selecionados</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 700 }}>{selecionados.length} de {lista.length} selecionados</span>
               <button onClick={todos} style={{ background: 'transparent', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
                 {selecionados.length === lista.length ? '✗ Desmarcar todos' : '✓ Selecionar todos'}
               </button>
             </div>
-            <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid #1f2937', borderRadius: 10, padding: 8, marginBottom: 16 }}>
-              {lista.length === 0 ? <p style={{ color: '#64748b', textAlign: 'center', padding: 16, fontSize: 13 }}>Nenhum destinatário com telefone neste grupo.</p> :
+            <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 10, padding: 8, marginBottom: 16 }}>
+              {lista.length === 0 ? <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 16, fontSize: 13 }}>Nenhum destinatário com telefone neste grupo.</p> :
                 lista.map(p => (
-                  <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 6px', borderBottom: '1px solid #1f2937', cursor: 'pointer' }}>
+                  <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 6px', borderBottom: '1px solid var(--border)', cursor: 'pointer' }}>
                     <input type="checkbox" checked={selecionados.includes(p.id)} onChange={() => toggle(p.id)} />
-                    <span style={{ color: '#e2e8f0', fontSize: 13 }}>{p.nome} {p.bairro ? <span style={{ color: '#64748b' }}>· {p.bairro}</span> : null}</span>
+                    <span style={{ color: 'var(--text)', fontSize: 13 }}>{p.nome} {p.bairro ? <span style={{ color: 'var(--text-muted)' }}>· {p.bairro}</span> : null}</span>
                   </label>
                 ))}
             </div>
@@ -66,7 +66,7 @@ export default function DisparoLink({ canal, eleitores, liderancas, onClose }) {
           </>
         ) : (
           <div style={{ marginBottom: 8 }}>
-            <p style={{ color: '#cbd5e1', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>✅ {links.length} link{links.length !== 1 ? 's' : ''} gerado{links.length !== 1 ? 's' : ''} — clique pra enviar pelo WhatsApp:</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>✅ {links.length} link{links.length !== 1 ? 's' : ''} gerado{links.length !== 1 ? 's' : ''} — clique pra enviar pelo WhatsApp:</p>
             <div style={{ maxHeight: 300, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {links.map((l, i) => (
                 <a key={i} href={l.url} target="_blank" rel="noopener noreferrer"
@@ -75,11 +75,11 @@ export default function DisparoLink({ canal, eleitores, liderancas, onClose }) {
                 </a>
               ))}
             </div>
-            <button onClick={() => setLinks([])} style={{ width: '100%', padding: 11, background: '#1e293b', color: '#cbd5e1', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer', marginTop: 10 }}>← Voltar à seleção</button>
+            <button onClick={() => setLinks([])} style={{ width: '100%', padding: 11, background: 'var(--surface-2)', color: 'var(--text-muted)', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer', marginTop: 10 }}>← Voltar à seleção</button>
           </div>
         )}
 
-        <button onClick={onClose} style={{ width: '100%', padding: 11, background: 'transparent', color: '#94a3b8', border: '1px solid #334155', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Fechar</button>
+        <button onClick={onClose} style={{ width: '100%', padding: 11, background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border)', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Fechar</button>
       </div>
     </div>
   );

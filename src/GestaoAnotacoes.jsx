@@ -62,10 +62,10 @@ export default function GestaoAnotacoes({ liderancaId, onVoltar }) {
 
         {/* Formulário de Nova Anotação */}
         <div style={{
-          background: '#111827',
+          background: 'var(--surface)',
           padding: '25px',
           borderRadius: '16px',
-          border: '1px solid #334155',
+          border: '1px solid var(--border)',
           position: isMobile ? 'relative' : 'sticky',
           top: isMobile ? 'auto' : '20px'
         }}>
@@ -97,7 +97,7 @@ export default function GestaoAnotacoes({ liderancaId, onVoltar }) {
                 minWidth: '200px',
                 padding: '10px 14px',
                 borderRadius: '8px',
-                border: '1px solid #cbd5e1'
+                border: '1px solid var(--border)'
               }}
             />
 
@@ -107,7 +107,7 @@ export default function GestaoAnotacoes({ liderancaId, onVoltar }) {
               style={{
                 padding: '10px 14px',
                 borderRadius: '8px',
-                border: '1px solid #cbd5e1'
+                border: '1px solid var(--border)'
               }}
             >
               <option value="">Todos os Status</option>
