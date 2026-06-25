@@ -319,7 +319,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1d4ed8' }}>
                   {votosPaulinho > 0 ? votosPaulinho.toLocaleString('pt-BR') : '—'}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   Votos Paulinho 2022{'\n'}em {dados.municipio}
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#059669' }}>
                   {maiorVotado?.votos.toLocaleString('pt-BR')}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   Maior votado vereador 2024
                 </div>
               </div>
