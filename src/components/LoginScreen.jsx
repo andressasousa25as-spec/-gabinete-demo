@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import BotaoTema from './BotaoTema';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -24,16 +25,19 @@ export default function LoginScreen() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0f1c", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <div style={{ background: "#1e293b", borderRadius: 16, padding: "40px 32px", width: "100%", maxWidth: 420, border: "1px solid #334155" }}>
-        <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f1f5f9", textAlign: "center", marginBottom: 4 }}>GABINETE DIGITAL SF</h1>
-        <p style={{ textAlign: "center", color: "#94a3b8", marginBottom: 28 }}>Deputado Demo 2026</p>
+    <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative" }}>
+      <div style={{ position: "absolute", top: 16, right: 16 }}>
+        <BotaoTema />
+      </div>
+      <div style={{ background: "var(--surface)", borderRadius: 16, padding: "40px 32px", width: "100%", maxWidth: 420, border: "1px solid var(--border)" }}>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: "var(--text)", textAlign: "center", marginBottom: 4 }}>GABINETE DIGITAL SF</h1>
+        <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: 28 }}>Deputado Demo 2026</p>
         <form onSubmit={handleLogin}>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "12px 14px", background: "white", border: "1px solid #334155", borderRadius: 10, color: "#0f172a", fontSize: 15, boxSizing: "border-box", marginBottom: 12 }}
+            style={{ width: "100%", padding: "12px 14px", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--text)", fontSize: 15, boxSizing: "border-box", marginBottom: 12 }}
             placeholder="E-mail" autoFocus required />
           <input type="password" value={senha} onChange={e => setSenha(e.target.value)}
-            style={{ width: "100%", padding: "12px 14px", background: "white", border: "1px solid #334155", borderRadius: 10, color: "#0f172a", fontSize: 15, boxSizing: "border-box", marginBottom: 12 }}
+            style={{ width: "100%", padding: "12px 14px", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--text)", fontSize: 15, boxSizing: "border-box", marginBottom: 12 }}
             placeholder="Senha" required />
           {erro && <p style={{ color: "#fca5a5", fontSize: 13, marginBottom: 10 }}>{erro}</p>}
           <button type="submit" disabled={loading}
@@ -42,7 +46,7 @@ export default function LoginScreen() {
           </button>
         </form>
         <button onClick={redefinir}
-          style={{ width: "100%", padding: 10, marginTop: 10, borderRadius: 10, background: "transparent", color: "#93c5fd", border: "1px solid #334155", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          style={{ width: "100%", padding: 10, marginTop: 10, borderRadius: 10, background: "transparent", color: "#93c5fd", border: "1px solid var(--border)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
           Criar / redefinir senha
         </button>
       </div>
