@@ -66,19 +66,19 @@ const ZONAS_AMAPA = Array.from({ length: 35 }, (_, i) => String(i + 1));
 
 const estiloModal = {
   position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000,
+  backgroundColor: 'var(--overlay)', zIndex: 1000,
   display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
 };
 
 const estiloCard = {
-  backgroundColor: 'white', borderRadius: '20px', padding: '32px', color: '#111827',
+  backgroundColor: 'var(--surface)', borderRadius: '20px', padding: '32px', color: 'var(--text)',
   width: '100%', maxWidth: '560px', maxHeight: '90vh', overflowY: 'auto',
   boxShadow: '0 25px 50px rgba(0,0,0,0.3)'
 };
 
 const estiloInput = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
-  border: '1px solid #cbd5e1', fontSize: '15px', marginBottom: '12px',
+  border: '1px solid var(--border)', fontSize: '15px', marginBottom: '12px',
   boxSizing: 'border-box'
 };
 
@@ -87,6 +87,11 @@ const estiloBotao = (cor) => ({
   backgroundColor: cor, color: 'white', fontSize: '16px',
   fontWeight: 'bold', cursor: 'pointer', marginTop: '8px'
 });
+const estiloBotaoCancelar = {
+  width: '100%', padding: '14px', borderRadius: '10px', border: 'none',
+  backgroundColor: 'var(--surface-2)', color: 'var(--text)', fontSize: '16px',
+  fontWeight: 'bold', cursor: 'pointer', marginTop: '8px'
+};
 
 function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
   const ref = useRef();
@@ -115,7 +120,7 @@ function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
           <h2 style={{ color: '#1e40af', margin: 0 }}>🖨️ {titulo}</h2>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={imprimir} style={{ background: '#1e40af', color: 'white', border: 'none', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>🖨️ Imprimir / PDF</button>
-            <button onClick={onFechar} style={{ background: '#64748b', color: 'white', border: 'none', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>Fechar</button>
+            <button onClick={onFechar} style={{ background: 'var(--surface-2)', color: 'var(--text)', border: 'none', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>Fechar</button>
           </div>
         </div>
         <div ref={ref}>
@@ -450,12 +455,12 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const eleitoresRel = relLider ? eleitores.filter(e => e.lideranca_id === relLider) : eleitores;
   const sufLider = relLider ? ' — ' + (lideById[relLider] || 'Liderança') : '';
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: 'white', padding: 24 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', padding: 24 }}>
       <button onClick={() => setAba('inicio')} style={{ marginBottom: 20, padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>← Voltar</button>
-      <h2 style={{ color: 'white', marginBottom: 20 }}>🖨️ Relatórios</h2>
-      <div style={{ marginBottom: 16, background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16 }}>
-        <label style={{ display: 'block', fontSize: 13, color: '#94a3b8', marginBottom: 8, fontWeight: 600 }}>👥 Filtrar Apoiadores por liderança</label>
-        <select value={relLider} onChange={e => setRelLider(e.target.value)} style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: 'white', fontSize: 14, minWidth: 260 }}>
+      <h2 style={{ color: 'var(--text)', marginBottom: 20 }}>🖨️ Relatórios</h2>
+      <div style={{ marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
+        <label style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 600 }}>👥 Filtrar Apoiadores por liderança</label>
+        <select value={relLider} onChange={e => setRelLider(e.target.value)} style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 14, minWidth: 260 }}>
           <option value="">Geral (todos os apoiadores)</option>
           {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
         </select>
@@ -473,7 +478,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             w.document.write('<html><head><title>' + rel.label + '</title></head><body style="font-family:Arial;padding:20px"><h1 style="color:#1e40af">Gabinete Demo 2026 — ' + rel.label + '</h1><p>Total: ' + rel.dados.length + ' registros | ' + new Date().toLocaleString("pt-BR") + '</p><div style="margin:12px 0;padding:10px 14px;border:1px solid #fca5a5;background:#fef2f2;color:#991b1b;border-radius:8px;font-size:12px;line-height:1.5">🔒 <strong>DOCUMENTO INTERNO E CONFIDENCIAL — LGPD (Lei 13.709/2018).</strong> Dados pessoais de apoiadores. Uso restrito à equipe autorizada. Proibido compartilhar, encaminhar (inclusive por WhatsApp) ou repassar a terceiros.</div><table style="width:100%;border-collapse:collapse"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></body></html>');
             w.document.close();
             setTimeout(() => w.print(), 500);
-          }} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 24, cursor: 'pointer', color: 'white', fontSize: 15, fontWeight: 700 }}>
+          }} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24, cursor: 'pointer', color: 'var(--text)', fontSize: 15, fontWeight: 700 }}>
             🖨️ {rel.label} ({rel.dados.length})
           </button>
         ))}
@@ -532,10 +537,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const apuracaoEmDestaque = _diasEleicao <= 7 && _diasEleicao >= -2;
 
   return (
-    <div style={{ background: "#0a0f1c", minHeight: "100vh", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14, fontFamily: "Inter, system-ui, sans-serif", color: "#f1f5f9" }}>
+    <div style={{ background: "var(--bg)", minHeight: "100vh", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14, fontFamily: "Inter, system-ui, sans-serif", color: "var(--text)" }}>
 
       {/* Header */}
-      <div style={{background:"#ffffff",borderRadius:16,padding:"16px 20px",display:"flex",alignItems:"center",gap:16,color:"#0f172a",flexWrap:"nowrap"}}>
+      <div style={{background:"white",border:"1px solid var(--border)",borderRadius:16,padding:"16px 20px",display:"flex",alignItems:"center",gap:16,color:"#0f172a",flexWrap:"nowrap"}}>
         {config?.foto_url ? (
           <img src={config.foto_url} alt={config?.nome || 'Deputado Demo'} style={{width:"clamp(60px,15vw,90px)",height:"clamp(60px,15vw,90px)",borderRadius:"50%",border:"3px solid #fbbf24",objectFit:"cover",flexShrink:0}} />
         ) : (
@@ -552,9 +557,9 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
 
 
       {showConfig && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-          <div style={{ background: '#1e293b', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480, border: '1px solid #334155', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ color: '#f1f5f9', marginBottom: 20, fontSize: 18, fontWeight: 700 }}>⚙️ Configurações do Candidato</h3>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--overlay)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div style={{ background: 'var(--surface)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 480, border: '1px solid var(--border)', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ color: 'var(--text)', marginBottom: 20, fontSize: 18, fontWeight: 700 }}>⚙️ Configurações do Candidato</h3>
             {[
               { label: 'Nome', key: 'nome' },
               { label: 'Cargo', key: 'cargo' },
@@ -564,20 +569,20 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               { label: 'Instagram (URL)', key: 'instagram' },
               ].map(f => (
               <div key={f.key} style={{ marginBottom: 12 }}>
-                <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>{f.label}</label>
+                <label style={{ color: 'var(--text-muted)', fontSize: 12, display: 'block', marginBottom: 4 }}>{f.label}</label>
                 <input value={config[f.key] || ''} onChange={e => setConfig({...config, [f.key]: e.target.value})}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' }} />
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }} />
               </div>
             ))}
             <div style={{ marginBottom: 12 }}>
-              <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>Foto do candidato</label>
+              <label style={{ color: 'var(--text-muted)', fontSize: 12, display: 'block', marginBottom: 4 }}>Foto do candidato</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {config.foto_url ? (
                   <img src={config.foto_url} alt="Foto" style={{ width: 56, height: 56, borderRadius: '50%', objectFit: 'cover', border: '2px solid #fbbf24', flexShrink: 0 }} />
                 ) : (
                   <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#1e40af', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 22, flexShrink: 0 }}>{(config.nome || 'D')[0].toUpperCase()}</div>
                 )}
-                <label style={{ padding: '10px 14px', background: '#334155', color: '#f1f5f9', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
+                <label style={{ padding: '10px 14px', background: 'var(--surface-2)', color: 'var(--text)', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
                   {fotoSubindo ? '⏳ Enviando...' : '📷 Escolher imagem'}
                   <input type="file" accept="image/*" style={{ display: 'none' }} disabled={fotoSubindo}
                     onChange={async e => {
@@ -600,31 +605,31 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                   <button onClick={() => setConfig(c => ({ ...c, foto_url: null }))} style={{ padding: '10px 14px', background: 'transparent', color: '#f87171', border: '1px solid #7f1d1d', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>Remover</button>
                 )}
               </div>
-              <p style={{ color: '#64748b', fontSize: 11, marginTop: 4 }}>A foto só é aplicada após clicar em 💾 Salvar.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, marginTop: 4 }}>A foto só é aplicada após clicar em 💾 Salvar.</p>
             </div>
             <div style={{ marginBottom: 12 }}>
-              <label style={{ color: '#94a3b8', fontSize: 12, display: 'block', marginBottom: 4 }}>Bairro no mapa</label>
+              <label style={{ color: 'var(--text-muted)', fontSize: 12, display: 'block', marginBottom: 4 }}>Bairro no mapa</label>
               <select value={config.bairro || ''} onChange={e => {
                 const b = e.target.value;
                 const coords = COORDS_BAIRROS[b];
                 setConfig({...config, bairro: b, latitude: coords ? coords[0] : config.latitude, longitude: coords ? coords[1] : config.longitude});
-              }} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' }}>
+              }} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 14, boxSizing: 'border-box' }}>
                 <option value="">Selecione o bairro...</option>
                 {Object.keys(COORDS_BAIRROS).map(b => <option key={b} value={b}>{b}</option>)}
               </select>
               {config.latitude && <p style={{ color: '#60a5fa', fontSize: 11, marginTop: 4 }}>📍 Coordenadas: {config.latitude}, {config.longitude}</p>}
             </div>
             {ehMaster && (
-              <div style={{ marginTop: 16, padding: 12, background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}>
-                <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>CANDIDATO DE ANÁLISE (TSE)</p>
+              <div style={{ marginTop: 16, padding: 12, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>CANDIDATO DE ANÁLISE (TSE)</p>
                 {analiseCand
-                  ? <p style={{ color: '#f1f5f9', fontSize: 13, margin: 0 }}>{analiseCand.nome} · {analiseCand.cargo} · {analiseCand.ano} · {analiseCand.total?.toLocaleString('pt-BR')} votos</p>
-                  : <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>Nenhum candidato importado. Rode o script de importação no onboarding.</p>}
+                  ? <p style={{ color: 'var(--text)', fontSize: 13, margin: 0 }}>{analiseCand.nome} · {analiseCand.cargo} · {analiseCand.ano} · {analiseCand.total?.toLocaleString('pt-BR')} votos</p>
+                  : <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>Nenhum candidato importado. Rode o script de importação no onboarding.</p>}
               </div>
             )}
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
               <button onClick={salvarConfig} style={{ flex: 1, padding: 12, background: '#1d4ed8', color: 'white', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>💾 Salvar</button>
-              <button onClick={() => setShowConfig(false)} style={{ flex: 1, padding: 12, background: '#334155', color: '#f1f5f9', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>Cancelar</button>
+              <button onClick={() => setShowConfig(false)} style={{ flex: 1, padding: 12, background: 'var(--surface-2)', color: 'var(--text)', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>Cancelar</button>
             </div>
           </div>
         </div>
@@ -633,8 +638,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
         <InstalarAppButton />
         <PendingBadge />
-        <button onClick={() => setShowConfig(true)} style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>⚙️ Config</button>
-        <button onClick={async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); }} style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 8, color: "#f1f5f9", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>🔔 Ativar avisos</button>
+        <button onClick={() => setShowConfig(true)} style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>⚙️ Config</button>
+        <button onClick={async () => { const r = await ativarPush(); alert(r.ok ? 'Notificações ativadas!' : 'Não foi possível: ' + r.motivo); }} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "10px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>🔔 Ativar avisos</button>
       </div>
 
       {/* 🎂 Aniversariante (hoje ou o mais próximo do mês) */}
@@ -644,7 +649,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           <div style={{ flex: 1, minWidth: 180 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#fbbf24" }}>{aniverDestaque._dias === 0 ? 'Aniversariante de hoje' : 'Próximo aniversário'}</div>
             <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginTop: 2 }}>{aniverDestaque.nome}{calcIdade(aniverDestaque.data_nascimento) != null ? ` · ${aniverDestaque._dias === 0 ? '' : 'faz '}${calcIdade(aniverDestaque.data_nascimento)} anos` : ''}</div>
-            <div style={{ fontSize: 12, color: "#94a3b8" }}>{aniverDestaque.bairro || '—'} · {aniverDestaque._dias === 0 ? 'é hoje! 🎉' : `em ${aniverDestaque._dias} dia${aniverDestaque._dias > 1 ? 's' : ''} (${_fmtDM(aniverDestaque.data_nascimento)})`}{proximosAniver.length > 1 ? ` · +${proximosAniver.length - 1} em breve` : ''}</div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{aniverDestaque.bairro || '—'} · {aniverDestaque._dias === 0 ? 'é hoje! 🎉' : `em ${aniverDestaque._dias} dia${aniverDestaque._dias > 1 ? 's' : ''} (${_fmtDM(aniverDestaque.data_nascimento)})`}{proximosAniver.length > 1 ? ` · +${proximosAniver.length - 1} em breve` : ''}</div>
           </div>
           {aniverDestaque.telefone && (
             <a href={'https://wa.me/55' + aniverDestaque.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(aniverDestaque.nome, aniverDestaque._dias))} target="_blank" rel="noreferrer" style={{ background: "#16a34a", color: "#fff", borderRadius: 10, padding: "11px 16px", fontWeight: 700, fontSize: 13, textDecoration: "none" }}>{aniverDestaque._dias === 0 ? '💚 Enviar carinho' : '💬 Mandar mensagem'}</a>
@@ -710,14 +715,14 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         <div key={gi}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: g.cor }} />
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "#cbd5e1" }}>{g.titulo}</span>
-            <span style={{ flex: 1, height: 1, background: "#1e293b" }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "var(--text-muted)" }}>{g.titulo}</span>
+            <span style={{ flex: 1, height: 1, background: "var(--surface)" }} />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
             {g.itens.map((it, ii) => (
-              <button key={ii} onClick={it.on} style={{ background: "#111c33", border: "1px solid #243b52", borderRadius: 10, color: "#e2e8f0", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
-                onMouseOver={e => e.currentTarget.style.background = "#1b2a47"}
-                onMouseOut={e => e.currentTarget.style.background = "#111c33"}>
+              <button key={ii} onClick={it.on} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--text)", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
+                onMouseOver={e => e.currentTarget.style.background = "var(--surface-2)"}
+                onMouseOut={e => e.currentTarget.style.background = "var(--surface)"}>
                 <span style={{ color: g.cor, fontSize: 14 }}>●</span>{it.lb}
               </button>
             ))}
@@ -729,23 +734,23 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', alignItems: 'start' }}>
 
         {/* Coluna Apoiadores */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>👥 Apoiadores ({eleitores.length})</h3>
           <input type="text" placeholder="🔍 Buscar..." value={busca} onChange={e => setBusca(e.target.value)}
-            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #1f2937', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: '#0a0f1c', color: '#f1f5f9' }} />
+            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: 'var(--bg)', color: 'var(--text)' }} />
           <FiltroStatusVoto value={filtroStatus} onChange={setFiltroStatus} eleitores={eleitores} />
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {eleitorFiltrados.length === 0 ? (
-              <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p>
             ) : eleitorFiltrados.map(e => (
-              <div key={e.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+              <div key={e.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{e.nome}</p>
-                    <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
-                    {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
-                    {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
-                    {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
+                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{e.nome}</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {e.telefone}</p>
+                    {e.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {e.bairro}</p>}
+                    {e.zona_eleitoral && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
+                    {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                     {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
                     {e.opt_out && <p style={{ color: '#fbbf24', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
                     <div style={{ marginTop: '6px' }}><StatusVotoSelect value={e.status_voto} onChange={(v) => atualizarStatusVoto(e, v)} /></div>
@@ -762,19 +767,19 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         </div>
 
         {/* Coluna Lideranças */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#94a3b8', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
+          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text-muted)', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {liderancas.length === 0 ? (
-              <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p>
             ) : liderancas.map(l => (
-              <div key={l.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+              <div key={l.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{l.nome}</p>
-                    {l.telefone && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {l.telefone}</p>}
-                    {l.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {l.bairro}</p>}
-                    {l.demanda && <p style={{ color: '#94a3b8', fontSize: '11px' }}>💬 {l.demanda}</p>}
+                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{l.nome}</p>
+                    {l.telefone && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {l.telefone}</p>}
+                    {l.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {l.bairro}</p>}
+                    {l.demanda && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>💬 {l.demanda}</p>}
                   </div>
                   <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro/' + l.id); alert('Link copiado!'); }} style={{ background: '#dbeafe', color: '#1e40af', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', marginLeft: '6px' }}>🔗 Link</button><button onClick={() => abrirEditarLider(l)} style={{ background: '#fef9c3', color: '#a16207', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>✏️</button><button onClick={() => excluir('liderancas', l.id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', flexShrink: 0, marginLeft: '6px' }}>🗑️</button>
                 </div>
@@ -784,22 +789,22 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         </div>
 
         {/* Coluna Reuniões */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
           <button onClick={() => setShowComunicado(true)}
-            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid var(--border)', background: 'transparent', color: 'var(--text)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
             📣 Comunicado por liderança
           </button>
           <div style={{ maxHeight: '440px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {reunioes.length === 0 ? (
-              <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
             ) : reunioes.map(r => (
-              <div key={r.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+              <div key={r.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
-                    <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
-                    {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                    <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{r.titulo}</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
+                    {r.local && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {r.local}</p>}
                     {linkMapaReuniao(r) && (
                       <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
                         style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
@@ -826,10 +831,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {/* MODAL ELEITOR */}
 
       {showMapaSelecao && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ background: 'white', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', color: '#111827' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--overlay)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', color: 'var(--text)' }}>
             <h2 style={{ color: '#1e40af', marginBottom: '8px' }}>📍 Posicione no Mapa</h2>
-            <p style={{ color: '#64748b', fontSize: '13px', marginBottom: '16px' }}>Arraste o marcador azul para o local exato do apoiador.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>Arraste o marcador azul para o local exato do apoiador.</p>
             <div ref={mapaSelecaoRef} style={{ width: '100%', height: '350px', borderRadius: '12px', marginBottom: '16px' }} />
             {coordsManual && <p style={{ color: '#16a34a', fontSize: '13px', marginBottom: '12px' }}>📍 Lat: {coordsManual.latitude.toFixed(5)}, Lng: {coordsManual.longitude.toFixed(5)}</p>}
             <button onClick={() => {
@@ -839,7 +844,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             }} style={{ width: '100%', padding: '14px', borderRadius: '10px', border: 'none', backgroundColor: '#16a34a', color: 'white', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginBottom: '8px' }}>
               ✅ Confirmar Localização e Salvar
             </button>
-            <button onClick={() => setShowMapaSelecao(false)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: 'none', backgroundColor: '#64748b', color: 'white', fontSize: '14px', cursor: 'pointer' }}>
+            <button onClick={() => setShowMapaSelecao(false)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: 'none', backgroundColor: 'var(--surface-2)', color: 'var(--text)', fontSize: '14px', cursor: 'pointer' }}>
               Cancelar
             </button>
           </div>
@@ -851,7 +856,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>Editar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={eleitorEditando.nome || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={eleitorEditando.telefone || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, telefone: e.target.value })} />
-            <label style={{ display: 'block', fontSize: 12, color: '#64748b', margin: '2px 0 4px' }}>🎂 Data de nascimento</label>
+            <label style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 4px' }}>🎂 Data de nascimento</label>
             <input style={estiloInput} type="date" value={eleitorEditando.data_nascimento ? String(eleitorEditando.data_nascimento).slice(0,10) : ''} onChange={e => setEleitorEditando({ ...eleitorEditando, data_nascimento: e.target.value })} />
             <select style={estiloInput} value={eleitorEditando.municipio || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, municipio: e.target.value })}>
               <option value="">Selecione o município...</option>
@@ -871,10 +876,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Secao" value={eleitorEditando.secao_eleitoral || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, secao_eleitoral: e.target.value })} />
             </div>
-            {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral)}</p>}
+            {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral) && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>🏫 {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={eleitorEditando.observacao || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, observacao: e.target.value })} />
             <button onClick={salvarEdicaoEleitor} disabled={loading} style={estiloBotao('#1d4ed8')}>{loading ? 'Salvando...' : 'Salvar Alteracoes'}</button>
-            <button onClick={() => setEleitorEditando(null)} style={estiloBotao('#64748b')}>Cancelar</button>
+            <button onClick={() => setEleitorEditando(null)} style={estiloBotaoCancelar}>Cancelar</button>
           </div>
         </div>
       )}
@@ -900,7 +905,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             </div>
             <textarea style={{ ...estiloInput, resize: 'vertical' }} placeholder="Demanda / Observação" rows={3} value={liderEditando.demanda || ''} onChange={e => setLiderEditando({ ...liderEditando, demanda: e.target.value })} />
             <button onClick={salvarEdicaoLider} disabled={loading} style={estiloBotao('#a16207')}>{loading ? 'Salvando...' : 'Salvar Alterações'}</button>
-            <button onClick={() => setLiderEditando(null)} style={estiloBotao('#64748b')}>Cancelar</button>
+            <button onClick={() => setLiderEditando(null)} style={estiloBotaoCancelar}>Cancelar</button>
           </div>
         </div>
       )}
@@ -910,7 +915,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <h2 style={{ color: '#1e40af', marginBottom: '20px' }}>➕ Cadastrar Apoiador</h2>
             <input style={estiloInput} placeholder="Nome completo *" value={novoEleitor.nome} onChange={e => setNovoEleitor({ ...novoEleitor, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp *" value={novoEleitor.telefone} onChange={e => setNovoEleitor({ ...novoEleitor, telefone: e.target.value })} />
-            <label style={{ display: 'block', fontSize: 12, color: '#64748b', margin: '2px 0 4px' }}>🎂 Data de nascimento (para felicitar o apoiador)</label>
+            <label style={{ display: 'block', fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 4px' }}>🎂 Data de nascimento (para felicitar o apoiador)</label>
             <input style={estiloInput} type="date" value={novoEleitor.data_nascimento || ''} onChange={e => setNovoEleitor({ ...novoEleitor, data_nascimento: e.target.value })} />
             <select style={estiloInput} value={novoEleitor.municipio} onChange={e => setNovoEleitor({ ...novoEleitor, municipio: e.target.value, bairro: '' })}>
               <option value="">Selecione o município...</option>
@@ -930,11 +935,11 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" min="1" max="9999" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
-            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
+            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={novoEleitor.observacao || ''} onChange={e => setNovoEleitor({ ...novoEleitor, observacao: e.target.value })} />
                         <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>
-            <button onClick={() => setShowEleitor(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+            <button onClick={() => setShowEleitor(false)} style={estiloBotaoCancelar}>Cancelar</button>
           </div>
         </div>
       )}
@@ -943,7 +948,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       {showLider && (
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowLider(false)}>
           <div style={estiloCard}>
-            <h2 style={{ color: '#94a3b8', marginBottom: '20px' }}>➕ Cadastrar Liderança</h2>
+            <h2 style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>➕ Cadastrar Liderança</h2>
             <input style={estiloInput} placeholder="Nome *" value={novaLider.nome} onChange={e => setNovaLider({ ...novaLider, nome: e.target.value })} />
             <input style={estiloInput} placeholder="Telefone / WhatsApp" value={novaLider.telefone} onChange={e => setNovaLider({ ...novaLider, telefone: e.target.value })} />
             <select style={estiloInput} value={novaLider.municipio} onChange={e => setNovaLider({ ...novaLider, municipio: e.target.value, bairro: '' })}>
@@ -962,7 +967,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <input style={estiloInput} placeholder="Endereço" value={novaLider.endereco} onChange={e => setNovaLider({ ...novaLider, endereco: e.target.value })} />
             <textarea style={{ ...estiloInput, resize: 'vertical' }} placeholder="Demanda / Observação" rows={3} value={novaLider.demanda} onChange={e => setNovaLider({ ...novaLider, demanda: e.target.value })} />
             <button onClick={cadastrarLider} disabled={loading} style={estiloBotao('#7c3aed')}>{loading ? 'Salvando...' : '✅ Cadastrar Liderança'}</button>
-            <button onClick={() => setShowLider(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+            <button onClick={() => setShowLider(false)} style={estiloBotaoCancelar}>Cancelar</button>
           </div>
         </div>
       )}
@@ -983,7 +988,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             <input style={estiloInput} placeholder="Local (ex: Câmara)" value={novaReuniao.local} onChange={e => setNovaReuniao({ ...novaReuniao, local: e.target.value })} />
             <input style={estiloInput} placeholder="Endereço completo" value={novaReuniao.endereco} onChange={e => setNovaReuniao({ ...novaReuniao, endereco: e.target.value })} />
             <button onClick={cadastrarReuniao} disabled={loading} style={estiloBotao('#d97706')}>{loading ? 'Salvando...' : '✅ Agendar Reunião'}</button>
-            <button onClick={() => setShowReuniao(false)} style={estiloBotao('#64748b')}>Cancelar</button>
+            <button onClick={() => setShowReuniao(false)} style={estiloBotaoCancelar}>Cancelar</button>
           </div>
         </div>
       )}
@@ -993,13 +998,13 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
         <div style={estiloModal} onClick={e => e.target === e.currentTarget && setShowAniver(false)}>
           <div style={estiloCard}>
             <h2 style={{ color: '#a16207', marginBottom: 8 }}>🎂 Próximos aniversariantes ({proximosAniver.length})</h2>
-            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Próximos 31 dias, do mais perto ao mais distante. A mensagem de carinho já vai pronta — afeto, sem pedir voto.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 16 }}>Próximos 31 dias, do mais perto ao mais distante. A mensagem de carinho já vai pronta — afeto, sem pedir voto.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '60vh', overflowY: 'auto' }}>
               {proximosAniver.map(a => (
-                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 12px' }}>
+                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, border: '1px solid var(--border)', borderRadius: 10, padding: '10px 12px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 700, fontSize: 14, color: '#111827', margin: 0 }}>{a.nome}{calcIdade(a.data_nascimento) != null ? ` · ${calcIdade(a.data_nascimento)} anos` : ''}</p>
-                    <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>{a._dias === 0 ? '🎉 hoje' : `em ${a._dias} dia${a._dias > 1 ? 's' : ''} (${_fmtDM(a.data_nascimento)})`}{a.bairro ? ` · ${a.bairro}` : ''}{a.telefone ? ` · ${a.telefone}` : ''}</p>
+                    <p style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)', margin: 0 }}>{a.nome}{calcIdade(a.data_nascimento) != null ? ` · ${calcIdade(a.data_nascimento)} anos` : ''}</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: 0 }}>{a._dias === 0 ? '🎉 hoje' : `em ${a._dias} dia${a._dias > 1 ? 's' : ''} (${_fmtDM(a.data_nascimento)})`}{a.bairro ? ` · ${a.bairro}` : ''}{a.telefone ? ` · ${a.telefone}` : ''}</p>
                   </div>
                   {a.telefone && (
                     <a href={'https://wa.me/55' + a.telefone.replace(/\D/g, '') + '?text=' + encodeURIComponent(msgAniversario(a.nome, a._dias))} target="_blank" rel="noreferrer" style={{ background: '#16a34a', color: '#fff', borderRadius: 8, padding: '8px 12px', fontWeight: 700, fontSize: 12, textDecoration: 'none', whiteSpace: 'nowrap' }}>💚 Carinho</a>
@@ -1007,7 +1012,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                 </div>
               ))}
             </div>
-            <button onClick={() => setShowAniver(false)} style={estiloBotao('#64748b')}>Fechar</button>
+            <button onClick={() => setShowAniver(false)} style={estiloBotaoCancelar}>Fechar</button>
           </div>
         </div>
       )}
