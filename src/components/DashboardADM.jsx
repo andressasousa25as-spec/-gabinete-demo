@@ -43,18 +43,18 @@ const ZONAS_AMAPA = Array.from({ length: 35 }, (_, i) => String(i + 1));
 
 const estiloModal = {
   position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000,
+  backgroundColor: 'var(--overlay)', zIndex: 1000,
   display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
 };
 const estiloCard = {
-  backgroundColor: 'white', borderRadius: '20px', padding: '32px', color: '#111827',
+  backgroundColor: 'var(--surface)', borderRadius: '20px', padding: '32px', color: 'var(--text)',
   width: '100%', maxWidth: '560px', maxHeight: '90vh', overflowY: 'auto',
   boxShadow: '0 25px 50px rgba(0,0,0,0.3)'
 };
 const estiloInput = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
-  border: '1px solid #cbd5e1', fontSize: '15px', marginBottom: '12px',
-  boxSizing: 'border-box'
+  border: '1px solid var(--border)', fontSize: '15px', marginBottom: '12px',
+  boxSizing: 'border-box', background: 'var(--surface)', color: 'var(--text)'
 };
 const estiloBotao = (cor) => ({
   width: '100%', padding: '14px', borderRadius: '10px', border: 'none',
@@ -359,7 +359,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   );
 
   return (
-    <div style={{ background: "#0a0f1c", minHeight: "100vh", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14, fontFamily: "Inter, system-ui, sans-serif", color: "#f1f5f9" }}>
+    <div style={{ background: "var(--bg)", minHeight: "100vh", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14, fontFamily: "Inter, system-ui, sans-serif", color: "var(--text)" }}>
 
       {/* Header */}
       <div style={{ background: "#ffffff", borderRadius: 16, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, color: "#0f172a", justifyContent: "space-between", flexWrap: "wrap" }}>
@@ -390,12 +390,12 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
           { label: "Analytics", onClick: () => setAba("analytics") },
         ].map((b, i) => (
           <button key={i} onClick={b.onClick} style={{
-            background: "#1e293b", border: "1px solid #334155",
-            borderRadius: 8, color: "#f1f5f9", padding: "10px 18px",
+            background: "var(--surface)", border: "1px solid var(--border)",
+            borderRadius: 8, color: "var(--text)", padding: "10px 18px",
             cursor: "pointer", fontWeight: 600, fontSize: 13, whiteSpace: "nowrap"
           }}
-          onMouseOver={e => e.currentTarget.style.background = "#334155"}
-          onMouseOut={e => e.currentTarget.style.background = "#1e293b"}
+          onMouseOver={e => e.currentTarget.style.background = "var(--surface-2)"}
+          onMouseOut={e => e.currentTarget.style.background = "var(--surface)"}
           >{b.label}</button>
         ))}
       </div>
@@ -404,22 +404,22 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
 
         {/* Apoiadores */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>👥 Apoiadores ({eleitores.length})</h3>
           <input type="text" placeholder="🔍 Buscar..." value={busca} onChange={e => setBusca(e.target.value)}
-            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #1f2937', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: '#0a0f1c', color: '#f1f5f9' }} />
+            style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--border)', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: 'var(--bg)', color: 'var(--text)' }} />
           <FiltroStatusVoto value={filtroStatus} onChange={setFiltroStatus} eleitores={eleitores} />
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {eleitorFiltrados.length === 0
-              ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p>
+              ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p>
               : eleitorFiltrados.map(e => (
-                <div key={e.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+                <div key={e.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{e.nome}</p>
-                      <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {e.telefone}</p>
-                      {e.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {e.bairro}</p>}
-                      {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
+                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{e.nome}</p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {e.telefone}</p>
+                      {e.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {e.bairro}</p>}
+                      {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: 'var(--text-muted)', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                       {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
                       {e.opt_out && <p style={{ color: '#fbbf24', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
                       <div style={{ marginTop: '6px' }}><StatusVotoSelect value={e.status_voto} onChange={(v) => atualizarStatusVoto(e, v)} /></div>
@@ -434,18 +434,18 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
         </div>
 
         {/* Lideranças */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#94a3b8', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
+          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text-muted)', marginBottom: '12px' }}>🤝 Lideranças ({liderancas.length})</h3>
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {liderancas.length === 0
-              ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p>
+              ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma liderança.</p>
               : liderancas.map(l => (
-                <div key={l.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+                <div key={l.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{l.nome}</p>
-                      {l.telefone && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📱 {l.telefone}</p>}
-                      {l.bairro && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {l.bairro}</p>}
+                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{l.nome}</p>
+                      {l.telefone && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📱 {l.telefone}</p>}
+                      {l.bairro && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {l.bairro}</p>}
                     </div>
                     <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
                       <button onClick={() => abrirEditarLider(l)} style={{ background: '#fef9c3', color: '#a16207', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}>✏️</button>
@@ -458,22 +458,22 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
         </div>
 
         {/* Reuniões */}
-        <div style={{ background: "#111827", borderRadius: 12, padding: 20, border: "1px solid #1f2937" }}>
+        <div style={{ background: "var(--surface)", borderRadius: 12, padding: 20, border: "1px solid var(--border)" }}>
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>📅 Reuniões ({reunioes.length})</h3>
           <button onClick={() => setShowComunicado(true)}
-            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid #334155', background: 'transparent', color: '#cbd5e1', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+            style={{ width: '100%', marginBottom: 12, padding: '10px', borderRadius: '10px', border: '1px solid var(--border)', background: 'transparent', color: 'var(--text)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
             📣 Comunicado por liderança
           </button>
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {reunioes.length === 0
-              ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
+              ? <p style={{ color: 'var(--text-muted)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhuma reunião.</p>
               : reunioes.map(r => (
-                <div key={r.id} style={{ background: '#1a2332', borderRadius: 8, padding: '10px 12px', border: '1px solid #1f2937' }}>
+                <div key={r.id} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: '#f1f5f9', marginBottom: '2px' }}>{r.titulo}</p>
-                      <p style={{ color: '#94a3b8', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
-                      {r.local && <p style={{ color: '#94a3b8', fontSize: '12px' }}>📍 {r.local}</p>}
+                      <p style={{ fontWeight: 'bold', fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>{r.titulo}</p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📅 {r.data ? new Date(r.data).toLocaleString('pt-BR') : '—'}</p>
+                      {r.local && <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📍 {r.local}</p>}
                       {linkMapaReuniao(r) && (
                         <a href={linkMapaReuniao(r)} target="_blank" rel="noopener noreferrer"
                           style={{ display: 'inline-block', marginTop: 4, color: '#60a5fa', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>📍 Abrir no mapa</a>
@@ -490,10 +490,10 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
       {/* Modal Apoiador */}
 
       {showMapaSelecao && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ background: 'white', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', color: '#111827' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--overlay)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', color: 'var(--text)' }}>
             <h2 style={{ color: '#1e40af', marginBottom: '8px' }}>📍 Posicione no Mapa</h2>
-            <p style={{ color: '#64748b', fontSize: '13px', marginBottom: '16px' }}>Arraste o marcador azul para o local exato do apoiador.</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>Arraste o marcador azul para o local exato do apoiador.</p>
             <div ref={mapaSelecaoRef} style={{ width: '100%', height: '350px', borderRadius: '12px', marginBottom: '16px' }} />
             {coordsManual && <p style={{ color: '#16a34a', fontSize: '13px', marginBottom: '12px' }}>📍 Lat: {coordsManual.latitude.toFixed(5)}, Lng: {coordsManual.longitude.toFixed(5)}</p>}
             <button onClick={() => {
@@ -533,7 +533,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Secao" value={eleitorEditando.secao_eleitoral || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, secao_eleitoral: e.target.value })} />
             </div>
-            {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral)}</p>}
+            {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral) && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>🏫 {localDeVotacao(eleitorEditando.zona_eleitoral, eleitorEditando.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={eleitorEditando.observacao || ''} onChange={e => setEleitorEditando({ ...eleitorEditando, observacao: e.target.value })} />
             <button onClick={salvarEdicaoEleitor} disabled={loading} style={estiloBotao('#1d4ed8')}>{loading ? 'Salvando...' : 'Salvar Alteracoes'}</button>
             <button onClick={() => setEleitorEditando(null)} style={estiloBotao('#64748b')}>Cancelar</button>
@@ -590,7 +590,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
               </select>
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
-            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
+            {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
             <textarea style={{ ...estiloInput, resize: 'vertical' }} rows={3} placeholder="💬 Observação (ex.: telefone compartilhado pela família — mesmo número de [nome])" value={novoEleitor.observacao || ''} onChange={e => setNovoEleitor({ ...novoEleitor, observacao: e.target.value })} />
             <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={loading} style={estiloBotao('#16a34a')}>{loading ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>
