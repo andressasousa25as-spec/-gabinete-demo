@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import StatusVotoSelect, { FiltroStatusVoto } from './StatusVotoSelect';
 import RankingEngajamento from '../RankingEngajamento';
 import CenarioPolitico from './CenarioPolitico';
 import MapaPage from '../MapaPage';
@@ -150,6 +151,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   const [relatorio, setRelatorio] = useState(null);
   const [showComunicado, setShowComunicado] = useState(false);
   const [busca, setBusca] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
   const [relLider, setRelLider] = useState('');
   const [showAniver, setShowAniver] = useState(false); // modal "ver todos" os aniversariantes do dia // filtro do relatório de apoiadores por liderança ('' = geral)
 
@@ -196,6 +198,12 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
       .update({ opt_out: !el.opt_out, data_opt_out: el.opt_out ? null : new Date().toISOString() })
       .eq('id', el.id);
     fetchAll();
+  };
+
+  // Sinalizador de status do contato (status_voto): atualiza otimista + persiste
+  const atualizarStatusVoto = async (el, novo) => {
+    setEleitores(prev => prev.map(x => x.id === el.id ? { ...x, status_voto: novo } : x));
+    await supabase.from('eleitores').update({ status_voto: novo }).eq('id', el.id);
   };
 
   const cadastrarEleitor = async () => {
@@ -502,9 +510,10 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'comparativo-config') return <ComparativoInternoConfig onVoltar={() => setAba('inicio')} />;
 
   const eleitorFiltrados = eleitores.filter(e =>
-    e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+    (e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
-    e.telefone?.includes(busca)
+    e.telefone?.includes(busca))
+    && (!filtroStatus || (e.status_voto || '') === filtroStatus)
   );
 
   // 🎂 Próximos aniversariantes (hoje + chegando, janela de 31 dias, do mais perto ao mais distante)
@@ -724,6 +733,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
           <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#60a5fa', marginBottom: '12px' }}>👥 Apoiadores ({eleitores.length})</h3>
           <input type="text" placeholder="🔍 Buscar..." value={busca} onChange={e => setBusca(e.target.value)}
             style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #1f2937', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: '#0a0f1c', color: '#f1f5f9' }} />
+          <FiltroStatusVoto value={filtroStatus} onChange={setFiltroStatus} eleitores={eleitores} />
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {eleitorFiltrados.length === 0 ? (
               <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p>
@@ -738,6 +748,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
                     {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                     {e.observacao && <p title={e.observacao} style={{ marginTop: '4px', background: '#422006', color: '#fde68a', border: '1px solid #854d0e', borderRadius: '6px', padding: '4px 8px', fontSize: '11px', lineHeight: '1.4' }}>💬 {e.observacao}</p>}
                     {e.opt_out && <p style={{ color: '#fbbf24', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
+                    <div style={{ marginTop: '6px' }}><StatusVotoSelect value={e.status_voto} onChange={(v) => atualizarStatusVoto(e, v)} /></div>
                   </div>
                   <div style={{ display: 'flex', gap: '4px', flexShrink: 0, marginLeft: '6px' }}>
                     {e.telefone && !e.opt_out && <a href={'https://wa.me/55' + e.telefone.replace(/\D/g,'') + '?text=' + encodeURIComponent('Ola ' + (e.nome ? e.nome.split(' ')[0] : '') + '! Aqui e a equipe do Deputado Demo. Estamos em contato para manter voce por dentro das novidades. Conte conosco!')} target="_blank" rel="noreferrer" style={{ background: '#dcfce7', color: '#16a34a', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px', textDecoration: 'none' }}>📲</a>}

@@ -2,6 +2,7 @@
 import TermoLGPD from '../TermoLGPD';
 import { LISTA_BAIRROS, LISTA_MUNICIPIOS } from '../lib/bairros';
 import { supabase } from '../lib/supabase';
+import StatusVotoSelect, { FiltroStatusVoto } from './StatusVotoSelect';
 import MapaPage from '../MapaPage';
 import GestaoAnotacoes from '../GestaoAnotacoes';
 import GestaoMidias from '../GestaoMidias';
@@ -126,6 +127,7 @@ export default function DashboardEquipe({ perfil }) {
   const [loading, setLoading] = useState(true);
   const [aba, setAba] = useState('inicio');
   const [busca, setBusca] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
   const [salvando, setSalvando] = useState(false);
   const [termoAceito, setTermoAceito] = useState(false);
   const [relatorio, setRelatorio] = useState(null);
@@ -223,6 +225,12 @@ export default function DashboardEquipe({ perfil }) {
     else fetchAll();
   };
 
+  // Sinalizador de status do contato (status_voto): atualiza otimista + persiste
+  const atualizarStatusVoto = async (el, novo) => {
+    setEleitores(prev => prev.map(x => x.id === el.id ? { ...x, status_voto: novo } : x));
+    await supabase.from('eleitores').update({ status_voto: novo }).eq('id', el.id);
+  };
+
   const abrirRelatorio = (tipo) => {
     const configs = {
       eleitores: {
@@ -245,9 +253,10 @@ export default function DashboardEquipe({ perfil }) {
   };
 
   const eleitorFiltrados = eleitores.filter(e =>
-    e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
+    (e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
-    e.telefone?.includes(busca)
+    e.telefone?.includes(busca))
+    && (!filtroStatus || (e.status_voto || '') === filtroStatus)
   );
 
   const dispararParaTodos = async () => {
@@ -327,6 +336,7 @@ export default function DashboardEquipe({ perfil }) {
           </div>
           <input type="text" placeholder="🔍 Buscar..." value={busca} onChange={e => setBusca(e.target.value)}
             style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #334155', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box', background: '#0a0f1c', color: '#f1f5f9' }} />
+          <FiltroStatusVoto value={filtroStatus} onChange={setFiltroStatus} eleitores={eleitores} />
           <div style={{ maxHeight: '400px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {loading ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center' }}>⏳ Carregando...</p> :
               eleitorFiltrados.length === 0 ? <p style={{ color: '#9ca3af', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Nenhum apoiador.</p> :
@@ -342,6 +352,7 @@ export default function DashboardEquipe({ perfil }) {
                         {e.zona_eleitoral && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🗳️ Zona {e.zona_eleitoral}{e.secao_eleitoral ? ` • Seção ${e.secao_eleitoral}` : ''}</p>}
                         {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) && <p style={{ color: '#94a3b8', fontSize: '11px' }}>🏫 {localDeVotacao(e.zona_eleitoral, e.secao_eleitoral)}</p>}
                         {e.opt_out && <p style={{ color: '#92400e', fontSize: '11px', fontWeight: 'bold', marginTop: '4px' }}>🚫 Opt-out LGPD</p>}
+                        <div style={{ marginTop: '6px' }}><StatusVotoSelect value={e.status_voto} onChange={(v) => atualizarStatusVoto(e, v)} /></div>
                       </div>
                       {e.opt_out ? (
                         <button onClick={() => reativarEleitor(e)} style={{ background: '#dcfce7', color: '#166534', border: 'none', borderRadius: '8px', padding: '8px 14px', cursor: 'pointer', fontWeight: 'bold', fontSize: '13px', flexShrink: 0 }}>
