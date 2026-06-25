@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useState, useEffect } from 'react';
 import CadastroPublico from './CadastroPublico';
+import PoliticaPrivacidade from './PoliticaPrivacidade';
 import MidiaTracker from './MidiaTracker';
 import LinkTracker from './LinkTracker';
 import LoginScreen from './components/LoginScreen';
@@ -21,6 +22,7 @@ function App() {
   const cadastroGenerico = hash === '#/cadastro' || hash === '#/cadastro/';
   const midiaMatch = hash.match(/#\/m\/([^/]+)\/([^/]+)/);
   const linkMatch = hash.match(/#\/r\/([^/]+)\/([^/]+)/);
+  const privacidadeMatch = hash === '#/privacidade' || hash === '#/privacidade/';
 
   const [sessao, setSessao] = useState(null);
   const [perfil, setPerfil] = useState(null);      // MASTER | CANDIDATO | EQUIPE | ADMIN
@@ -61,6 +63,7 @@ function App() {
   const handleLogout = async () => { await supabase.auth.signOut(); };
 
   // Rotas públicas (sem login)
+  if (privacidadeMatch) return <PoliticaPrivacidade />;
   if (cadastroMatch) return <CadastroPublico liderancaId={cadastroMatch[1]} />;
   if (cadastroGenerico) return <CadastroPublico />;
   if (midiaMatch) return <MidiaTracker midiaId={midiaMatch[1]} eleitorId={midiaMatch[2]} />;

@@ -280,9 +280,12 @@ export default function CadastroPublico({ liderancaId }) {
               <input type="checkbox" checked={termoAceito} onChange={e => setTermoAceito(e.target.checked)}
                 style={{ marginTop: '2px', width: '20px', height: '20px', accentColor: '#1e40af', flexShrink: 0 }} />
               <span style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500', lineHeight: '1.5' }}>
-                Li e aceito o Termo de Consentimento para tratamento dos meus dados pessoais conforme LGPD e normas do TSE. (Versão 1.0 — Maio/2026)
+                Li e aceito o Termo de Consentimento para tratamento dos meus dados pessoais conforme LGPD e normas do TSE. (Versão 2.0 — Junho/2026)
               </span>
             </label>
+            <p style={{ fontSize: '11px', color: '#64748b', marginTop: '10px', marginBottom: 0 }}>
+              Saiba como tratamos seus dados na nossa <a href="#/privacidade" target="_blank" rel="noreferrer" style={{ color: '#2563eb', fontWeight: 600 }}>Política de Privacidade</a>.
+            </p>
           </div>
 
           {/* Botão */}
