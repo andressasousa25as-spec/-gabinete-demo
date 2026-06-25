@@ -90,25 +90,51 @@ export default function CadastroPublico({ liderancaId }) {
     }
 
     // Todos (apoiador e liderança) entram em eleitores com zona/seção
-    const r = await gravarResiliente({
-      tabela: 'eleitores',
-      op: 'insert',
-      dados: {
-        ...form,
-        // normaliza zona/seção: remove zeros à esquerda p/ casar com a referência do TRE (0042 -> 42)
-        zona_eleitoral: form.zona_eleitoral?.replace(/^0+/, '') || null,
-        secao_eleitoral: form.secao_eleitoral?.replace(/^0+/, '') || null,
-        data_nascimento: form.data_nascimento || null,
-        lideranca_id: liderId,
-        tags: tipo === 'lideranca' ? ['liderança'] : null,
-        consentimento_aceito: true,
-        consentimento_lgpd: true,
-        data_consentimento: new Date().toISOString(),
-        versao_termo: '1.0',
-      },
-    });
+    const dadosEleitor = {
+      ...form,
+      // normaliza zona/seção: remove zeros à esquerda p/ casar com a referência do TRE (0042 -> 42)
+      zona_eleitoral: form.zona_eleitoral?.replace(/^0+/, '') || null,
+      secao_eleitoral: form.secao_eleitoral?.replace(/^0+/, '') || null,
+      data_nascimento: form.data_nascimento || null,
+      lideranca_id: liderId,
+      tags: tipo === 'lideranca' ? ['liderança'] : null,
+      consentimento_aceito: true,
+      consentimento_lgpd: true,
+      data_consentimento: new Date().toISOString(),
+      versao_termo: '2.0',
+    };
 
-    if (r.modo === 'fila') {
+    // Online: insere e captura o id para o log de consentimento. Offline: enfileira (auditoria básica já vai no próprio eleitor).
+    let eleitorId = null;
+    let modoFila = false;
+    if (navigator.onLine) {
+      const { data: novo, error: errIns } = await supabase.from('eleitores').insert(dadosEleitor).select('id').single();
+      if (errIns) { await gravarResiliente({ tabela: 'eleitores', op: 'insert', dados: dadosEleitor }); modoFila = true; }
+      else { eleitorId = novo?.id || null; }
+    } else {
+      await gravarResiliente({ tabela: 'eleitores', op: 'insert', dados: dadosEleitor });
+      modoFila = true;
+    }
+
+    // Log de auditoria do consentimento (best-effort: nunca bloqueia o cadastro)
+    if (eleitorId) {
+      try {
+        let ip = null;
+        try { const ipr = await fetch('https://api.ipify.org?format=json'); ip = (await ipr.json()).ip; } catch (_e) { /* sem IP */ }
+        await supabase.from('consentimentos').insert({
+          eleitor_id: eleitorId,
+          versao_termo: '2.0',
+          aceitou: true,
+          data_hora_aceite: new Date().toISOString(),
+          ip,
+          user_agent: navigator.userAgent,
+          canal_envio: 'link_publico',
+          link_cadastro_id: liderancaId || null,
+        });
+      } catch (_e) { /* auditoria é best-effort */ }
+    }
+
+    if (modoFila) {
       setErro('');
       alert('Sem internet — seu cadastro foi salvo e será enviado automaticamente ao reconectar.');
       setSucesso(true);
