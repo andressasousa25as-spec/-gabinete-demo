@@ -178,7 +178,7 @@ export default function GestaoUsuarios({ perfil, onVoltar }) {
               <option value="ADMIN">ADM</option>
             </select>
             <button onClick={salvarEdicao} style={{ width: '100%', padding: 14, background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 15, cursor: 'pointer', marginBottom: 8 }}>✅ Salvar</button>
-            <button onClick={() => setEditando(null)} style={{ width: '100%', padding: 12, background: 'var(--surface-2)', color: '#64748b', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Cancelar</button>
+            <button onClick={() => setEditando(null)} style={{ width: '100%', padding: 12, background: 'var(--surface-2)', color: 'var(--text-muted)', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>Cancelar</button>
           </div>
         </div>
       )}

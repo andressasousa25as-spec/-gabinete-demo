@@ -119,7 +119,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Telefone */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Telefone (WhatsApp) *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Telefone (WhatsApp) *</label>
         <input
           type="tel"
           name="telefone"
@@ -130,7 +130,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Email */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>E-mail (opcional)</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>E-mail (opcional)</label>
         <input
           type="email"
           name="email"
@@ -141,7 +141,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Bairro - SELECT */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Bairro *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Bairro *</label>
         <select
           name="bairro"
           value={formData.bairro}
@@ -157,7 +157,7 @@ export default function CadastroEleitor() {
         {/* Zona e Seção */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
           <div style={{ flex: 1 }}>
-            <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Zona Eleitoral</label>
+            <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Zona Eleitoral</label>
             <select
               name="zona_eleitoral"
               value={formData.zona_eleitoral}
@@ -172,7 +172,7 @@ export default function CadastroEleitor() {
           </div>
 
           <div style={{ flex: 1 }}>
-            <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Seção Eleitoral</label>
+            <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Seção Eleitoral</label>
             <input
               type="number"
               name="secao_eleitoral"
