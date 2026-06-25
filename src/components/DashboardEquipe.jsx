@@ -141,7 +141,7 @@ export default function DashboardEquipe({ perfil }) {
   const [showComunicado, setShowComunicado] = useState(false);
 
   const [novoEleitor, setNovoEleitor] = useState({
-    nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: ''
+    nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: ''
   });
   const [novaLider, setNovaLider] = useState({ nome: '', telefone: '', bairro: '', demanda: '', endereco: '', municipio: '', zona_eleitoral: '', secao_eleitoral: '' });
   const [novaReuniao, setNovaReuniao] = useState({ titulo: '', data: '', local: '', endereco: '' });
@@ -169,8 +169,8 @@ export default function DashboardEquipe({ perfil }) {
     if (!termoAceito) return alert('❌ Aceite o Termo LGPD/TSE.');
     if (!novoEleitor.nome || !novoEleitor.telefone) return alert('❌ Nome e telefone obrigatórios.');
     setSalvando(true);
-    const { error } = await supabase.from('eleitores').insert([{ ...novoEleitor, consentimento_lgpd: true, data_consentimento: new Date().toISOString() }]);
-    if (!error) { await registrarLog('Cadastrou apoiador', `Nome: ${novoEleitor.nome} | Bairro: ${novoEleitor.bairro || '-'}`); alert('✅ Apoiador cadastrado!'); fetchAll(); setNovoEleitor({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '' }); setTermoAceito(false); setShowEleitor(false); }
+    const { error } = await supabase.from('eleitores').insert([{ ...novoEleitor, lideranca_id: novoEleitor.lideranca_id || null, consentimento_lgpd: true, data_consentimento: new Date().toISOString() }]);
+    if (!error) { await registrarLog('Cadastrou apoiador', `Nome: ${novoEleitor.nome} | Bairro: ${novoEleitor.bairro || '-'}`); alert('✅ Apoiador cadastrado!'); fetchAll(); setNovoEleitor({ nome: '', telefone: '', bairro: '', endereco: '', zona_eleitoral: '', secao_eleitoral: '', municipio: '', lideranca_id: '' }); setTermoAceito(false); setShowEleitor(false); }
     else alert('Erro: ' + error.message);
     setSalvando(false);
   };
@@ -455,6 +455,10 @@ export default function DashboardEquipe({ perfil }) {
             <input style={estiloInput} list="bairros-eq-eleitor" autoComplete="off" placeholder="Bairro / comunidade *" value={novoEleitor.bairro} onChange={e => setNovoEleitor({ ...novoEleitor, bairro: e.target.value })} />
             <datalist id="bairros-eq-eleitor">{BAIRROS_AMAPA.map(b => <option key={b} value={b} />)}</datalist>
             <input style={estiloInput} placeholder="Endereço completo" value={novoEleitor.endereco} onChange={e => setNovoEleitor({ ...novoEleitor, endereco: e.target.value })} />
+            <select style={estiloInput} value={novoEleitor.lideranca_id} onChange={e => setNovoEleitor({ ...novoEleitor, lideranca_id: e.target.value })}>
+              <option value="">👥 Vincular Liderança (opcional)</option>
+              {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
+            </select>
             <div style={{ display: 'flex', gap: '12px' }}>
               <select style={{ ...estiloInput, flex: 1 }} value={novoEleitor.zona_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, zona_eleitoral: e.target.value })}>
                 <option value="">Zona...</option>
@@ -463,16 +467,7 @@ export default function DashboardEquipe({ perfil }) {
               <input style={{ ...estiloInput, flex: 1 }} type="number" placeholder="Seção" min="1" max="9999" value={novoEleitor.secao_eleitoral} onChange={e => setNovoEleitor({ ...novoEleitor, secao_eleitoral: e.target.value })} />
             </div>
             {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral) && <p style={{ fontSize: '12px', color: '#475569', margin: '4px 0 0' }}>🏫 {localDeVotacao(novoEleitor.zona_eleitoral, novoEleitor.secao_eleitoral)}</p>}
-            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
-              <p style={{ fontSize: '13px', color: '#0369a1', fontWeight: 'bold', marginBottom: '8px' }}>📋 TERMO — LGPD / TSE</p>
-              <p style={{ fontSize: '12px', color: '#334155', lineHeight: '1.6', marginBottom: '12px' }}>
-                Autorizo o tratamento dos meus dados para fins de comunicação política do Deputado Demo, conforme <strong>Lei nº 13.709/2018</strong> e <strong>Resoluções do TSE</strong>. Posso revogar respondendo <strong>SAIR</strong>.
-              </p>
-              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
-                <input type="checkbox" checked={termoAceito} onChange={e => setTermoAceito(e.target.checked)} style={{ marginTop: '2px', width: '18px', height: '18px', accentColor: '#1e40af' }} />
-                <span style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500' }}>Li e aceito o Termo (v1.0 — Maio/2026)</span>
-              </label>
-            </div>
+            <TermoLGPD aceito={termoAceito} onChange={setTermoAceito} />
             <button onClick={cadastrarEleitor} disabled={salvando} style={estiloBotao('#16a34a')}>{salvando ? 'Salvando...' : '✅ Cadastrar Apoiador'}</button>
             <button onClick={() => setShowEleitor(false)} style={estiloBotao('#64748b')}>Cancelar</button>
           </div>
