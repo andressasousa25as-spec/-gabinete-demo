@@ -36,11 +36,11 @@ export default function LinkTracker({ canal, eleitorId }) {
   }, [canal, eleitorId]);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#0f172a', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)', flexDirection: 'column', gap: 16 }}>
       {status === 'carregando' && (
         <>
-          <div style={{ width: 48, height: 48, border: '4px solid #334155', borderTop: '4px solid #3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-          <p style={{ color: '#94a3b8', fontSize: 14 }}>Abrindo...</p>
+          <div style={{ width: 48, height: 48, border: '4px solid var(--border)', borderTop: '4px solid #3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Abrindo...</p>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </>
       )}

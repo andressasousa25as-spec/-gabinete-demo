@@ -33,7 +33,7 @@ export default function AnaliseTerritorial({ onVoltar }) {
     return { total, meso, micro };
   }, [paulinho]);
 
-  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
   const mesoList = Object.entries(dados.meso).sort((a, b) => b[1] - a[1]);
   const microList = Object.entries(dados.micro).sort((a, b) => b[1] - a[1]);
   const maxMeso = mesoList[0]?.[1] || 1;
@@ -43,25 +43,25 @@ export default function AnaliseTerritorial({ onVoltar }) {
   const CORES_MICRO = ['#2563eb', '#7c3aed', '#f59e0b', '#ef4444'];
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
   );
   if (semDados) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
-      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
-        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 28, border: '1px solid var(--border)', maxWidth: 560 }}>
+        <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px' }}>
-      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px' }}>
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Analise Territorial</h1>
-          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Distribuicao de votos por Mesorregiao → Microrregiao → Municipio</p>
+          <h1 style={{ color: 'var(--text)', fontSize: 22, fontWeight: 800, margin: 0 }}>Analise Territorial</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Distribuicao de votos por Mesorregiao → Microrregiao → Municipio</p>
         </div>
       </div>
 
@@ -75,14 +75,14 @@ export default function AnaliseTerritorial({ onVoltar }) {
             { label: 'CARGO', val: 'DEP. ESTAD...', sub: 'MDB · MACAPA/AP', cor: '#f59e0b' },
           ].map((c, i) => (
             <div key={i} style={{ ...card }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
               <p style={{ color: c.cor, fontSize: 26, fontWeight: 900, margin: '0 0 2px' }}>{c.val}</p>
-              {c.sub && <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.sub}</p>}
+              {c.sub && <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>{c.sub}</p>}
             </div>
           ))}
         </div>
 
-        <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 2, margin: '0 0 16px' }}>MESORREGIAO → MICRORREGIAO → MUNICIPIO</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 2, margin: '0 0 16px' }}>MESORREGIAO → MICRORREGIAO → MUNICIPIO</p>
 
         {/* Mesorregioes */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
@@ -99,11 +99,11 @@ export default function AnaliseTerritorial({ onVoltar }) {
             return (
               <div key={reg} style={{ ...card }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                  <span style={{ color: '#1e293b', fontWeight: 800, fontSize: 16, flex: 1 }}>{i + 1} {reg}</span>
-                  <span style={{ color: '#1e293b', fontWeight: 700 }}>{(votos / 1000).toFixed(1)}k</span>
-                  <span style={{ color: '#64748b', fontSize: 14 }}>{perc}%</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16, flex: 1 }}>{i + 1} {reg}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700 }}>{(votos / 1000).toFixed(1)}k</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>{perc}%</span>
                 </div>
-                <div style={{ background: '#e2e8f0', borderRadius: 99, height: 8, marginBottom: 16 }}>
+                <div style={{ background: 'var(--border)', borderRadius: 99, height: 8, marginBottom: 16 }}>
                   <div style={{ height: '100%', width: `${perc}%`, background: cor, borderRadius: 99 }} />
                 </div>
                 {/* Micros */}
@@ -112,10 +112,10 @@ export default function AnaliseTerritorial({ onVoltar }) {
                   return (
                     <div key={micro} style={{ paddingLeft: 16, marginBottom: 10, borderLeft: `3px solid ${cor}20` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ color: '#475569', fontSize: 13, fontWeight: 600 }}>{micro}</span>
-                        <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 13 }}>{mv.toLocaleString('pt-BR')} vts &nbsp; <span style={{ color: '#64748b', fontWeight: 400 }}>{mp}%</span></span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600 }}>{micro}</span>
+                        <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 13 }}>{mv.toLocaleString('pt-BR')} vts &nbsp; <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{mp}%</span></span>
                       </div>
-                      <div style={{ background: '#e2e8f0', borderRadius: 99, height: 5 }}>
+                      <div style={{ background: 'var(--border)', borderRadius: 99, height: 5 }}>
                         <div style={{ height: '100%', width: `${(mv / maxMeso) * 100}%`, background: CORES_MICRO[j % 4], borderRadius: 99 }} />
                       </div>
                     </div>

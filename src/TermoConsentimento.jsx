@@ -1,10 +1,10 @@
 export default function TermoConsentimento({ aceito, onChange, disabled = false }) {
   return (
     <div style={{ 
-      border: '1px solid #cbd5e1', 
-      borderRadius: '12px', 
+      border: '1px solid var(--border)',
+      borderRadius: '12px',
       padding: '20px',
-      backgroundColor: '#f8fafc',
+      backgroundColor: 'var(--surface-2)',
       marginTop: '20px'
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
@@ -15,7 +15,7 @@ export default function TermoConsentimento({ aceito, onChange, disabled = false 
           disabled={disabled}
           style={{ marginTop: '4px', width: '18px', height: '18px', accentColor: '#1e40af' }}
         />
-        <div style={{ fontSize: '14px', lineHeight: '1.5', color: '#334155' }}>
+        <div style={{ fontSize: '14px', lineHeight: '1.5', color: 'var(--text)' }}>
           <strong>Termo de Consentimento para Tratamento de Dados</strong>
           <br /><br />
           Eu autorizo o tratamento dos meus dados pessoais (nome, telefone, endereço,
@@ -24,7 +24,7 @@ export default function TermoConsentimento({ aceito, onChange, disabled = false 
           Lei Geral de Proteção de Dados (LGPD) e das normas do TSE. Os dados são fornecidos
           voluntariamente pelo titular e não são obtidos do cadastro eleitoral da Justiça Eleitoral.
           <br /><br />
-          <span style={{ fontSize: '12px', color: '#64748b' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
             Versão 2.0 | Junho/2026
           </span>
         </div>

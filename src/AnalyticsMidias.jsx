@@ -55,7 +55,7 @@ export default function AnalyticsMidias({ onVoltar }) {
   const icone = (tipo) => tipo === 'imagem' ? '🖼️' : tipo === 'video' ? '🎥' : tipo === 'pdf' ? '📄' : '📎';
 
   if (loading) return (
-    <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>⏳ Carregando analytics...</div>
+    <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>⏳ Carregando analytics...</div>
   );
 
   return (
@@ -81,25 +81,25 @@ export default function AnalyticsMidias({ onVoltar }) {
       </div>
 
       {/* Mídias com cliques */}
-      <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: '#0f172a', marginBottom: '16px' }}>🖼️ Mídias — Cliques por arquivo</h3>
+      <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
+        <h3 style={{ fontWeight: 'bold', fontSize: '18px', color: 'var(--text)', marginBottom: '16px' }}>🖼️ Mídias — Cliques por arquivo</h3>
         {midias.length === 0 ? (
-          <p style={{ color: '#9ca3af', textAlign: 'center', padding: '20px' }}>📭 Nenhuma mídia cadastrada.</p>
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>📭 Nenhuma mídia cadastrada.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {midias.map(m => {
               const total = cliquesporMidia(m.id);
               const pct = totalMidias > 0 ? Math.round((total / totalMidias) * 100) : 0;
               return (
-                <div key={m.id} style={{ background: '#f9fafb', borderRadius: '12px', padding: '14px', border: '1px solid #e5e7eb' }}>
+                <div key={m.id} style={{ background: 'var(--surface-2)', borderRadius: '12px', padding: '14px', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <p style={{ fontWeight: 'bold', color: '#111827', fontSize: '14px' }}>{icone(m.tipo)} {m.titulo}</p>
+                    <p style={{ fontWeight: 'bold', color: 'var(--text)', fontSize: '14px' }}>{icone(m.tipo)} {m.titulo}</p>
                     <span style={{ background: '#1e40af', color: 'white', borderRadius: '20px', padding: '2px 12px', fontSize: '13px', fontWeight: 'bold' }}>{total} clique{total !== 1 ? 's' : ''}</span>
                   </div>
-                  <div style={{ background: '#e5e7eb', borderRadius: '4px', height: '8px' }}>
+                  <div style={{ background: 'var(--surface-2)', borderRadius: '4px', height: '8px' }}>
                     <div style={{ background: '#1e40af', borderRadius: '4px', height: '8px', width: `${pct}%`, transition: 'width 0.5s' }} />
                   </div>
-                  <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>{new Date(m.created_at).toLocaleString('pt-BR')}</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '4px' }}>{new Date(m.created_at).toLocaleString('pt-BR')}</p>
                 </div>
               );
             })}
@@ -110,15 +110,15 @@ export default function AnalyticsMidias({ onVoltar }) {
       {/* Cliques por canal */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', marginBottom: '24px' }}>
 
-        <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginBottom: '16px' }}>📣 Cliques por Canal</h3>
+        <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text)', marginBottom: '16px' }}>📣 Cliques por Canal</h3>
           {Object.keys(disparosporCanal).length === 0 ? (
-            <p style={{ color: '#9ca3af', textAlign: 'center' }}>Nenhum clique ainda.</p>
+            <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>Nenhum clique ainda.</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {Object.entries(disparosporCanal).sort((a, b) => b[1] - a[1]).map(([canal, total]) => (
-                <div key={canal} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: '#f9fafb', borderRadius: '8px' }}>
-                  <span style={{ fontSize: '14px', color: '#374151' }}>{canal}</span>
+                <div key={canal} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface-2)', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text)' }}>{canal}</span>
                   <span style={{ fontWeight: 'bold', color: '#1e40af' }}>{total}</span>
                 </div>
               ))}
@@ -126,15 +126,15 @@ export default function AnalyticsMidias({ onVoltar }) {
           )}
         </div>
 
-        <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginBottom: '16px' }}>📍 Cliques por Bairro</h3>
+        <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+          <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text)', marginBottom: '16px' }}>📍 Cliques por Bairro</h3>
           {Object.keys(cliquesporBairro).length === 0 ? (
-            <p style={{ color: '#9ca3af', textAlign: 'center' }}>Nenhum clique por bairro ainda.</p>
+            <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>Nenhum clique por bairro ainda.</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto' }}>
               {Object.entries(cliquesporBairro).sort((a, b) => b[1] - a[1]).map(([bairro, total]) => (
-                <div key={bairro} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: '#f9fafb', borderRadius: '8px' }}>
-                  <span style={{ fontSize: '14px', color: '#374151' }}>📍 {bairro}</span>
+                <div key={bairro} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface-2)', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '14px', color: 'var(--text)' }}>📍 {bairro}</span>
                   <span style={{ fontWeight: 'bold', color: '#16a34a' }}>{total}</span>
                 </div>
               ))}
@@ -144,16 +144,16 @@ export default function AnalyticsMidias({ onVoltar }) {
       </div>
 
       {/* Cliques de link por liderança */}
-      <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginBottom: '4px' }}>🔗 Cliques de Link por Liderança</h3>
-        <p style={{ color: '#9ca3af', fontSize: '12px', marginBottom: '16px' }}>Quem abriu os links rastreados de Instagram, agrupado pela liderança do apoiador.</p>
+      <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: '24px' }}>
+        <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text)', marginBottom: '4px' }}>🔗 Cliques de Link por Liderança</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: '12px', marginBottom: '16px' }}>Quem abriu os links rastreados de Instagram, agrupado pela liderança do apoiador.</p>
         {Object.keys(cliquesporLideranca).length === 0 ? (
-          <p style={{ color: '#9ca3af', textAlign: 'center', padding: '12px' }}>Nenhum clique de link rastreado ainda. Gere links por pessoa na Central de Comunicação.</p>
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '12px' }}>Nenhum clique de link rastreado ainda. Gere links por pessoa na Central de Comunicação.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {Object.entries(cliquesporLideranca).sort((a, b) => b[1] - a[1]).map(([nome, total]) => (
-              <div key={nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: '#f9fafb', borderRadius: '8px' }}>
-                <span style={{ fontSize: '14px', color: '#374151' }}>⭐ {nome}</span>
+              <div key={nome} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface-2)', borderRadius: '8px' }}>
+                <span style={{ fontSize: '14px', color: 'var(--text)' }}>⭐ {nome}</span>
                 <span style={{ fontWeight: 'bold', color: '#7c3aed' }}>{total}</span>
               </div>
             ))}
@@ -162,16 +162,16 @@ export default function AnalyticsMidias({ onVoltar }) {
       </div>
 
       {/* Histórico recente */}
-      <div style={{ background: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginBottom: '16px' }}>🕐 Histórico Recente de Cliques</h3>
+      <div style={{ background: 'var(--surface)', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+        <h3 style={{ fontWeight: 'bold', fontSize: '16px', color: 'var(--text)', marginBottom: '16px' }}>🕐 Histórico Recente de Cliques</h3>
         {rastreamento.length === 0 ? (
-          <p style={{ color: '#9ca3af', textAlign: 'center', padding: '20px' }}>Nenhum clique registrado ainda.</p>
+          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '20px' }}>Nenhum clique registrado ainda.</p>
         ) : (
           <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {rastreamento.slice(0, 50).map(r => (
-              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: '#f9fafb', borderRadius: '8px', fontSize: '13px' }}>
-                <span style={{ color: '#374151' }}>📣 {r.canal}{r.bairro ? ` • 📍 ${r.bairro}` : ''}</span>
-                <span style={{ color: '#9ca3af' }}>{new Date(r.data_clique).toLocaleString('pt-BR')}</span>
+              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface-2)', borderRadius: '8px', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text)' }}>📣 {r.canal}{r.bairro ? ` • 📍 ${r.bairro}` : ''}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{new Date(r.data_clique).toLocaleString('pt-BR')}</span>
               </div>
             ))}
           </div>

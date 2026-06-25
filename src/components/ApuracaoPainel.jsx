@@ -45,24 +45,24 @@ export default function ApuracaoPainel({ onVoltar }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2 style={{ color: '#CBA15C', margin: 0 }}>Apuração ao vivo</h2>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button onClick={exportar} style={{ background: '#1e293b', color: '#f1f5f9', border: '1px solid #334155', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>⬇ Excel</button>
+          <button onClick={exportar} style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>⬇ Excel</button>
           {onVoltar && <button onClick={onVoltar} style={{ background: '#64748b', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>←</button>}
         </div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-        <div style={{ background: '#1e293b', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 13, color: '#94a3b8' }}>Seções apuradas</div>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 16 }}>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Seções apuradas</div>
           <div style={{ fontSize: 26, fontWeight: 800, color: '#CBA15C' }}>{secoes.length} / {totalEsperado} ({pct}%)</div>
         </div>
-        <div style={{ background: '#1e293b', borderRadius: 12, padding: 16 }}>
-          <div style={{ fontSize: 13, color: '#94a3b8' }}>Nosso candidato</div>
+        <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 16 }}>
+          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Nosso candidato</div>
           <div style={{ fontSize: 26, fontWeight: 800, color: '#22c55e' }}>{ag.nosso ? ag.nosso.votos.toLocaleString('pt-BR') : 0} votos</div>
         </div>
       </div>
-      <h3 style={{ color: '#f1f5f9' }}>Ranking</h3>
+      <h3 style={{ color: 'var(--text)' }}>Ranking</h3>
       {ag.ranking.map((r, i) => (
-        <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', background: r.eh_nosso ? '#14532d' : '#1e293b', border: '1px solid #334155', borderRadius: 8, padding: 12, marginBottom: 6 }}>
-          <span style={{ color: '#f1f5f9' }}>{i + 1}º {r.eh_nosso ? '⭐ ' : ''}{r.nome}</span>
+        <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', background: r.eh_nosso ? '#14532d' : 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, marginBottom: 6 }}>
+          <span style={{ color: 'var(--text)' }}>{i + 1}º {r.eh_nosso ? '⭐ ' : ''}{r.nome}</span>
           <strong style={{ color: '#CBA15C' }}>{r.votos.toLocaleString('pt-BR')}</strong>
         </div>
       ))}

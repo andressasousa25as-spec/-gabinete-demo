@@ -65,41 +65,41 @@ export default function CaminhoVitoria({ onVoltar }) {
   const maiorReserv = [...dadosMunicipios].sort((a, b) => b.aptos - a.aptos)[0];
   const cap = (s) => s ? s.charAt(0) + s.slice(1).toLowerCase() : s;
 
-  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
   );
   if (semDados) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
-      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
-        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 28, border: '1px solid var(--border)', maxWidth: 560 }}>
+        <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px 0' }}>
       {/* Header */}
-      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
           Voltar
         </button>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Caminho da Vitoria</h1>
-          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Onde estao os votos que faltaram — secoes que voce pode virar na proxima eleicao</p>
+          <h1 style={{ color: 'var(--text)', fontSize: 22, fontWeight: 800, margin: 0 }}>Caminho da Vitoria</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Onde estao os votos que faltaram — secoes que voce pode virar na proxima eleicao</p>
         </div>
       </div>
 
       <div style={{ padding: '24px 32px' }}>
         {/* Candidato card */}
-        <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 18 }}>P</div>
           <div>
-            <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15, margin: 0 }}>{paulinho?.nome}</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: '2px 0 0' }}>{paulinho?.cargo} · {paulinho?.partido || '—'} · MACAPA/AP · {paulinho?.ano} · 1° turno</p>
+            <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, margin: 0 }}>{paulinho?.nome}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '2px 0 0' }}>{paulinho?.cargo} · {paulinho?.partido || '—'} · MACAPA/AP · {paulinho?.ano} · 1° turno</p>
           </div>
         </div>
 
@@ -111,52 +111,52 @@ export default function CaminhoVitoria({ onVoltar }) {
             <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>estimativa: 0,5% do comparecimento</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MUNICIPIOS</p>
-            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{dadosMunicipios.length}</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>com voto seu registrado</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MUNICIPIOS</p>
+            <p style={{ color: 'var(--text)', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{dadosMunicipios.length}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>com voto seu registrado</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>PENETRACAO MEDIA</p>
-            <p style={{ color: '#1e293b', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{penGeral.toFixed(1)}%</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>dos eleitores votaram em você</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>PENETRACAO MEDIA</p>
+            <p style={{ color: 'var(--text)', fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{penGeral.toFixed(1)}%</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>dos eleitores votaram em você</p>
           </div>
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MAIOR RESERVATORIO</p>
-            <p style={{ color: '#1e293b', fontSize: 22, fontWeight: 900, margin: '0 0 4px' }}>{maiorReserv ? cap(maiorReserv.municipio) : '—'}</p>
-            <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{maiorReserv ? (maiorReserv.aptos/1000).toFixed(1) + 'k compareceram' : ''}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>MAIOR RESERVATORIO</p>
+            <p style={{ color: 'var(--text)', fontSize: 22, fontWeight: 900, margin: '0 0 4px' }}>{maiorReserv ? cap(maiorReserv.municipio) : '—'}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>{maiorReserv ? (maiorReserv.aptos/1000).toFixed(1) + 'k compareceram' : ''}</p>
           </div>
         </div>
 
         {/* Lista de municipios */}
         <div style={{ ...card }}>
-          <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>
             OPORTUNIDADES — {dadosMunicipios.length} MUNICIPIOS
           </p>
 
           {dadosMunicipios.map((m, i) => {
             const lider = LIDER_ADVERSARIO[m.municipio];
             const penCor = m.pen < 1.5 ? '#ef4444' : '#f59e0b';
-            const absCor = m.abs > 22 ? '#ef4444' : '#64748b';
+            const absCor = m.abs > 22 ? '#ef4444' : 'var(--text-muted)';
 
             return (
-              <div key={m.municipio} style={{ borderBottom: '1px solid #f1f5f9', padding: '14px 0', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                <span style={{ color: '#94a3b8', fontWeight: 700, fontSize: 13, width: 24, paddingTop: 2 }}>{i+1}</span>
+              <div key={m.municipio} style={{ borderBottom: '1px solid var(--border)', padding: '14px 0', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: 13, width: 24, paddingTop: 2 }}>{i+1}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                     <span style={{ fontSize: 14 }}>📍</span>
-                    <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15 }}>
+                    <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15 }}>
                       {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()}
                     </span>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 13 }}>
-                    <span style={{ color: '#1e293b', fontWeight: 600 }}>{m.votos} seus</span>
+                    <span style={{ color: 'var(--text)', fontWeight: 600 }}>{m.votos} seus</span>
                     <span style={{ color: penCor, fontWeight: 600 }}>{m.pen}% pen.</span>
                     <span style={{ color: absCor }}>{m.abs}% abs.</span>
-                    <span style={{ color: '#94a3b8' }}>{(m.aptos/1000).toFixed(1)}k aptos</span>
+                    <span style={{ color: 'var(--text-muted)' }}>{(m.aptos/1000).toFixed(1)}k aptos</span>
                   </div>
                   {lider && (
-                    <p style={{ color: '#64748b', fontSize: 12, margin: '4px 0 0' }}>
-                      Lider: <strong style={{ color: '#475569' }}>{lider.nome}</strong> ({lider.votos} vts)
+                    <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '4px 0 0' }}>
+                      Lider: <strong style={{ color: 'var(--text-muted)' }}>{lider.nome}</strong> ({lider.votos} vts)
                     </p>
                   )}
                 </div>

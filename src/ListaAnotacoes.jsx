@@ -81,14 +81,14 @@ const imprimirRelatorio = () => {
       {/* Área que será impressa */}
       <div id="area-relatorio">
         {anotacoesFiltradas.length === 0 ? (
-          <p style={{ color: '#64748b' }}>Nenhuma anotação encontrada.</p>
+          <p style={{ color: 'var(--text-muted)' }}>Nenhuma anotação encontrada.</p>
         ) : (
           anotacoesFiltradas.map((a) => (
             <div 
               key={a.id} 
               className="anotacao"
               style={{ 
-                border: '1px solid #334155', 
+                border: '1px solid var(--border)',
                 borderRadius: '12px', 
                 padding: '20px',
                 marginBottom: '16px',

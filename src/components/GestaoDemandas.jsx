@@ -153,8 +153,8 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
   const resolvidas = demandas.filter(d => d.status === 'Resolvida').length;
 
   const inputStyle = {
-    width: '100%', padding: '10px', marginBottom: '10px', background: '#0f172a',
-    color: '#f1f5f9', border: '1px solid #334155', borderRadius: 8, boxSizing: 'border-box'
+    width: '100%', padding: '10px', marginBottom: '10px', background: 'var(--bg)',
+    color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, boxSizing: 'border-box'
   };
 
   return (
@@ -183,7 +183,7 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
           { label: 'Em andamento', valor: andamento, cor: '#3b82f6' },
           { label: 'Resolvidas', valor: resolvidas, cor: '#22c55e' },
         ].map(c => (
-          <div key={c.label} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 16 }}>
+          <div key={c.label} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
             <div style={{ fontSize: 26, fontWeight: 800, color: c.cor }}>{c.valor}</div>
             <div style={{ fontSize: 12, color: '#94a3b8' }}>{c.label}</div>
           </div>
@@ -194,8 +194,8 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
 
       {/* Formulário */}
       {showForm && (
-        <form onSubmit={criarDemanda} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, padding: 20, marginBottom: 24 }}>
-          <h3 style={{ color: '#f1f5f9', marginTop: 0, marginBottom: 16, fontSize: 16 }}>Registrar pedido do eleitor</h3>
+        <form onSubmit={criarDemanda} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, marginBottom: 24 }}>
+          <h3 style={{ color: 'var(--text)', marginTop: 0, marginBottom: 16, fontSize: 16 }}>Registrar pedido do eleitor</h3>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
             <select name="eleitor_id" value={form.eleitor_id} onChange={handleChange} style={inputStyle}>
               <option value="">Vincular eleitor (opcional)</option>
@@ -235,29 +235,29 @@ export default function GestaoDemandas({ eleitores = [], liderancas = [], onVolt
       </div>
 
       {loading ? (
-        <p style={{ color: '#94a3b8' }}>Carregando demandas...</p>
+        <p style={{ color: 'var(--text-muted)' }}>Carregando demandas...</p>
       ) : (
         /* Kanban */
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 16, alignItems: 'flex-start' }}>
           {COLUNAS.map(col => {
             const itens = filtradas.filter(d => d.status === col.status);
             return (
-              <div key={col.status} style={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 12, padding: 12 }}>
+              <div key={col.status} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingBottom: 8, borderBottom: `2px solid ${col.cor}` }}>
-                  <span style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 14 }}>{col.titulo}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>{col.titulo}</span>
                   <span style={{ background: col.cor, color: '#0f172a', borderRadius: 20, padding: '1px 10px', fontSize: 12, fontWeight: 800 }}>{itens.length}</span>
                 </div>
 
-                {itens.length === 0 && <p style={{ color: '#475569', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>Nenhuma demanda.</p>}
+                {itens.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>Nenhuma demanda.</p>}
 
                 {itens.map(d => (
-                  <div key={d.id} style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 10, padding: 12, marginBottom: 10 }}>
+                  <div key={d.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 12, marginBottom: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                      <span style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 14 }}>{d.titulo}</span>
+                      <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>{d.titulo}</span>
                       <span style={{ background: corPrioridade(d.prioridade), color: 'white', borderRadius: 6, padding: '2px 7px', fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>{d.prioridade}</span>
                     </div>
-                    {d.descricao && <p style={{ color: '#cbd5e1', fontSize: 13, margin: '6px 0' }}>{d.descricao}</p>}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 11, color: '#94a3b8', margin: '6px 0' }}>
+                    {d.descricao && <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '6px 0' }}>{d.descricao}</p>}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 11, color: 'var(--text-muted)', margin: '6px 0' }}>
                       {d.eleitor_id && nomeEleitor[d.eleitor_id] && <span>👤 {nomeEleitor[d.eleitor_id]}</span>}
                       {d.categoria && <span>🏷️ {d.categoria}</span>}
                       {d.responsavel && <span>🙋 {d.responsavel}</span>}
