@@ -69,55 +69,55 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
     : { val: '—', perc: 'Sem eleição anterior' };
 
   // Cores estilo EleitorAI
-  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
   const badge = (cor) => ({ background: cor, color: '#fff', borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 });
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
   );
   if (semDados) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
-      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
-        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 28, border: '1px solid var(--border)', maxWidth: 560 }}>
+        <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px 0' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px 0' }}>
       {/* Header */}
-      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
           Voltar
         </button>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Diagnostico Eleitoral</h1>
-          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Analise automatica do territorio — zonas, secoes e potencial de votos</p>
+          <h1 style={{ color: 'var(--text)', fontSize: 22, fontWeight: 800, margin: 0 }}>Diagnostico Eleitoral</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Analise automatica do territorio — zonas, secoes e potencial de votos</p>
         </div>
       </div>
 
       <div style={{ padding: '24px 32px' }}>
         {/* Seletor de ano */}
-        <div style={{ background: '#1e293b', borderRadius: 10, padding: '12px 20px', display: 'flex', gap: 8, alignItems: 'center', marginBottom: 24, border: '1px solid #334155', maxWidth: 500 }}>
-          <span style={{ color: '#64748b', fontSize: 13, marginRight: 8 }}>CANDIDATO</span>
+        <div style={{ background: 'var(--surface)', borderRadius: 10, padding: '12px 20px', display: 'flex', gap: 8, alignItems: 'center', marginBottom: 24, border: '1px solid var(--border)', maxWidth: 500 }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: 13, marginRight: 8 }}>CANDIDATO</span>
           {['2022', '2018'].map(a => (
             <button key={a} onClick={() => setAnoSelecionado(a)}
               style={{ padding: '6px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
                 background: anoSelecionado === a ? '#2563eb' : 'transparent',
-                color: anoSelecionado === a ? '#fff' : '#94a3b8' }}>
+                color: anoSelecionado === a ? '#fff' : 'var(--text-muted)' }}>
               {a}
             </button>
           ))}
         </div>
 
         {/* Card candidato */}
-        <div style={{ ...card, background: '#1e293b', border: '1px solid #334155', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ ...card, background: 'var(--surface)', border: '1px solid var(--border)', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#fff' }}>P</div>
           <div style={{ flex: 1 }}>
-            <p style={{ color: '#f1f5f9', fontWeight: 800, fontSize: 16, margin: 0 }}>{paulinho2022?.nome}</p>
-            <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>
+            <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16, margin: 0 }}>{paulinho2022?.nome}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
               {paulinho2022?.cargo} · {paulinho2022?.partido || (anoSelecionado === '2022' ? 'MDB' : 'PR')} · MACAPA/AP
             </p>
           </div>
@@ -139,9 +139,9 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
               sub: anoSelecionado === '2022' ? '107.398 ausentes' : 'Sem dado', cor: '#ef4444' },
           ].map((c, i) => (
             <div key={i} style={{ ...card }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
               <p style={{ color: c.cor, fontSize: 28, fontWeight: 900, margin: '0 0 4px' }}>{c.valor}</p>
-              <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.sub}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>{c.sub}</p>
             </div>
           ))}
         </div>
@@ -163,22 +163,22 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
           {/* Meta Eleitoral */}
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
-            <div style={{ position: 'relative', height: 10, background: '#e2e8f0', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
+            <div style={{ position: 'relative', height: 10, background: 'var(--border)', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
               <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '28%', background: '#2563eb', borderRadius: 99 }} />
               <div style={{ position: 'absolute', left: '10%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
               <div style={{ position: 'absolute', left: '49%', top: 0, height: '100%', width: '2px', background: '#10b981' }} />
-              <div style={{ position: 'absolute', left: '98%', top: 0, height: '100%', width: '2px', background: '#94a3b8' }} />
+              <div style={{ position: 'absolute', left: '98%', top: 0, height: '100%', width: '2px', background: 'var(--text-muted)' }} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8 }}>
               {[
                 { label: 'Atual', val: anoSelecionado === '2022' ? '4.9k' : '3.8k', cor: '#2563eb' },
                 { label: 'Piso (10% QE)', val: anoSelecionado === '2022' ? '1.7k' : '1.6k', cor: '#f59e0b' },
                 { label: 'Meta eleição*', val: anoSelecionado === '2022' ? '8.4k' : '4.9k', cor: '#10b981' },
-                { label: 'Quociente', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: '#64748b' },
+                { label: 'Quociente', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: 'var(--text-muted)' },
               ].map((m, i) => (
                 <div key={i} style={{ textAlign: 'center' }}>
-                  <p style={{ color: '#94a3b8', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
                   <p style={{ color: m.cor, fontWeight: 800, fontSize: 16, margin: 0 }}>{m.val}</p>
                 </div>
               ))}
@@ -191,7 +191,7 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
           {/* Forca do Partido */}
           <div style={{ ...card }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: 0 }}>FORCA DO PARTIDO</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: 0 }}>FORCA DO PARTIDO</p>
               <span style={{ ...badge('#2563eb') }}>{anoSelecionado === '2022' ? 'MDB' : 'PR'}</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12 }}>
@@ -201,14 +201,14 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
                 { label: 'Votos do partido', val: anoSelecionado === '2022' ? '28.9k' : '44.6k' },
                 { label: '% do total', val: anoSelecionado === '2022' ? '7.0%' : '11.4%' },
               ].map((f, i) => (
-                <div key={i} style={{ background: '#f8fafc', borderRadius: 8, padding: 12 }}>
-                  <p style={{ color: '#64748b', fontSize: 11, margin: '0 0 4px' }}>{f.label}</p>
-                  <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: 0 }}>{f.val}</p>
+                <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: 12 }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 4px' }}>{f.label}</p>
+                  <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: 0 }}>{f.val}</p>
                 </div>
               ))}
             </div>
-            <p style={{ color: '#94a3b8', fontSize: 12, margin: '12px 0 0' }}>Media dos eleitos do partido
-              <strong style={{ color: '#1e293b', marginLeft: 8 }}>{anoSelecionado === '2022' ? '8.4k votos' : '4.9k votos'}</strong>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '12px 0 0' }}>Media dos eleitos do partido
+              <strong style={{ color: 'var(--text)', marginLeft: 8 }}>{anoSelecionado === '2022' ? '8.4k votos' : '4.9k votos'}</strong>
             </p>
           </div>
         </div>
@@ -218,20 +218,20 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
             {/* Regioes */}
             <div style={{ ...card }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>REGIOES MAIS FORTES</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>REGIOES MAIS FORTES</p>
               {dadosRegioes.map((r, i) => (
                 <div key={r.reg} style={{ marginBottom: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ fontSize: 14 }}>{i === 0 ? '🥇' : '🥈'}</span>
-                      <span style={{ color: '#1e293b', fontWeight: 600, fontSize: 14 }}>{r.reg}</span>
+                      <span style={{ color: 'var(--text)', fontWeight: 600, fontSize: 14 }}>{r.reg}</span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 14 }}>{(r.votos/1000).toFixed(1)}k v</span>
-                      <span style={{ color: '#64748b', fontSize: 13, marginLeft: 8 }}>{r.perc}%</span>
+                      <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>{(r.votos/1000).toFixed(1)}k v</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: 13, marginLeft: 8 }}>{r.perc}%</span>
                     </div>
                   </div>
-                  <div style={{ background: '#e2e8f0', borderRadius: 99, height: 6, overflow: 'hidden' }}>
+                  <div style={{ background: 'var(--border)', borderRadius: 99, height: 6, overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${r.perc}%`, background: '#2563eb', borderRadius: 99 }} />
                   </div>
                 </div>
@@ -240,18 +240,18 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
 
             {/* Municipios mais fortes */}
             <div style={{ ...card }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>MUNICIPIOS MAIS FORTES</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>MUNICIPIOS MAIS FORTES</p>
               {dadosMunicipios.slice(0, 10).map((m, i) => {
                 const perc = Math.round((m.votos / totalVotos2022) * 100);
                 const medals = ['🥇','🥈','🥉'];
                 return (
                   <div key={m.municipio} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <span style={{ width: 20, textAlign: 'center', fontSize: 13 }}>{medals[i] || <span style={{ color: '#94a3b8', fontSize: 12 }}>{i+1}</span>}</span>
-                    <span style={{ flex: 1, color: '#1e293b', fontSize: 13, fontWeight: 500 }}>
-                      {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()} <span style={{ color: '#94a3b8', fontSize: 11 }}>AP</span>
+                    <span style={{ width: 20, textAlign: 'center', fontSize: 13 }}>{medals[i] || <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{i+1}</span>}</span>
+                    <span style={{ flex: 1, color: 'var(--text)', fontSize: 13, fontWeight: 500 }}>
+                      {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()} <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>AP</span>
                     </span>
-                    <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 13 }}>{m.votos >= 1000 ? (m.votos/1000).toFixed(1)+'k' : m.votos} v</span>
-                    <span style={{ color: '#64748b', fontSize: 12, width: 36, textAlign: 'right' }}>{perc}%</span>
+                    <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 13 }}>{m.votos >= 1000 ? (m.votos/1000).toFixed(1)+'k' : m.votos} v</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12, width: 36, textAlign: 'right' }}>{perc}%</span>
                   </div>
                 );
               })}
@@ -262,13 +262,13 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
         {/* Concorrentes 2022 */}
         {anoSelecionado === '2022' && (
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>CONCORRENTES — Ordenado por posicao 2022</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>CONCORRENTES — Ordenado por posicao 2022</p>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
-                  <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                  <tr style={{ borderBottom: '2px solid var(--border)' }}>
                     {['#','Candidato','Partido','Votos','% validos','Diferenca'].map(h => (
-                      <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: '#64748b', fontWeight: 600, fontSize: 12 }}>{h}</th>
+                      <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: 'var(--text-muted)', fontWeight: 600, fontSize: 12 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -281,13 +281,13 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
                     { pos:'5°', nome:'ALLINY SOUSA DA ROCHA SERRAO', partido:'UNIAO', votos:'11.017', perc:'11.17%', dif:'+6.137' },
                     { pos:'26°', nome:'PAULO ALCEU AVILA RAMOS', partido:'MDB', votos:'4.880', perc:'1.18%', dif:'—', destaque: true },
                   ].map((c, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: c.destaque ? '#eff6ff' : 'transparent' }}>
-                      <td style={{ padding: '10px 12px', color: '#94a3b8', fontWeight: 700 }}>{c.pos}</td>
-                      <td style={{ padding: '10px 12px', color: c.destaque ? '#1d4ed8' : '#1e293b', fontWeight: c.destaque ? 700 : 400 }}>{c.nome}</td>
-                      <td style={{ padding: '10px 12px', color: '#64748b' }}>{c.partido}</td>
-                      <td style={{ padding: '10px 12px', color: '#1e293b', fontWeight: 600 }}>{c.votos}</td>
-                      <td style={{ padding: '10px 12px', color: '#64748b' }}>{c.perc}</td>
-                      <td style={{ padding: '10px 12px', color: c.dif === '—' ? '#64748b' : '#10b981', fontWeight: 600 }}>{c.dif}</td>
+                    <tr key={i} style={{ borderBottom: '1px solid var(--border)', background: c.destaque ? '#eff6ff' : 'transparent' }}>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)', fontWeight: 700 }}>{c.pos}</td>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#1d4ed8' : 'var(--text)', fontWeight: c.destaque ? 700 : 400 }}>{c.nome}</td>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)' }}>{c.partido}</td>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#1e293b' : 'var(--text)', fontWeight: 600 }}>{c.votos}</td>
+                      <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)' }}>{c.perc}</td>
+                      <td style={{ padding: '10px 12px', color: c.dif === '—' ? (c.destaque ? '#64748b' : 'var(--text-muted)') : '#10b981', fontWeight: 600 }}>{c.dif}</td>
                     </tr>
                   ))}
                 </tbody>

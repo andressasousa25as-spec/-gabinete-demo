@@ -9,11 +9,11 @@ function prioridade(meta) {
   return { label: 'BAIXO', cor: '#22c55e' };
 }
 
-const thStyle = { padding: '10px 12px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: '#64748b', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', whiteSpace: 'nowrap' };
-const tdStyle = { padding: '9px 12px', fontSize: 13, borderBottom: '1px solid #f1f5f9', color: '#1e293b' };
+const thStyle = { padding: '10px 12px', textAlign: 'left', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', background: 'var(--surface-2)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' };
+const tdStyle = { padding: '9px 12px', fontSize: 13, borderBottom: '1px solid var(--border)', color: 'var(--text)' };
 const inputMeta = { width: 80, padding: '5px 8px', border: '1px solid #93c5fd', borderRadius: 6, background: '#eff6ff', fontSize: 13, color: '#1d4ed8', textAlign: 'center', fontWeight: 700 };
 const azul = '#1d4ed8';
-const cardStyle = { background: '#fff', borderRadius: 14, border: '1px solid #e2e8f0', padding: '20px 24px', marginBottom: 20 };
+const cardStyle = { background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)', padding: '20px 24px', marginBottom: 20 };
 
 // Referências reais de DEPUTADO ESTADUAL (AP, alvo de 2026). O quociente define as
 // cadeiras do partido; o que elege um candidato é a votação do último eleito (meta),
@@ -83,12 +83,12 @@ export default function CenarioPolitico({ onVoltar }) {
   });
 
   return (
-    <div style={{ padding: '0 0 40px', fontFamily: 'Inter, sans-serif', color: '#1e293b' }}>
+    <div style={{ padding: '0 0 40px', fontFamily: 'Inter, sans-serif', color: 'var(--text)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-        {onVoltar && <button onClick={onVoltar} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#64748b' }}>←</button>}
+        {onVoltar && <button onClick={onVoltar} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--text-muted)' }}>←</button>}
         <div>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Cenario Politico 2026</h2>
-          <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>Dados reais TSE 2022 — Amapa</p>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>Cenario Politico 2026</h2>
+          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-muted)' }}>Dados reais TSE 2022 — Amapa</p>
         </div>
       </div>
 
@@ -96,28 +96,28 @@ export default function CenarioPolitico({ onVoltar }) {
         <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700 }}>Selecione o Candidato</h3>
         <input type="text" placeholder="Buscar candidato pelo nome ou cargo..." value={busca}
           onChange={e => setBusca(e.target.value)}
-          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, marginBottom: 12, boxSizing: 'border-box' }} />
+          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 14, marginBottom: 12, boxSizing: 'border-box', background: 'var(--surface)', color: 'var(--text)' }} />
         {candidatoSelecionado && (
           <div style={{ background: '#eff6ff', border: '1.5px solid #93c5fd', borderRadius: 10, padding: '12px 16px', marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ margin: 0, fontWeight: 700, color: azul, fontSize: 15 }}>{candidatoSelecionado.nome}</p>
-              <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{candidatoSelecionado.cargo} • {candidatoSelecionado.total.toLocaleString('pt-BR')} votos em 2022</p>
+              <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)' }}>{candidatoSelecionado.cargo} • {candidatoSelecionado.total.toLocaleString('pt-BR')} votos em 2022</p>
             </div>
             <button onClick={() => { setCandidatoSelecionado(null); setBusca(''); setSecoes([]); }} style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', fontSize: 13 }}>Trocar</button>
           </div>
         )}
         {busca && !candidatoSelecionado && (
-          <div style={{ maxHeight: 240, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: 8 }}>
+          <div style={{ maxHeight: 240, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 8 }}>
             {candidatosFiltrados.length === 0 ? (
-              <p style={{ padding: 16, color: '#94a3b8', textAlign: 'center' }}>Nenhum candidato encontrado</p>
+              <p style={{ padding: 16, color: 'var(--text-muted)', textAlign: 'center' }}>Nenhum candidato encontrado</p>
             ) : candidatosFiltrados.map((c, i) => (
               <div key={i} onClick={() => { selecionarCandidato(c); setBusca(''); }}
-                style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white' }}
-                onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                onMouseLeave={e => e.currentTarget.style.background = 'white'}>
+                style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface)' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-2)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}>
                 <div>
-                  <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: '#1e293b' }}>{c.nome}</p>
-                  <p style={{ margin: 0, fontSize: 12, color: '#64748b' }}>{c.cargo}</p>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>{c.nome}</p>
+                  <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)' }}>{c.cargo}</p>
                 </div>
                 <span style={{ fontWeight: 700, color: azul, fontSize: 14 }}>{c.total.toLocaleString('pt-BR')} votos</span>
               </div>
@@ -129,9 +129,9 @@ export default function CenarioPolitico({ onVoltar }) {
       {candidatoSelecionado && (
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, marginBottom: 24 }}>
-            <div style={{ background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0', padding: '16px 18px' }}>
-              <div style={{ fontSize: 11, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Votos 2022</div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: '#64748b' }}>{candidatoSelecionado.total.toLocaleString('pt-BR')}</div>
+            <div style={{ background: 'var(--surface-2)', borderRadius: 12, border: '1px solid var(--border)', padding: '16px 18px' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Votos 2022</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-muted)' }}>{candidatoSelecionado.total.toLocaleString('pt-BR')}</div>
             </div>
             <div style={{ background: '#eff6ff', borderRadius: 12, border: '1.5px solid #93c5fd', padding: '16px 18px' }}>
               <div style={{ fontSize: 11, color: '#3b82f6', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Meta 2026 (editavel)</div>
@@ -151,7 +151,7 @@ export default function CenarioPolitico({ onVoltar }) {
           <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', marginBottom: 20, fontSize: 12, color: '#92400e', lineHeight: 1.6 }}>
             ⚖️ <strong>Referências de Deputado Estadual (alvo 2026):</strong> piso individual <strong>{META_DEP_ESTADUAL.piso.toLocaleString('pt-BR')}</strong> (10% do quociente) · meta de eleição <strong>~{META_DEP_ESTADUAL.eleicao.toLocaleString('pt-BR')}</strong> (votação do último eleito) · quociente <strong>{META_DEP_ESTADUAL.quociente.toLocaleString('pt-BR')}</strong> (define cadeiras do partido). A Meta 2026 acima já vem nessa base e continua editável.
           </div>
-          <div style={{ display: 'flex', gap: 6, marginBottom: 20, borderBottom: '2px solid #e2e8f0', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 6, marginBottom: 20, borderBottom: '2px solid var(--border)', flexWrap: 'wrap' }}>
             {[
               { key: 'municipios', label: 'Municipios' },
               { key: 'zonas', label: 'Zonas' },
@@ -162,7 +162,7 @@ export default function CenarioPolitico({ onVoltar }) {
                 padding: '9px 18px', fontSize: 13, fontWeight: 600, border: 'none',
                 borderRadius: '8px 8px 0 0', cursor: 'pointer',
                 background: abaAtiva === a.key ? azul : 'transparent',
-                color: abaAtiva === a.key ? '#fff' : '#64748b',
+                color: abaAtiva === a.key ? '#fff' : 'var(--text-muted)',
                 borderBottom: abaAtiva === a.key ? `2px solid ${azul}` : '2px solid transparent',
                 marginBottom: -2,
               }}>{a.label}</button>
@@ -181,9 +181,9 @@ export default function CenarioPolitico({ onVoltar }) {
                       const pct = m.votos2022 > 0 ? ((delta / m.votos2022) * 100).toFixed(1) : '0.0';
                       const prio = prioridade(m.meta2026);
                       return (
-                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                        <tr key={i} style={{ background: i % 2 === 0 ? 'var(--surface)' : 'var(--surface-2)' }}>
                           <td style={{ ...tdStyle, fontWeight: 600 }}>{m.municipio}</td>
-                          <td style={{ ...tdStyle, color: '#64748b' }}>{m.votos2022.toLocaleString('pt-BR')}</td>
+                          <td style={{ ...tdStyle, color: 'var(--text-muted)' }}>{m.votos2022.toLocaleString('pt-BR')}</td>
                           <td style={tdStyle}><input type="number" value={m.meta2026} onChange={e => setMunicipios(prev => prev.map((x, j) => j === i ? { ...x, meta2026: parseInt(e.target.value) || 0 } : x))} style={inputMeta} /></td>
                           <td style={{ ...tdStyle, color: delta >= 0 ? '#059669' : '#dc2626' }}>{delta >= 0 ? '+' : ''}{delta.toLocaleString('pt-BR')}</td>
                           <td style={{ ...tdStyle, color: '#7c3aed' }}>{delta >= 0 ? '+' : ''}{pct}%</td>
@@ -216,9 +216,9 @@ export default function CenarioPolitico({ onVoltar }) {
                       const delta = z.meta2026 - z.votos2022;
                       const pct = z.votos2022 > 0 ? ((delta / z.votos2022) * 100).toFixed(1) : '0.0';
                       return (
-                        <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                        <tr key={i} style={{ background: i % 2 === 0 ? 'var(--surface)' : 'var(--surface-2)' }}>
                           <td style={{ ...tdStyle, fontWeight: 600 }}>{z.zona}</td>
-                          <td style={{ ...tdStyle, color: '#64748b' }}>{z.votos2022.toLocaleString('pt-BR')}</td>
+                          <td style={{ ...tdStyle, color: 'var(--text-muted)' }}>{z.votos2022.toLocaleString('pt-BR')}</td>
                           <td style={tdStyle}><input type="number" value={z.meta2026} onChange={e => setZonas(prev => prev.map((x, j) => j === i ? { ...x, meta2026: parseInt(e.target.value) || 0 } : x))} style={inputMeta} /></td>
                           <td style={{ ...tdStyle, color: delta >= 0 ? '#059669' : '#dc2626' }}>{delta >= 0 ? '+' : ''}{delta.toLocaleString('pt-BR')}</td>
                           <td style={{ ...tdStyle, color: '#7c3aed' }}>{delta >= 0 ? '+' : ''}{pct}%</td>
@@ -240,17 +240,17 @@ export default function CenarioPolitico({ onVoltar }) {
           {abaAtiva === 'secoes' && (
             <div style={cardStyle}>
               <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700 }}>Locais de Votacao — Dados TSE 2022</h3>
-              <p style={{ margin: '0 0 16px', fontSize: 12, color: '#94a3b8' }}>Informativo — nao afeta o calculo de projecao</p>
+              <p style={{ margin: '0 0 16px', fontSize: 12, color: 'var(--text-muted)' }}>Informativo — nao afeta o calculo de projecao</p>
               <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
                 <select value={filtroMunSecao} onChange={e => setFiltroMunSecao(e.target.value)}
-                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 13 }}>
+                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, background: 'var(--surface)', color: 'var(--text)' }}>
                   <option value="">Todos os Municipios</option>
                   {municipiosUnicos.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
                 <input type="text" placeholder="Buscar por local, zona ou secao..." value={buscaSecao}
                   onChange={e => setBuscaSecao(e.target.value)}
-                  style={{ flex: 1, minWidth: 200, padding: '8px 12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 13 }} />
-                <span style={{ padding: '8px 14px', background: '#f1f5f9', borderRadius: 8, fontSize: 13, fontWeight: 600 }}>
+                  style={{ flex: 1, minWidth: 200, padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, background: 'var(--surface)', color: 'var(--text)' }} />
+                <span style={{ padding: '8px 14px', background: 'var(--surface-2)', borderRadius: 8, fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>
                   {secoesFiltradas.length} secoes
                 </span>
               </div>
@@ -263,19 +263,19 @@ export default function CenarioPolitico({ onVoltar }) {
                   </thead>
                   <tbody>
                     {secoesFiltradas.slice(0, 200).map((s, i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                      <tr key={i} style={{ background: i % 2 === 0 ? 'var(--surface)' : 'var(--surface-2)' }}>
                         <td style={{ ...tdStyle, fontWeight: 600 }}>{s.municipio}</td>
                         <td style={tdStyle}>Zona {s.zona}</td>
                         <td style={tdStyle}>{s.secao}</td>
                         <td style={{ ...tdStyle, color: azul, fontWeight: 700 }}>{s.votos}</td>
                         <td style={{ ...tdStyle, fontSize: 12 }}>{s.local}</td>
-                        <td style={{ ...tdStyle, fontSize: 11, color: '#64748b' }}>{s.endereco}</td>
+                        <td style={{ ...tdStyle, fontSize: 11, color: 'var(--text-muted)' }}>{s.endereco}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
                 {secoesFiltradas.length > 200 && (
-                  <p style={{ textAlign: 'center', color: '#94a3b8', padding: 12, fontSize: 13 }}>
+                  <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 12, fontSize: 13 }}>
                     Mostrando 200 de {secoesFiltradas.length}. Use os filtros para refinar.
                   </p>
                 )}
@@ -289,9 +289,9 @@ export default function CenarioPolitico({ onVoltar }) {
                 <h3 style={{ margin: '0 0 18px', fontSize: 15, fontWeight: 700 }}>Top 8 Municipios — 2022 vs Meta 2026</h3>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={chartMun} margin={{ top: 4, right: 8, left: 0, bottom: 4 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} />
-                    <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                    <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
                     <Tooltip contentStyle={{ borderRadius: 8, fontSize: 13 }} formatter={v => v.toLocaleString('pt-BR')} />
                     <Bar dataKey="2022" fill="#93c5fd" radius={[4,4,0,0]} name="Votos 2022" />
                     <Bar dataKey="Meta" fill={azul} radius={[4,4,0,0]} name="Meta 2026" />
@@ -314,13 +314,13 @@ export default function CenarioPolitico({ onVoltar }) {
               <div style={cardStyle}>
                 <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Progresso da Meta Global</h3>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
-                  <span style={{ color: '#64748b' }}>Base 2022: <strong>{candidatoSelecionado.total.toLocaleString('pt-BR')}</strong></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Base 2022: <strong>{candidatoSelecionado.total.toLocaleString('pt-BR')}</strong></span>
                   <span style={{ color: azul }}>Meta 2026: <strong>{metaGlobal.toLocaleString('pt-BR')}</strong></span>
                 </div>
-                <div style={{ height: 16, background: '#e2e8f0', borderRadius: 99, overflow: 'hidden' }}>
+                <div style={{ height: 16, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${Math.min((candidatoSelecionado.total / metaGlobal) * 100, 100).toFixed(1)}%`, background: 'linear-gradient(90deg, #3b82f6, #1d4ed8)', borderRadius: 99 }} />
                 </div>
-                <div style={{ marginTop: 6, fontSize: 12, color: '#94a3b8', textAlign: 'right' }}>
+                <div style={{ marginTop: 6, fontSize: 12, color: 'var(--text-muted)', textAlign: 'right' }}>
                   {((candidatoSelecionado.total / metaGlobal) * 100).toFixed(1)}% ja conquistado (base 2022)
                 </div>
               </div>
@@ -330,7 +330,7 @@ export default function CenarioPolitico({ onVoltar }) {
       )}
 
       {!candidatoSelecionado && !busca && (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>
+        <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
           <p style={{ fontSize: 48 }}>🔍</p>
           <p style={{ fontSize: 16, fontWeight: 600 }}>Busque um candidato acima</p>
           <p style={{ fontSize: 13 }}>{CANDIDATOS_TSE.length} candidatos disponiveis — dados reais TSE 2022</p>

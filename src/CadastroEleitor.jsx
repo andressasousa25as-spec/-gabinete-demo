@@ -15,9 +15,11 @@ const inputStyle = {
   padding: '12px',
   marginBottom: '12px',
   borderRadius: '8px',
-  border: '1px solid #ccc',
+  border: '1px solid var(--border)',
   fontSize: '15px',
   boxSizing: 'border-box',
+  background: 'var(--surface)',
+  color: 'var(--text)',
 };
 
 export default function CadastroEleitor() {
@@ -88,7 +90,7 @@ export default function CadastroEleitor() {
   };
 
   return (
-    <div style={{ maxWidth: '620px', margin: '40px auto', padding: '30px' }}>
+    <div style={{ maxWidth: '620px', margin: '40px auto', padding: '30px', color: 'var(--text)' }}>
       <h2 style={{ color: '#1e40af', marginBottom: '24px' }}>📋 Cadastro de Apoiador</h2>
 
       {sucesso && (
@@ -106,7 +108,7 @@ export default function CadastroEleitor() {
       <form onSubmit={e => e.preventDefault()}>
 
         {/* Nome */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Nome Completo *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Nome Completo *</label>
         <input
           type="text"
           name="nome"
@@ -117,7 +119,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Telefone */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Telefone (WhatsApp) *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Telefone (WhatsApp) *</label>
         <input
           type="tel"
           name="telefone"
@@ -128,7 +130,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Email */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>E-mail (opcional)</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>E-mail (opcional)</label>
         <input
           type="email"
           name="email"
@@ -139,7 +141,7 @@ export default function CadastroEleitor() {
         />
 
         {/* Bairro - SELECT */}
-        <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Bairro *</label>
+        <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Bairro *</label>
         <select
           name="bairro"
           value={formData.bairro}
@@ -155,7 +157,7 @@ export default function CadastroEleitor() {
         {/* Zona e Seção */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
           <div style={{ flex: 1 }}>
-            <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Zona Eleitoral</label>
+            <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Zona Eleitoral</label>
             <select
               name="zona_eleitoral"
               value={formData.zona_eleitoral}
@@ -170,7 +172,7 @@ export default function CadastroEleitor() {
           </div>
 
           <div style={{ flex: 1 }}>
-            <label style={{ fontWeight: '600', fontSize: '14px', color: '#374151' }}>Seção Eleitoral</label>
+            <label style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text)' }}>Seção Eleitoral</label>
             <input
               type="number"
               name="secao_eleitoral"

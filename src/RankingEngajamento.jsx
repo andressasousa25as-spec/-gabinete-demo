@@ -72,41 +72,41 @@ export default function RankingEngajamento({ onVoltar }) {
       {/* Filtros */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
         <select value={periodo} onChange={e => setPeriodo(e.target.value)}
-          style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #334155', background: '#1e293b', color: '#f1f5f9', fontSize: 14 }}>
+          style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 14 }}>
           <option value="7">Últimos 7 dias</option>
           <option value="15">Últimos 15 dias</option>
           <option value="30">Últimos 30 dias</option>
           <option value="all">Todo o período</option>
         </select>
         <select value={midiaFiltro} onChange={e => setMidiaFiltro(e.target.value)}
-          style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #334155', background: '#1e293b', color: '#f1f5f9', fontSize: 14, flex: 1 }}>
+          style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 14, flex: 1 }}>
           <option value="">📤 Todas as mídias</option>
           {midias.map(m => <option key={m.id} value={m.id}>{m.titulo}</option>)}
         </select>
       </div>
 
       {/* Card total */}
-      <div style={{ background: '#1e293b', borderRadius: 12, padding: '16px 24px', marginBottom: 24, border: '1px solid #334155', display: 'flex', gap: 32 }}>
-        <div><p style={{ color: '#94a3b8', fontSize: 12, marginBottom: 4 }}>TOTAL DE CLIQUES</p>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: '16px 24px', marginBottom: 24, border: '1px solid var(--border)', display: 'flex', gap: 32 }}>
+        <div><p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4 }}>TOTAL DE CLIQUES</p>
           <p style={{ color: '#f59e0b', fontSize: 28, fontWeight: 800 }}>{totalCliques}</p></div>
-        <div><p style={{ color: '#94a3b8', fontSize: 12, marginBottom: 4 }}>LIDERANÇAS ATIVAS</p>
+        <div><p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4 }}>LIDERANÇAS ATIVAS</p>
           <p style={{ color: '#60a5fa', fontSize: 28, fontWeight: 800 }}>{ranking.filter(r => r.cliques > 0).length}</p></div>
-        <div><p style={{ color: '#94a3b8', fontSize: 12, marginBottom: 4 }}>MÍDIAS DISPARADAS</p>
+        <div><p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 4 }}>MÍDIAS DISPARADAS</p>
           <p style={{ color: '#10b981', fontSize: 28, fontWeight: 800 }}>{midias.length}</p></div>
       </div>
 
-      {loading ? <p style={{ color: '#94a3b8', textAlign: 'center' }}>⏳ Carregando...</p> : (
+      {loading ? <p style={{ color: 'var(--text-muted)', textAlign: 'center' }}>⏳ Carregando...</p> : (
         <>
           {/* Gráfico */}
           {ranking.some(r => r.cliques > 0) && (
-            <div style={{ background: '#1e293b', borderRadius: 12, padding: 20, marginBottom: 24, border: '1px solid #334155' }}>
-              <h3 style={{ color: '#f1f5f9', marginBottom: 16, fontSize: 15, fontWeight: 700 }}>📊 Comparativo de Cliques</h3>
+            <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, marginBottom: 24, border: '1px solid var(--border)' }}>
+              <h3 style={{ color: 'var(--text)', marginBottom: 16, fontSize: 15, fontWeight: 700 }}>📊 Comparativo de Cliques</h3>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={ranking} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="nomeAbrev" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                  <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                  <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', color: '#f1f5f9' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="nomeAbrev" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                  <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                  <Tooltip contentStyle={{ background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)' }} />
                   <Bar dataKey="cliques" radius={[4, 4, 0, 0]}>
                     {ranking.map((_, i) => <Cell key={i} fill={cores[i % cores.length]} />)}
                   </Bar>
@@ -118,18 +118,18 @@ export default function RankingEngajamento({ onVoltar }) {
           {/* Lista ranking */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {ranking.map((r, i) => (
-              <div key={r.id} style={{ background: '#1e293b', borderRadius: 12, padding: '14px 20px', border: `1px solid ${i === 0 && r.cliques > 0 ? '#f59e0b' : '#334155'}`, display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div key={r.id} style={{ background: 'var(--surface)', borderRadius: 12, padding: '14px 20px', border: `1px solid ${i === 0 && r.cliques > 0 ? '#f59e0b' : 'var(--border)'}`, display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span style={{ fontSize: 24, width: 36 }}>{i < 3 && r.cliques > 0 ? medalhas[i] : `#${i + 1}`}</span>
                 <div style={{ flex: 1 }}>
-                  <p style={{ color: '#f1f5f9', fontWeight: 700, fontSize: 15, margin: 0 }}>{r.nome}</p>
-                  <p style={{ color: '#94a3b8', fontSize: 12, margin: 0 }}>{r.cliques} clique{r.cliques !== 1 ? 's' : ''}</p>
+                  <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, margin: 0 }}>{r.nome}</p>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>{r.cliques} clique{r.cliques !== 1 ? 's' : ''}</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <p style={{ color: cores[i % cores.length], fontWeight: 800, fontSize: 22, margin: 0 }}>{r.cliques}</p>
-                  {totalCliques > 0 && <p style={{ color: '#64748b', fontSize: 11, margin: 0 }}>{((r.cliques / totalCliques) * 100).toFixed(1)}%</p>}
+                  {totalCliques > 0 && <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: 0 }}>{((r.cliques / totalCliques) * 100).toFixed(1)}%</p>}
                 </div>
                 {/* Barra de progresso */}
-                <div style={{ width: 80, height: 6, background: '#334155', borderRadius: 3, overflow: 'hidden' }}>
+                <div style={{ width: 80, height: 6, background: 'var(--border)', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: `${totalCliques > 0 ? (r.cliques / ranking[0]?.cliques) * 100 : 0}%`, background: cores[i % cores.length], borderRadius: 3 }} />
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function RankingEngajamento({ onVoltar }) {
           </div>
 
           {ranking.every(r => r.cliques === 0) && (
-            <p style={{ color: '#64748b', textAlign: 'center', padding: '40px 0' }}>📭 Nenhum clique registrado ainda. Dispare mídias para começar!</p>
+            <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px 0' }}>📭 Nenhum clique registrado ainda. Dispare mídias para começar!</p>
           )}
         </>
       )}

@@ -67,7 +67,7 @@ export default function PoliticaPrivacidade() {
           ficam protegidos por controle de permissão. Em caso de incidente com risco relevante, adotaremos as
           providências da LGPD.</P>
 
-        <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 24, borderTop: '1px solid #e2e8f0', paddingTop: 14 }}>
+        <p style={{ fontSize: 12, color: '#64748b', marginTop: 24, borderTop: '1px solid #e2e8f0', paddingTop: 14 }}>
           Este documento poderá ser atualizado. A versão vigente estará sempre disponível nesta página.
         </p>
         <div style={{ marginTop: 16 }}>

@@ -58,29 +58,29 @@ export default function RadarOportunidade({ onVoltar }) {
   const maiorReserv = [...dadosZonas].sort((a, b) => b.aptos - a.aptos)[0];
   const cap = (s) => s ? s.charAt(0) + s.slice(1).toLowerCase() : s;
 
-  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
   const maxScore = 100;
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
   );
   if (semDados) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
-      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
-        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 28, border: '1px solid var(--border)', maxWidth: 560 }}>
+        <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
       </div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px' }}>
-      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px' }}>
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Radar de Oportunidade</h1>
-          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Zonas com alta abstencao e baixa penetracao — onde estao os votos disponiveis</p>
+          <h1 style={{ color: 'var(--text)', fontSize: 22, fontWeight: 800, margin: 0 }}>Radar de Oportunidade</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Zonas com alta abstencao e baixa penetracao — onde estao os votos disponiveis</p>
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export default function RadarOportunidade({ onVoltar }) {
             <span style={{ color: '#1d4ed8', fontWeight: 700, fontSize: 14 }}>Analise Estrategica</span>
             <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, marginLeft: 'auto' }}>Dados TSE 2022</span>
           </div>
-          <p style={{ color: '#334155', fontSize: 13, lineHeight: 1.7, margin: '0 0 10px' }}>
+          <p style={{ color: '#1e293b', fontSize: 13, lineHeight: 1.7, margin: '0 0 10px' }}>
             A votação está pulverizada: penetração geral de apenas <strong>{penGeral.toFixed(1)}%</strong> dos eleitores, sinalizando ausência de redutos sólidos. {topZona && (<>A maior oportunidade é a <strong>Zona {topZona.zona}{MUNICIPIOS_ZONA[topZona.zona] ? ' (' + MUNICIPIOS_ZONA[topZona.zona].map(cap).join(', ') + ')' : ''}</strong> — score {topZona.score}, penetração de {topZona.pen}% e abstenção de {topZona.abs}%: espaço para crescer por persuasão.</>)}
           </p>
           {maiorReserv && (
@@ -130,15 +130,15 @@ export default function RadarOportunidade({ onVoltar }) {
 
         {/* Grafico de barras */}
         <div style={{ ...card, marginBottom: 24 }}>
-          <p style={{ color: '#1e293b', fontWeight: 700, fontSize: 15, margin: '0 0 4px' }}>Score de Oportunidade por Zona</p>
-          <p style={{ color: '#64748b', fontSize: 12, margin: '0 0 20px' }}>Vermelho = prioridade maxima · Amarelo = atencao · Verde = consolidado</p>
+          <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, margin: '0 0 4px' }}>Score de Oportunidade por Zona</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '0 0 20px' }}>Vermelho = prioridade maxima · Amarelo = atencao · Verde = consolidado</p>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 120 }}>
             {dadosZonas.map(z => (
               <div key={z.zona} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <div style={{ width: '100%', background: '#f1f5f9', borderRadius: 6, height: 100, display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
+                <div style={{ width: '100%', background: 'var(--surface-2)', borderRadius: 6, height: 100, display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
                   <div style={{ width: '100%', height: `${z.score}%`, background: z.cor, borderRadius: '4px 4px 0 0', transition: 'height 0.5s' }} />
                 </div>
-                <span style={{ color: '#64748b', fontSize: 10, fontWeight: 700 }}>Z{z.zona}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 10, fontWeight: 700 }}>Z{z.zona}</span>
               </div>
             ))}
           </div>
@@ -146,7 +146,7 @@ export default function RadarOportunidade({ onVoltar }) {
             {[{ cor: '#ef4444', label: 'Score ≥ 70 (Prioridade)' }, { cor: '#f59e0b', label: '50-69 (Atencao)' }, { cor: '#10b981', label: '< 50 (Consolidado)' }].map(l => (
               <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ width: 12, height: 12, borderRadius: '50%', background: l.cor }} />
-                <span style={{ color: '#64748b', fontSize: 12 }}>{l.label}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{l.label}</span>
               </div>
             ))}
           </div>
@@ -154,26 +154,26 @@ export default function RadarOportunidade({ onVoltar }) {
 
         {/* Zonas por regiao */}
         <div style={{ ...card }}>
-          <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>ZONAS POR SCORE DE OPORTUNIDADE</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>ZONAS POR SCORE DE OPORTUNIDADE</p>
           {dadosZonas.map(z => (
-            <div key={z.zona} style={{ borderBottom: '1px solid #f1f5f9', padding: '14px 0', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+            <div key={z.zona} style={{ borderBottom: '1px solid var(--border)', padding: '14px 0', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
               <div style={{ width: 52, height: 52, borderRadius: 10, background: z.score >= 70 ? '#fef2f2' : z.score >= 50 ? '#fffbeb' : '#f0fdf4', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: `2px solid ${z.cor}` }}>
                 <span style={{ color: z.cor, fontWeight: 900, fontSize: 18, lineHeight: 1 }}>{z.score}</span>
                 <span style={{ color: z.cor, fontSize: 9, fontWeight: 700 }}>SCORE</span>
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15 }}>Zona {z.zona}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15 }}>Zona {z.zona}</span>
                   <span style={{ background: z.score >= 70 ? '#fef2f2' : z.score >= 50 ? '#fffbeb' : '#f0fdf4', color: z.cor, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{z.classificacao}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 16, fontSize: 13 }}>
-                  <span style={{ color: '#64748b' }}>Pen: <strong style={{ color: z.pen < 1.5 ? '#ef4444' : '#1e293b' }}>{z.pen}%</strong></span>
-                  <span style={{ color: '#64748b' }}>Abs: <strong style={{ color: z.abs > 22 ? '#ef4444' : '#1e293b' }}>{z.abs}%</strong></span>
-                  <span style={{ color: '#64748b' }}>Votos: <strong style={{ color: '#1e293b' }}>{z.votos}</strong></span>
-                  <span style={{ color: '#64748b' }}>Potencial: <strong style={{ color: '#2563eb' }}>+{z.potencial.toLocaleString('pt-BR')}</strong></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Pen: <strong style={{ color: z.pen < 1.5 ? '#ef4444' : 'var(--text)' }}>{z.pen}%</strong></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Abs: <strong style={{ color: z.abs > 22 ? '#ef4444' : 'var(--text)' }}>{z.abs}%</strong></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Votos: <strong style={{ color: 'var(--text)' }}>{z.votos}</strong></span>
+                  <span style={{ color: 'var(--text-muted)' }}>Potencial: <strong style={{ color: '#2563eb' }}>+{z.potencial.toLocaleString('pt-BR')}</strong></span>
                 </div>
                 {MUNICIPIOS_ZONA[z.zona] && (
-                  <p style={{ color: '#94a3b8', fontSize: 12, margin: '4px 0 0' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '4px 0 0' }}>
                     {MUNICIPIOS_ZONA[z.zona].map(m => m.charAt(0) + m.slice(1).toLowerCase()).join(', ')}
                   </p>
                 )}

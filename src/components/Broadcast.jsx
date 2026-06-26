@@ -50,7 +50,7 @@ export default function Broadcast({ registrarLog, onVoltar }) {
     }
   }
 
-  const inp = { width: '100%', padding: 10, marginBottom: 10, background: '#0f172a', color: '#f1f5f9', border: '1px solid #334155', borderRadius: 8, boxSizing: 'border-box' };
+  const inp = { width: '100%', padding: 10, marginBottom: 10, background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, boxSizing: 'border-box' };
   return (
     <div style={{ padding: 30, maxWidth: 600, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
@@ -58,14 +58,14 @@ export default function Broadcast({ registrarLog, onVoltar }) {
         {onVoltar && <button onClick={onVoltar} style={{ background: '#64748b', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: 8, cursor: 'pointer' }}>← Voltar</button>}
       </div>
 
-      <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6 }}>Enviar para:</label>
+      <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: 13, marginBottom: 6 }}>Enviar para:</label>
       <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
         {Object.entries(ALVOS).map(([chave, v]) => (
           <button key={chave} onClick={() => setAlvo(chave)} style={{
             flex: 1, minWidth: 130, padding: '10px 12px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 13,
-            border: alvo === chave ? '2px solid #CBA15C' : '1px solid #334155',
-            background: alvo === chave ? '#CBA15C' : '#0f172a',
-            color: alvo === chave ? '#0E2236' : '#f1f5f9',
+            border: alvo === chave ? '2px solid #CBA15C' : '1px solid var(--border)',
+            background: alvo === chave ? '#CBA15C' : 'var(--bg)',
+            color: alvo === chave ? '#0E2236' : 'var(--text)',
           }}>{v.label}</button>
         ))}
       </div>
@@ -76,7 +76,7 @@ export default function Broadcast({ registrarLog, onVoltar }) {
         {enviando ? 'Enviando...' : `Disparar (${ALVOS[alvo].label})`}
       </button>
 
-      <p style={{ marginTop: 16, fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>
+      <p style={{ marginTop: 16, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
         ℹ️ O aviso chega só em quem instalou o app (deputado/equipe). Para falar com lideranças e apoiadores, use o <strong>Comunicado</strong> (WhatsApp).
       </p>
     </div>

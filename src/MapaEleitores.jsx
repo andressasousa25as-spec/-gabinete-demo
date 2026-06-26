@@ -217,12 +217,12 @@ export default function MapaEleitores({ config }) {
     return matchNome && matchBairro && matchZona && matchSecao && e.latitude && e.longitude;
   }).length;
 
-  const sel = { padding: '10px', borderRadius: '8px', border: '1px solid #ccc', background: 'white', fontSize: '14px' };
+  const sel = { padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: '14px' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '13px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '13px', alignItems: 'center', color: 'var(--text)' }}>
         <span><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#2563eb', display: 'inline-block', marginRight: 4 }}></span>Apoiador</span>
         <span><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#dc2626', display: 'inline-block', marginRight: 4 }}></span>Lideranca</span>
         <span><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#d97706', display: 'inline-block', marginRight: 4 }}></span>Deputado</span>
@@ -242,7 +242,7 @@ export default function MapaEleitores({ config }) {
           <option value="">Todas as Secoes</option>
           {secoesFiltradas.map(s => <option key={s} value={s}>Secao {s}</option>)}
         </select>
-        <div style={{ background: '#f1f5f9', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px' }}>
+        <div style={{ background: 'var(--surface-2)', color: 'var(--text)', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '13px' }}>
           {carregando ? 'Carregando...' : `${totalVisiveis} no mapa${geocodificando ? ' - buscando coords...' : ''}`}
         </div>
         {(buscaNome || filtroBairro || filtroZona || filtroSecao) && (
@@ -253,7 +253,7 @@ export default function MapaEleitores({ config }) {
         )}
       </div>
 
-      <div ref={mapContainer} style={{ height: '600px', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e5e7eb' }} />
+      <div ref={mapContainer} style={{ height: '600px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)' }} />
 
     </div>
   );

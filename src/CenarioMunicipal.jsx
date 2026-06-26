@@ -92,7 +92,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
   const maiorVotado = eleitos[0]
 
   return (
-    <div style={{ padding: '1rem', maxWidth: 800, margin: '0 auto', fontFamily: 'sans-serif' }}>
+    <div style={{ padding: '1rem', maxWidth: 800, margin: '0 auto', fontFamily: 'sans-serif', color: 'var(--text)' }}>
       <button onClick={onVoltar} style={{ background: '#1e3a8a', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer', fontWeight: 600, fontSize: 13, marginBottom: 12 }}>← Voltar</button>
 
       {/* Header */}
@@ -100,7 +100,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
         <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#1e3a8a', marginBottom: 4 }}>
           🏛️ Cenário Municipal 2024
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
           Câmara de Vereadores — análise de alianças para 2026
         </p>
       </div>
@@ -111,8 +111,8 @@ export default function CenarioMunicipal({ config, onVoltar }) {
           <button key={m} onClick={() => { setMunicipio(m); setFiltroPartido('TODOS'); setBusca('') }}
             style={{
               padding: '8px 24px', borderRadius: 999, border: 'none', cursor: 'pointer', fontWeight: 600,
-              background: municipio === m ? '#1e3a8a' : '#e2e8f0',
-              color: municipio === m ? '#fff' : '#475569', fontSize: '0.9rem'
+              background: municipio === m ? '#1e3a8a' : 'var(--surface-2)',
+              color: municipio === m ? '#fff' : 'var(--text-muted)', fontSize: '0.9rem'
             }}>
             {m === 'macapa' ? '📍 Macapá' : '📍 Santana'}
           </button>
@@ -128,18 +128,18 @@ export default function CenarioMunicipal({ config, onVoltar }) {
           { label: 'Votos válidos', valor: dados.totalVotosValidos.toLocaleString('pt-BR'), cor: '#059669' },
         ].map((c, i) => (
           <div key={i} style={{
-            background: c.destaque ? '#eff6ff' : '#f8fafc',
-            border: c.destaque ? '2px solid #1d4ed8' : '1px solid #e2e8f0',
+            background: c.destaque ? '#eff6ff' : 'var(--surface-2)',
+            border: c.destaque ? '2px solid #1d4ed8' : '1px solid var(--border)',
             borderRadius: 12, padding: '14px 12px', textAlign: 'center'
           }}>
             <div style={{ fontSize: '1.4rem', fontWeight: 800, color: c.cor }}>{c.valor}</div>
-            <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 2 }}>{c.label}</div>
+            <div style={{ fontSize: '0.75rem', color: c.destaque ? '#64748b' : 'var(--text-muted)', marginTop: 2 }}>{c.label}</div>
           </div>
         ))}
       </div>
 
       {/* Abas */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: '1rem', borderBottom: '2px solid #e2e8f0' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: '1rem', borderBottom: '2px solid var(--border)' }}>
         {[
           { id: 'aliados', label: '🤝 Aliados ' + PARTIDO_PAULINHO },
           { id: 'ranking', label: '🏆 Ranking Geral' },
@@ -149,7 +149,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
             style={{
               padding: '8px 14px', border: 'none', cursor: 'pointer', fontWeight: 600,
               fontSize: '0.82rem', background: 'transparent',
-              color: aba === a.id ? '#1e3a8a' : '#94a3b8',
+              color: aba === a.id ? '#1e3a8a' : 'var(--text-muted)',
               borderBottom: aba === a.id ? '3px solid #1e3a8a' : '3px solid transparent',
               marginBottom: -2
             }}>
@@ -162,8 +162,8 @@ export default function CenarioMunicipal({ config, onVoltar }) {
       {aba === 'aliados' && (
         <div>
           {/* Distribuição por partido */}
-          <div style={{ background: '#f8fafc', borderRadius: 12, padding: '1rem', marginBottom: '1rem' }}>
-            <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: 10, fontSize: '0.95rem' }}>
+          <div style={{ background: 'var(--surface-2)', borderRadius: 12, padding: '1rem', marginBottom: '1rem' }}>
+            <h3 style={{ fontWeight: 700, color: 'var(--text)', marginBottom: 10, fontSize: '0.95rem' }}>
               Distribuição de cadeiras por partido
             </h3>
             {distPartidos.map(([partido, qtd]) => (
@@ -171,13 +171,13 @@ export default function CenarioMunicipal({ config, onVoltar }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: 3 }}>
                   <span style={{
                     fontWeight: partido === PARTIDO_PAULINHO ? 800 : 600,
-                    color: partido === PARTIDO_PAULINHO ? '#1d4ed8' : '#374151'
+                    color: partido === PARTIDO_PAULINHO ? '#1d4ed8' : 'var(--text)'
                   }}>
                     {partido === PARTIDO_PAULINHO ? '⭐ ' : ''}{partido}
                   </span>
-                  <span style={{ color: '#6b7280' }}>{qtd} cadeira{qtd > 1 ? 's' : ''}</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{qtd} cadeira{qtd > 1 ? 's' : ''}</span>
                 </div>
-                <div style={{ background: '#e2e8f0', borderRadius: 4, height: 8 }}>
+                <div style={{ background: 'var(--border)', borderRadius: 4, height: 8 }}>
                   <div style={{
                     width: `${(qtd / totalEleitos) * 100}%`,
                     height: 8, borderRadius: 4,
@@ -189,7 +189,7 @@ export default function CenarioMunicipal({ config, onVoltar }) {
           </div>
 
           {/* Vereadores aliados */}
-          <h3 style={{ fontWeight: 700, color: '#1e293b', marginBottom: 8, fontSize: '0.95rem' }}>
+          <h3 style={{ fontWeight: 700, color: 'var(--text)', marginBottom: 8, fontSize: '0.95rem' }}>
             🤝 Vereadores {PARTIDO_PAULINHO} eleitos — potenciais aliados 2026
           </h3>
           {aliados.length === 0 ? (
@@ -222,17 +222,17 @@ export default function CenarioMunicipal({ config, onVoltar }) {
           )}
 
           {/* Outros partidos eleitos */}
-          <h3 style={{ fontWeight: 700, color: '#1e293b', margin: '1.2rem 0 8px', fontSize: '0.95rem' }}>
+          <h3 style={{ fontWeight: 700, color: 'var(--text)', margin: '1.2rem 0 8px', fontSize: '0.95rem' }}>
             🔎 Demais vereadores eleitos — análise de alinhamento
           </h3>
           {outros.map((v, i) => (
             <div key={v.sq} style={{
-              background: '#f8fafc', border: '1px solid #e2e8f0',
+              background: 'var(--surface-2)', border: '1px solid var(--border)',
               borderRadius: 10, padding: '10px 14px', marginBottom: 6,
               display: 'flex', justifyContent: 'space-between', alignItems: 'center'
             }}>
               <div>
-                <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>{v.nomeUrna}</div>
+                <div style={{ fontWeight: 600, color: 'var(--text)', fontSize: '0.9rem' }}>{v.nomeUrna}</div>
                 <div style={{ fontSize: '0.75rem', marginTop: 2 }}>
                   <span style={{
                     background: corPartido(v.partido) + '22',
@@ -241,9 +241,9 @@ export default function CenarioMunicipal({ config, onVoltar }) {
                   }}>{v.partido}</span>
                 </div>
               </div>
-              <div style={{ fontWeight: 700, color: '#374151', fontSize: '1rem' }}>
+              <div style={{ fontWeight: 700, color: 'var(--text)', fontSize: '1rem' }}>
                 {v.votos.toLocaleString('pt-BR')}
-                <span style={{ fontSize: '0.7rem', color: '#94a3b8', marginLeft: 4 }}>vts</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: 4 }}>vts</span>
               </div>
             </div>
           ))}
@@ -260,31 +260,32 @@ export default function CenarioMunicipal({ config, onVoltar }) {
               placeholder="Buscar candidato ou partido..."
               style={{
                 flex: 1, minWidth: 180, padding: '8px 12px', borderRadius: 8,
-                border: '1px solid #d1d5db', fontSize: '0.85rem'
+                border: '1px solid var(--border)', fontSize: '0.85rem',
+                background: 'var(--surface)', color: 'var(--text)'
               }}
             />
             <select value={filtroPartido} onChange={e => setFiltroPartido(e.target.value)}
-              style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #d1d5db', fontSize: '0.85rem' }}>
+              style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: '0.85rem', background: 'var(--surface)', color: 'var(--text)' }}>
               {partidos.map(p => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
 
-          <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginBottom: 8 }}>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 8 }}>
             Exibindo {candidatosFiltrados.length} de {dados.totalCandidatos} candidatos
           </div>
 
           {candidatosFiltrados.map((v, i) => (
             <div key={v.sq} style={{
-              background: v.eleito ? '#f0fdf4' : '#f8fafc',
-              border: v.eleito ? '1px solid #bbf7d0' : '1px solid #e2e8f0',
+              background: v.eleito ? '#f0fdf4' : 'var(--surface-2)',
+              border: v.eleito ? '1px solid #bbf7d0' : '1px solid var(--border)',
               borderLeft: v.partido === PARTIDO_PAULINHO ? '4px solid #1d4ed8' : undefined,
               borderRadius: 8, padding: '10px 12px', marginBottom: 5,
               display: 'flex', justifyContent: 'space-between', alignItems: 'center'
             }}>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8', minWidth: 28 }}>#{i + 1}</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', minWidth: 28 }}>#{i + 1}</span>
                 <div>
-                  <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.88rem' }}>{v.nomeUrna}</div>
+                  <div style={{ fontWeight: 600, color: v.eleito ? '#1e293b' : 'var(--text)', fontSize: '0.88rem' }}>{v.nomeUrna}</div>
                   <div style={{ display: 'flex', gap: 6, marginTop: 3, alignItems: 'center' }}>
                     <span style={{
                       background: corPartido(v.partido) + '22',
@@ -297,9 +298,9 @@ export default function CenarioMunicipal({ config, onVoltar }) {
                   </div>
                 </div>
               </div>
-              <div style={{ fontWeight: 700, color: v.eleito ? '#16a34a' : '#374151', fontSize: '1rem', textAlign: 'right' }}>
+              <div style={{ fontWeight: 700, color: v.eleito ? '#16a34a' : 'var(--text)', fontSize: '1rem', textAlign: 'right' }}>
                 {v.votos.toLocaleString('pt-BR')}
-                <div style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 400 }}>votos</div>
+                <div style={{ fontSize: '0.68rem', color: v.eleito ? '#94a3b8' : 'var(--text-muted)', fontWeight: 400 }}>votos</div>
               </div>
             </div>
           ))}
@@ -314,19 +315,19 @@ export default function CenarioMunicipal({ config, onVoltar }) {
               📊 Deputado Demo (Dep. Estadual 2022) × Câmara Municipal 2024
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              <div style={{ background: '#fff', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
+              <div style={{ background: 'var(--surface)', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1d4ed8' }}>
                   {votosPaulinho > 0 ? votosPaulinho.toLocaleString('pt-BR') : '—'}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   Votos Paulinho 2022{'\n'}em {dados.municipio}
                 </div>
               </div>
-              <div style={{ background: '#fff', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
+              <div style={{ background: 'var(--surface)', borderRadius: 8, padding: '10px', textAlign: 'center' }}>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#059669' }}>
                   {maiorVotado?.votos.toLocaleString('pt-BR')}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                   Maior votado vereador 2024
                 </div>
               </div>

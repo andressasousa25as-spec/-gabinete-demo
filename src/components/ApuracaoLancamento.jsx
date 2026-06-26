@@ -41,7 +41,7 @@ export default function ApuracaoLancamento({ perfil, onVoltar }) {
     setEnviando(false);
   }
 
-  const inp = { width: '100%', padding: 10, marginBottom: 10, background: '#0f172a', color: '#f1f5f9', border: '1px solid #334155', borderRadius: 8, boxSizing: 'border-box' };
+  const inp = { width: '100%', padding: 10, marginBottom: 10, background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, boxSizing: 'border-box' };
   return (
     <form onSubmit={enviar} style={{ padding: 20, maxWidth: 480, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -57,16 +57,16 @@ export default function ApuracaoLancamento({ perfil, onVoltar }) {
         {zonas.map(z => <option key={z} value={z}>Zona {z}</option>)}
       </select>
       <input placeholder="Seção (número)" value={secao} onChange={e => setSecao(e.target.value)} style={inp} inputMode="numeric" />
-      <div style={{ borderTop: '1px solid #334155', margin: '12px 0', paddingTop: 12 }}>
+      <div style={{ borderTop: '1px solid var(--border)', margin: '12px 0', paddingTop: 12 }}>
         {candidatos.map(c => (
           <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ flex: 1, color: '#f1f5f9' }}>{c.eh_nosso ? '⭐ ' : ''}{c.nome}</span>
+            <span style={{ flex: 1, color: 'var(--text)' }}>{c.eh_nosso ? '⭐ ' : ''}{c.nome}</span>
             <input type="number" min="0" value={votos[c.id] || ''} onChange={e => setVotos({ ...votos, [c.id]: e.target.value })} placeholder="votos" style={{ ...inp, width: 110, marginBottom: 0 }} />
           </div>
         ))}
       </div>
       <input type="number" min="0" placeholder="Total de votos da seção (opcional)" value={totalSecao} onChange={e => setTotalSecao(e.target.value)} style={inp} />
-      <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6 }}>Foto do boletim *</label>
+      <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: 13, marginBottom: 6 }}>Foto do boletim *</label>
       <input type="file" accept="image/*" capture="environment" onChange={e => setFoto(e.target.files?.[0] || null)} style={inp} />
       {msg && <p style={{ color: '#CBA15C' }}>{msg}</p>}
       <button type="submit" disabled={enviando} style={{ width: '100%', background: '#CBA15C', color: '#0E2236', border: 'none', padding: 14, borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>

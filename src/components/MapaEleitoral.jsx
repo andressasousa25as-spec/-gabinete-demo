@@ -10,7 +10,6 @@ const PERFIL_MUNICIPIO = {
   'FERREIRA GOMES': 'Municipio com usina hidreletrica. Eleitorado pequeno mas concentrado.',
   'MAZAGÃO': 'Um dos mais antigos municipios do Amapa. Eleitorado disperso geograficamente.',
   'CALÇOENE': 'Municipio do norte do Amapa proximo ao Oiapoque. Alta absten cao (24%).',
-  'LARANJAL DO JARI': 'Grande municipio do sul com alta absten cao. Alto potencial de votos.',
   'OIAPOQUE': 'Municipio fronteirico com a Guiana Francesa. Alta absten cao (22%).',
   'AMAPÁ': 'Municipio historico do norte do estado. Eleitorado pequeno.',
   'TARTARUGALZINHO': 'Municipio do norte com economia agropecuaria.',
@@ -49,17 +48,17 @@ export default function MapaEleitoral({ onVoltar }) {
     .filter(m => m.municipio.toLowerCase().includes(busca.toLowerCase()))
     .sort((a, b) => ordenacao === 'votos' ? b.votos - a.votos : a.municipio.localeCompare(b.municipio));
 
-  const card = { background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
+  const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', color: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando análise…</div>
   );
   if (semDados) return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '24px 32px' }}>
-      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 28, border: '1px solid #e2e8f0', maxWidth: 560 }}>
-        <p style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 32px' }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 28, border: '1px solid var(--border)', maxWidth: 560 }}>
+        <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: '0 0 8px' }}>Análise eleitoral indisponível</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, lineHeight: 1.6 }}>Este candidato não tem histórico de votação no TSE (ou ainda não foi importado). O restante do sistema — cadastro, mapa e comunicação — funciona normalmente.</p>
       </div>
     </div>
   );
@@ -77,31 +76,31 @@ export default function MapaEleitoral({ onVoltar }) {
     const maxZona = zonasList[0]?.votos || 1;
 
     return (
-      <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px' }}>
-        <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={() => setMunicipioSel(null)} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px' }}>
+        <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => setMunicipioSel(null)} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
             Municipios
           </button>
-          <span style={{ color: '#64748b' }}>/</span>
-          <span style={{ color: '#f1f5f9', fontWeight: 700 }}>📍 {municipioSel} — AP</span>
-          <span style={{ color: '#64748b', marginLeft: 'auto' }}>{m.zonas} zonas &nbsp; {m.votos.toLocaleString('pt-BR')} votos</span>
+          <span style={{ color: 'var(--text-muted)' }}>/</span>
+          <span style={{ color: 'var(--text)', fontWeight: 700 }}>📍 {municipioSel} — AP</span>
+          <span style={{ color: 'var(--text-muted)', marginLeft: 'auto' }}>{m.zonas} zonas &nbsp; {m.votos.toLocaleString('pt-BR')} votos</span>
         </div>
 
         <div style={{ padding: '24px 32px' }}>
           {/* Perfil Socioeconomico */}
           <div style={{ ...card, marginBottom: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <h3 style={{ color: '#1e293b', fontWeight: 700, fontSize: 16, margin: 0 }}>Perfil Socioeconomico</h3>
+              <h3 style={{ color: 'var(--text)', fontWeight: 700, fontSize: 16, margin: 0 }}>Perfil Socioeconomico</h3>
               <span style={{ background: '#eff6ff', color: '#3b82f6', borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>Dados TSE 2022</span>
             </div>
-            <p style={{ color: '#475569', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
               {PERFIL_MUNICIPIO[municipioSel] || `${municipioSel} e um municipio do estado do Amapa. Os dados eleitorais de 2022 mostram ${m.votos} votos para ${paulinho?.nome} em ${m.zonas} zona(s) eleitoral(is).`}
             </p>
           </div>
 
           {/* Zonas */}
           <div style={{ ...card }}>
-            <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>ZONAS ELEITORAIS — {zonasList.length} zona(s)</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 16px' }}>ZONAS ELEITORAIS — {zonasList.length} zona(s)</p>
             {zonasList.map(z => (
               <div key={z.zona} style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
@@ -109,11 +108,11 @@ export default function MapaEleitoral({ onVoltar }) {
                     <span style={{ background: '#2563eb', color: '#fff', borderRadius: 6, padding: '2px 10px', fontWeight: 700, fontSize: 13 }}>
                       Zona {z.zona}
                     </span>
-                    <span style={{ color: '#64748b', fontSize: 12 }}>{z.secoes} secoes</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{z.secoes} secoes</span>
                   </div>
-                  <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15 }}>{z.votos.toLocaleString('pt-BR')} vts</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15 }}>{z.votos.toLocaleString('pt-BR')} vts</span>
                 </div>
-                <div style={{ background: '#e2e8f0', borderRadius: 99, height: 6 }}>
+                <div style={{ background: 'var(--border)', borderRadius: 99, height: 6 }}>
                   <div style={{ height: '100%', width: `${(z.votos / maxZona) * 100}%`, background: '#2563eb', borderRadius: 99 }} />
                 </div>
               </div>
@@ -125,12 +124,12 @@ export default function MapaEleitoral({ onVoltar }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f172a', padding: '0 0 40px' }}>
-      <div style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 40px' }}>
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--surface)', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>Voltar</button>
         <div>
-          <h1 style={{ color: '#f1f5f9', fontSize: 22, fontWeight: 800, margin: 0 }}>Mapa Eleitoral</h1>
-          <p style={{ color: '#64748b', fontSize: 13, margin: '2px 0 0' }}>Visao micro do territorio — municipios, zonas, secoes e perfil socioeconomico</p>
+          <h1 style={{ color: 'var(--text)', fontSize: 22, fontWeight: 800, margin: 0 }}>Mapa Eleitoral</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Visao micro do territorio — municipios, zonas, secoes e perfil socioeconomico</p>
         </div>
       </div>
 
@@ -143,10 +142,10 @@ export default function MapaEleitoral({ onVoltar }) {
             { label: 'ZONAS', val: [...new Set(dadosMunicipios.flatMap(m => m.nZonas))].length, cor: '#8b5cf6' },
             { label: 'MAIOR VOTACAO', val: dadosMunicipios[0]?.municipio.charAt(0) + dadosMunicipios[0]?.municipio.slice(1).toLowerCase(), sub: `${dadosMunicipios[0]?.votos.toLocaleString('pt-BR')} votos`, cor: '#f59e0b', grande: true },
           ].map((c, i) => (
-            <div key={i} style={{ background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' }}>
-              <p style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
-              <p style={{ color: c.grande ? '#1e293b' : c.cor, fontSize: c.grande ? 20 : 28, fontWeight: 900, margin: '0 0 2px' }}>{c.val}</p>
-              {c.sub && <p style={{ color: '#64748b', fontSize: 12, margin: 0 }}>{c.sub}</p>}
+            <div key={i} style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 8px' }}>{c.label}</p>
+              <p style={{ color: c.grande ? 'var(--text)' : c.cor, fontSize: c.grande ? 20 : 28, fontWeight: 900, margin: '0 0 2px' }}>{c.val}</p>
+              {c.sub && <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>{c.sub}</p>}
             </div>
           ))}
         </div>
@@ -154,12 +153,12 @@ export default function MapaEleitoral({ onVoltar }) {
         {/* Filtro */}
         <div style={{ ...card, marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ color: '#94a3b8', fontSize: 13, fontWeight: 600 }}>{dadosMunicipios.length} MUNICIPIOS</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600 }}>{dadosMunicipios.length} MUNICIPIOS</span>
             <input value={busca} onChange={e => setBusca(e.target.value)} placeholder="Filtrar..."
-              style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, width: 200, outline: 'none' }} />
+              style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, width: 200, outline: 'none', background: 'var(--surface)', color: 'var(--text)' }} />
           </div>
           <select value={ordenacao} onChange={e => setOrdenacao(e.target.value)}
-            style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, background: '#fff' }}>
+            style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, background: 'var(--surface)', color: 'var(--text)' }}>
             <option value="votos">Maior votacao</option>
             <option value="nome">Nome A-Z</option>
           </select>
@@ -175,19 +174,19 @@ export default function MapaEleitoral({ onVoltar }) {
                 onMouseOver={e => e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,99,235,0.15)'}
                 onMouseOut={e => e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.07)'}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                  <span style={{ color: '#94a3b8', fontWeight: 700, fontSize: 14, width: 24 }}>{i + 1}</span>
-                  <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15, flex: 1 }}>
+                  <span style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: 14, width: 24 }}>{i + 1}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, flex: 1 }}>
                     {m.municipio.charAt(0) + m.municipio.slice(1).toLowerCase()}
-                    <span style={{ color: '#94a3b8', fontSize: 12, marginLeft: 8 }}>AP</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 8 }}>AP</span>
                     {m.zonas > 1
                       ? <span style={{ background: '#dbeafe', color: '#1d4ed8', borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, marginLeft: 8 }}>{m.zonas} zonas</span>
-                      : <span style={{ background: '#f1f5f9', color: '#64748b', borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, marginLeft: 8 }}>Z{m.nZonas[0]}</span>
+                      : <span style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, marginLeft: 8 }}>Z{m.nZonas[0]}</span>
                     }
                   </span>
-                  <span style={{ color: '#1e293b', fontWeight: 700, fontSize: 15 }}>{m.votos.toLocaleString('pt-BR')} vts</span>
-                  <span style={{ color: '#94a3b8', fontSize: 16 }}>›</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15 }}>{m.votos.toLocaleString('pt-BR')} vts</span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: 16 }}>›</span>
                 </div>
-                <div style={{ background: '#e2e8f0', borderRadius: 99, height: 5, marginLeft: 36 }}>
+                <div style={{ background: 'var(--border)', borderRadius: 99, height: 5, marginLeft: 36 }}>
                   <div style={{ height: '100%', width: `${perc}%`, background: '#2563eb', borderRadius: 99, transition: 'width 0.5s' }} />
                 </div>
               </div>

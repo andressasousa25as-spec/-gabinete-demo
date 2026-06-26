@@ -38,7 +38,7 @@ export function FiltroStatusVoto({ value, onChange, eleitores = [] }) {
         const ativo = (o.v === '__todos' && !value) || o.v === value;
         return (
           <button key={o.v} onClick={() => onChange(o.v === '__todos' ? '' : o.v)}
-            style={{ background: ativo ? o.bg : '#0a0f1c', color: ativo ? o.fg : '#94a3b8', border: `1px solid ${ativo ? o.bg : '#1f2937'}`, borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ background: ativo ? o.bg : 'var(--bg)', color: ativo ? o.fg : 'var(--text-muted)', border: `1px solid ${ativo ? o.bg : 'var(--border)'}`, borderRadius: 999, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
             {o.emoji} {o.label} ({o.n})
           </button>
         );
