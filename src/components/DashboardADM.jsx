@@ -474,28 +474,42 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
         </button>
       </div>
 
-      {/* Botões */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        {[
-          { label: "+ Apoiador", onClick: () => setShowEleitor(true) },
-          { label: "+ Liderança", onClick: () => setShowLider(true) },
-          { label: "+ Reunião", onClick: () => setShowReuniao(true) },
-          { label: "Mapa", onClick: () => setAba("mapa") },
-          { label: "Anotações", onClick: () => setAba("anotacoes") },
-          { label: "Mídias", onClick: () => setAba("midias") },
-          { label: "Analytics", onClick: () => setAba("analytics") },
-          { label: "📊 Relatórios", onClick: () => setAba("relatorios") },
-        ].map((b, i) => (
-          <button key={i} onClick={b.onClick} style={{
-            background: "var(--surface)", border: "1px solid var(--border)",
-            borderRadius: 8, color: "var(--text)", padding: "10px 18px",
-            cursor: "pointer", fontWeight: 600, fontSize: 13, whiteSpace: "nowrap"
-          }}
-          onMouseOver={e => e.currentTarget.style.background = "var(--surface-2)"}
-          onMouseOut={e => e.currentTarget.style.background = "var(--surface)"}
-          >{b.label}</button>
-        ))}
-      </div>
+      {/* Menu agrupado por categoria */}
+      {[
+        { titulo: "Cadastro & base", cor: "#22c55e", itens: [
+          { lb: "➕ Apoiador", on: () => setShowEleitor(true) },
+          { lb: "➕ Liderança", on: () => setShowLider(true) },
+          { lb: "➕ Reunião", on: () => setShowReuniao(true) },
+        ] },
+        { titulo: "Comunicação", cor: "#3b82f6", itens: [
+          { lb: "📷 Mídias", on: () => setAba("midias") },
+          { lb: "📊 Analytics", on: () => setAba("analytics") },
+        ] },
+        { titulo: "Mapa & território", cor: "#14b8a6", itens: [
+          { lb: "🗺️ Mapa", on: () => setAba("mapa") },
+        ] },
+        { titulo: "Relatórios & gestão", cor: "#94a3b8", itens: [
+          { lb: "📝 Anotações", on: () => setAba("anotacoes") },
+          { lb: "🖨️ Relatórios", on: () => setAba("relatorios") },
+        ] },
+      ].map((g, gi) => (
+        <div key={gi} style={{ marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: g.cor }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "var(--text-muted)" }}>{g.titulo}</span>
+            <span style={{ flex: 1, height: 1, background: "var(--surface)" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
+            {g.itens.map((it, ii) => (
+              <button key={ii} onClick={it.on} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--text)", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
+                onMouseOver={e => e.currentTarget.style.background = "var(--surface-2)"}
+                onMouseOut={e => e.currentTarget.style.background = "var(--surface)"}>
+                <span style={{ color: g.cor, fontSize: 14 }}>●</span>{it.lb}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
 
       {/* Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
