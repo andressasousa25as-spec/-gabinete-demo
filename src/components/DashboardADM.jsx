@@ -64,6 +64,51 @@ const estiloBotao = (cor) => ({
 
 const LIDERANCA_ID = '9abe9897-068f-4dab-90eb-94d5ceb0a575';
 
+function RelatorioImpressao({ titulo, dados, colunas, onFechar }) {
+  const ref = useRef();
+  const imprimir = () => {
+    const conteudo = ref.current.innerHTML;
+    const janela = window.open('', '_blank');
+    janela.document.write(`<html><head><title>${titulo}</title><style>
+      body{font-family:Arial,sans-serif;padding:20px;color:#111}
+      h1{color:#1e40af;border-bottom:2px solid #1e40af;padding-bottom:8px}
+      table{width:100%;border-collapse:collapse;margin-top:16px}
+      th{background:#1e40af;color:white;padding:10px 12px;text-align:left;font-size:13px}
+      td{padding:9px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+      tr:nth-child(even){background:#f9fafb}
+      .footer{margin-top:30px;font-size:12px;color:#9ca3af;text-align:center}
+      .conf{margin-top:16px;padding:10px 14px;border:1px solid #fca5a5;background:#fef2f2;color:#991b1b;border-radius:8px;font-size:12px;line-height:1.5}
+      @media print{button{display:none}}
+    </style></head><body>${conteudo}</body></html>`);
+    janela.document.close();
+    janela.focus();
+    setTimeout(() => { janela.print(); janela.close(); }, 500);
+  };
+  return (
+    <div style={estiloModal} onClick={e => e.target === e.currentTarget && onFechar()}>
+      <div style={{ ...estiloCard, maxWidth: '900px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ color: '#1e40af', margin: 0 }}>🖨️ {titulo}</h2>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={imprimir} style={{ background: '#1e40af', color: 'white', border: 'none', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>🖨️ Imprimir / PDF</button>
+            <button onClick={onFechar} style={{ background: '#64748b', color: 'white', border: 'none', borderRadius: '8px', padding: '10px 20px', cursor: 'pointer', fontWeight: 'bold' }}>Fechar</button>
+          </div>
+        </div>
+        <div ref={ref}>
+          <h1>{titulo}</h1>
+          <p>Gabinete Digital | {new Date().toLocaleString('pt-BR')}</p>
+          <p><strong>Total:</strong> {dados.length}</p>
+          <table>
+            <thead><tr>{colunas.map(c => <th key={c.key}>{c.label}</th>)}</tr></thead>
+            <tbody>{dados.map((item, i) => <tr key={i}>{colunas.map(c => <td key={c.key}>{item[c.key] || '—'}</td>)}</tr>)}</tbody>
+          </table>
+          <div className="conf">🔒 <strong>DOCUMENTO INTERNO E CONFIDENCIAL — LGPD.</strong> Contém dados pessoais de apoiadores (Lei nº 13.709/2018). Uso restrito à equipe autorizada do gabinete, exclusivamente para a finalidade consentida. <strong>Proibido compartilhar, encaminhar (inclusive por WhatsApp), publicar ou repassar a terceiros.</strong></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DashboardADM({ adm, perfil, onLogout }) {
   if (!adm) return <div style={{ minHeight: "100vh", background: "#0a0f1c", display: "flex", alignItems: "center", justifyContent: "center" }}><p style={{ color: "#fff" }}>Carregando...</p></div>;
   const [eleitores, setEleitores] = useState([]);
@@ -74,6 +119,8 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   const [aba, setAba] = useState('inicio');
   const [busca, setBusca] = useState('');
   const [filtroStatus, setFiltroStatus] = useState('');
+  const [relatorio, setRelatorio] = useState(null);
+  const [relLider, setRelLider] = useState('');
   const [showEleitor, setShowEleitor] = useState(false);
   const [eleitorEditando, setEleitorEditando] = useState(null);
   const [liderEditando, setLiderEditando] = useState(null);
@@ -351,6 +398,55 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
   if (aba === 'midias') return <GestaoMidias onVoltar={() => setAba('inicio')} />;
   if (aba === 'analytics') return <AnalyticsMidias onVoltar={() => setAba('inicio')} />;
 
+  const lideById = Object.fromEntries(liderancas.map(l => [l.id, l.nome]));
+  const abrirRelatorio = (tipo) => {
+    const eleitoresRel = relLider ? eleitores.filter(e => e.lideranca_id === relLider) : eleitores;
+    const sufLider = relLider ? ' — ' + (lideById[relLider] || 'Liderança') : '';
+    const configs = {
+      eleitores: {
+        titulo: 'Relatório de Apoiadores' + sufLider,
+        dados: eleitoresRel.map(e => ({ nome: e.nome, telefone: e.telefone || '—', bairro: e.bairro || '—', zona: e.zona_eleitoral ? 'Zona ' + e.zona_eleitoral : '—', secao: e.secao_eleitoral || '—', local: localDeVotacao(e.zona_eleitoral, e.secao_eleitoral) || '—', municipio: e.municipio || '—', lideranca: lideById[e.lideranca_id] || '—' })),
+        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'zona', label: 'Zona' }, { key: 'secao', label: 'Seção' }, { key: 'local', label: 'Local de votação' }, { key: 'municipio', label: 'Município' }, { key: 'lideranca', label: 'Liderança' }]
+      },
+      liderancas: {
+        titulo: 'Relatório de Lideranças',
+        dados: liderancas.map(l => ({ nome: l.nome, telefone: l.telefone || '—', bairro: l.bairro || '—', demanda: l.demanda || '—' })),
+        colunas: [{ key: 'nome', label: 'Nome' }, { key: 'telefone', label: 'Telefone' }, { key: 'bairro', label: 'Bairro' }, { key: 'demanda', label: 'Demanda' }]
+      },
+      reunioes: {
+        titulo: 'Relatório de Reuniões',
+        dados: reunioes.map(r => ({ titulo: r.titulo, data: r.data ? new Date(r.data).toLocaleString('pt-BR') : '—', local: r.local || '—', endereco: r.endereco || '—' })),
+        colunas: [{ key: 'titulo', label: 'Título' }, { key: 'data', label: 'Data/Hora' }, { key: 'local', label: 'Local' }, { key: 'endereco', label: 'Endereço' }]
+      }
+    };
+    setRelatorio(configs[tipo]);
+    registrarLog('Gerou relatório', tipo + sufLider);
+  };
+
+  if (aba === 'relatorios') {
+    const eleitoresRel = relLider ? eleitores.filter(e => e.lideranca_id === relLider) : eleitores;
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', padding: 24 }}>
+        <button onClick={() => setAba('inicio')} style={{ marginBottom: 20, padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>← Voltar</button>
+        <h2 style={{ color: 'var(--text)', marginBottom: 20 }}>🖨️ Relatórios</h2>
+        <div style={{ marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
+          <label style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, fontWeight: 600 }}>👥 Filtrar Apoiadores por liderança</label>
+          <select value={relLider} onChange={e => setRelLider(e.target.value)} style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 14, minWidth: 260 }}>
+            <option value="">Geral (todos os apoiadores)</option>
+            {liderancas.map(l => <option key={l.id} value={l.id}>{l.nome}</option>)}
+          </select>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>{eleitoresRel.length} apoiador(es) no filtro atual.</p>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button onClick={() => abrirRelatorio('eleitores')} style={{ padding: '12px 20px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>👥 Apoiadores{relLider ? ' (filtrado)' : ''}</button>
+          <button onClick={() => abrirRelatorio('liderancas')} style={{ padding: '12px 20px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>🤝 Lideranças</button>
+          <button onClick={() => abrirRelatorio('reunioes')} style={{ padding: '12px 20px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>📅 Reuniões</button>
+        </div>
+        {relatorio && <RelatorioImpressao {...relatorio} onFechar={() => setRelatorio(null)} />}
+      </div>
+    );
+  }
+
   const eleitorFiltrados = eleitores.filter(e =>
     (e.nome?.toLowerCase().includes(busca.toLowerCase()) ||
     e.bairro?.toLowerCase().includes(busca.toLowerCase()) ||
@@ -388,6 +484,7 @@ export default function DashboardADM({ adm, perfil, onLogout }) {
           { label: "Anotações", onClick: () => setAba("anotacoes") },
           { label: "Mídias", onClick: () => setAba("midias") },
           { label: "Analytics", onClick: () => setAba("analytics") },
+          { label: "📊 Relatórios", onClick: () => setAba("relatorios") },
         ].map((b, i) => (
           <button key={i} onClick={b.onClick} style={{
             background: "var(--surface)", border: "1px solid var(--border)",
