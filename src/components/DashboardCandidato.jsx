@@ -79,7 +79,7 @@ const estiloCard = {
 const estiloInput = {
   width: '100%', padding: '12px 14px', borderRadius: '10px',
   border: '1px solid var(--border)', fontSize: '15px', marginBottom: '12px',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box', background: 'var(--surface)', color: 'var(--text)'
 };
 
 const estiloBotao = (cor) => ({
