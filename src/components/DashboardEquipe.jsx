@@ -290,16 +290,41 @@ export default function DashboardEquipe({ perfil }) {
         <p style={{ color: "#64748b", marginTop: 8 }}>Apoiadores: {eleitores.length} | Lideranças: {liderancas.length} | Reuniões: {reunioes.length}</p>
       </div>
 
-      {/* Botões */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <button onClick={() => setShowEleitor(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Apoiador</button>
-        <button onClick={() => setShowLider(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Liderança</button>
-        <button onClick={() => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro'); registrarLog('Copiou link de cadastro', 'Link público genérico (apoiador/liderança)'); alert('🔗 Link de cadastro copiado!\n\nCole no WhatsApp ou redes — a pessoa escolhe se cadastrar como Apoiador ou Liderança.'); }} style={{ background: "#1e40af", border: "1px solid #2563eb", borderRadius: 8, color: "#fff", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🔗 Link de cadastro</button>
-        <button onClick={() => setShowReuniao(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>+ Reunião</button>
-        <button onClick={() => setAba('mapa')} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>🗺️ Mapa</button>
-        <button onClick={() => setAba('anotacoes')} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📝 Anotações</button>
-        <button onClick={() => setShowMidias(true)} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text)", padding: "12px 20px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>📤 Mídias</button>
-      </div>
+      {/* Menu agrupado por categoria */}
+      {[
+        { titulo: "Cadastro & base", cor: "#22c55e", itens: [
+          { lb: "➕ Apoiador", on: () => setShowEleitor(true) },
+          { lb: "➕ Liderança", on: () => setShowLider(true) },
+          { lb: "🔗 Link de cadastro", on: () => { navigator.clipboard.writeText('https://gabinete-demo.vercel.app/#/cadastro'); registrarLog('Copiou link de cadastro', 'Link público genérico (apoiador/liderança)'); alert('🔗 Link de cadastro copiado!\n\nCole no WhatsApp ou redes — a pessoa escolhe se cadastrar como Apoiador ou Liderança.'); } },
+          { lb: "➕ Reunião", on: () => setShowReuniao(true) },
+        ] },
+        { titulo: "Comunicação", cor: "#3b82f6", itens: [
+          { lb: "📤 Mídias", on: () => setShowMidias(true) },
+        ] },
+        { titulo: "Mapa & território", cor: "#14b8a6", itens: [
+          { lb: "🗺️ Mapa", on: () => setAba('mapa') },
+        ] },
+        { titulo: "Relatórios & gestão", cor: "#94a3b8", itens: [
+          { lb: "📝 Anotações", on: () => setAba('anotacoes') },
+        ] },
+      ].map((g, gi) => (
+        <div key={gi} style={{ marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "4px 0 8px" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: g.cor }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: "var(--text-muted)" }}>{g.titulo}</span>
+            <span style={{ flex: 1, height: 1, background: "var(--surface)" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
+            {g.itens.map((it, ii) => (
+              <button key={ii} onClick={it.on} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--text)", padding: "11px 14px", cursor: "pointer", fontWeight: 600, fontSize: 13, textAlign: "left", display: "flex", alignItems: "center", gap: 8, transition: "background 0.15s" }}
+                onMouseOver={e => e.currentTarget.style.background = "var(--surface-2)"}
+                onMouseOut={e => e.currentTarget.style.background = "var(--surface)"}>
+                <span style={{ color: g.cor, fontSize: 14 }}>●</span>{it.lb}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
 
       {/* Central de Comunicação */}
       <div style={{ background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)' }}>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CANDIDATOS_TSE } from '../candidatosTSE';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 
 const MUNICIPIOS_META = {
   'MACAPÁ':      { meta2026: 4200, prioridade: 1, classificacao: 'Forte' },
@@ -32,17 +32,15 @@ export default function ProjecaoEstrategica({ onVoltar }) {
   });
   const [modoCustom, setModoCustom] = useState(false);
 
-  const paulinho = useMemo(() => CANDIDATOS_TSE.find(c => c.nome && c.nome.includes('PAULO ALCEU')), []);
+  // Candidato configurado por cliente (tabela analise_candidato) — genérico, sem o bundle TSE.
+  const { candidato: cand, loading, semDados } = useCandidatoAnalise();
 
   const dadosMunicipios = useMemo(() => {
-    if (!paulinho) return [];
-    const mapa = {};
-    for (const s of paulinho.secoes || []) {
-      if (!mapa[s.municipio]) mapa[s.municipio] = { municipio: s.municipio, votos2022: 0 };
-      mapa[s.municipio].votos2022 += s.votos;
-    }
-    return Object.values(mapa).sort((a, b) => b.votos2022 - a.votos2022);
-  }, [paulinho]);
+    const mun = cand?.municipios || {};
+    return Object.entries(mun)
+      .map(([municipio, votos]) => ({ municipio, votos2022: Number(votos) || 0 }))
+      .sort((a, b) => b.votos2022 - a.votos2022);
+  }, [cand]);
 
   const total2022 = dadosMunicipios.reduce((s, m) => s + m.votos2022, 0);
   const crescimento = meta - total2022;
@@ -70,6 +68,15 @@ export default function ProjecaoEstrategica({ onVoltar }) {
                   { label: 'DESAFIADOR', cor: '#ef4444' };
 
   const card = (bg, border) => ({ background: bg || 'var(--surface)', borderRadius: 12, padding: 20, border: `1px solid ${border || 'var(--border)'}`, boxShadow: '0 1px 6px rgba(0,0,0,0.07)' });
+
+  if (!modoCustom && loading) return <div style={{ padding: 40, color: 'var(--text-muted)' }}>Carregando candidato…</div>;
+  if (!modoCustom && semDados) return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: 40 }}>
+      <button onClick={onVoltar} style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-muted)', padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 13, marginBottom: 20 }}>Voltar</button>
+      <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 16 }}>Nenhum candidato de análise configurado.</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Importe o candidato (tabela <code>analise_candidato</code>) ou use “+ Outro Candidato” para análise manual.</p>
+    </div>
+  );
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 60px' }}>
@@ -113,21 +120,21 @@ export default function ProjecaoEstrategica({ onVoltar }) {
               style={{ background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>
               Gerar Projecao
             </button>
-            {modoCustom && <button onClick={() => setModoCustom(false)} style={{ marginLeft: 10, background: 'var(--text-muted)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>Voltar ao Paulinho</button>}
+            {modoCustom && <button onClick={() => setModoCustom(false)} style={{ marginLeft: 10, background: 'var(--text-muted)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>Voltar ao candidato</button>}
           </div>
         )}
 
         {/* Candidato */}
         <div style={{ ...card('var(--surface)', 'var(--border)'), marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900, fontSize: 20 }}>
-            {modoCustom && candidatoCustom.nome ? candidatoCustom.nome[0].toUpperCase() : 'P'}
+            {modoCustom && candidatoCustom.nome ? candidatoCustom.nome[0].toUpperCase() : (cand?.nome?.[0]?.toUpperCase() || '?')}
           </div>
           <div>
             <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 16, margin: 0 }}>
-              {modoCustom && candidatoCustom.nome ? candidatoCustom.nome.toUpperCase() : 'PAULO ALCEU AVILA RAMOS'}
+              {modoCustom && candidatoCustom.nome ? candidatoCustom.nome.toUpperCase() : (cand?.nome || '—')}
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
-              {modoCustom ? `${candidatoCustom.cargo} · ${candidatoCustom.partido} · ${candidatoCustom.municipio}/AP` : 'DEPUTADO ESTADUAL · MDB · MACAPA/AP · 2022'}
+              {modoCustom ? `${candidatoCustom.cargo} · ${candidatoCustom.partido} · ${candidatoCustom.municipio}/AP` : `${cand?.cargo || ''} · ${cand?.partido || ''} · MACAPA/AP · ${cand?.ano || ''}`}
             </p>
           </div>
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
