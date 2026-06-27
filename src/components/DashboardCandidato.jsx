@@ -494,7 +494,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'radar') return <RadarOportunidade onVoltar={() => setAba('inicio')} />;
   if (aba === 'caminho') return <CaminhoVitoria onVoltar={() => setAba('inicio')} />;
   if (aba === 'projecao') return <ProjecaoEstrategica onVoltar={() => setAba('inicio')} />;
-  if (aba === 'cenario-municipal') return <CenarioMunicipal onVoltar={() => setAba('inicio')} />;
+  if (aba === 'cenario-municipal') return <CenarioMunicipal config={config} onVoltar={() => setAba('inicio')} />;
   if (aba === 'mapa') return (
     <div>
       <button onClick={() => setAba('inicio')} style={{ margin: '20px', padding: '10px 20px', background: '#1e40af', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>← Voltar</button>
@@ -563,6 +563,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             {[
               { label: 'Nome', key: 'nome' },
               { label: 'Cargo', key: 'cargo' },
+              { label: 'Partido (sigla, ex.: UNIÃO)', key: 'partido' },
               { label: 'Estado', key: 'estado' },
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
