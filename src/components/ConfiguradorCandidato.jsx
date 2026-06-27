@@ -93,7 +93,7 @@ export default function ConfiguradorCandidato({ atual }) {
           <label style={{ color: 'var(--text-muted)', fontSize: 12, display: 'block', marginBottom: 4 }}>Nome de exibição</label>
           <input style={{ ...inp, marginBottom: 8 }} value={nomeExib} onChange={e => setNomeExib(e.target.value)} />
           <label style={{ color: 'var(--text-muted)', fontSize: 12, display: 'block', marginBottom: 4 }}>Partido (sigla)</label>
-          <input style={{ ...inp, marginBottom: 10 }} value={partido} onChange={e => setPartido(e.target.value)} placeholder="Ex: UNIÃO" />
+          <input style={{ ...inp, marginBottom: 10 }} value={partido} onChange={e => setPartido(e.target.value)} placeholder="Sigla do partido" />
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={aplicar} disabled={salvando} style={{ flex: 1, padding: 10, background: '#16a34a', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>{salvando ? 'Salvando…' : '✅ Aplicar análise'}</button>
             <button onClick={() => setSel(null)} disabled={salvando} style={{ padding: 10, background: 'var(--surface-2)', color: 'var(--text)', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>Cancelar</button>

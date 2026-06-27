@@ -564,7 +564,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             {[
               { label: 'Nome', key: 'nome' },
               { label: 'Cargo', key: 'cargo' },
-              { label: 'Partido (sigla, ex.: UNIÃO)', key: 'partido' },
+              { label: 'Partido (sigla)', key: 'partido' },
               { label: 'Estado', key: 'estado' },
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
