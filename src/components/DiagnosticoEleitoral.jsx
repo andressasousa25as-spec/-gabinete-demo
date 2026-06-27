@@ -6,23 +6,6 @@ import { CANDIDATOS_TSE } from '../candidatosTSE';
 // Votos válidos de Deputado Estadual no AP em 2022 (eleição inteira, não por candidato)
 const VALIDOS_DEP_2022 = 414123;
 
-// Dados fixos do Paulinho
-const PAULINHO_2018 = {
-  votos: 3783, ranking: 32, totalCandidatos: 455, partido: 'PR',
-  municipios: 16, zonas: 17
-};
-const PAULINHO_2022 = {
-  nome: 'PAULO ALCEU AVILA RAMOS', partido: 'MDB',
-  votos: 4880, ranking: 26, totalCandidatos: 343,
-  municipios: 16, zonas: 10,
-  totalEleitoresAptos: 550687, totalVotosValidos: 414123,
-  abstencao: 107234, abstencaoPerc: 18.55,
-  penetracao: 0.9,
-  // MDB 2022 dados
-  mdbCandidatos: 17, mdbEleitos: 2, mdbVotos: 28900, mdbPerc: 7.0,
-  quociente: 17230
-};
-
 const REGIOES = {
   'Sul do Amapa': ['MACAPÁ','SANTANA','MAZAGÃO','PORTO GRANDE','ITAUBAL','CUTIAS','PEDRA BRANCA DO AMAPARI','FERREIRA GOMES','SERRA DO NAVIO'],
   'Norte do Amapa': ['AMAPÁ','CALÇOENE','OIAPOQUE','LARANJAL DO JARI','VITÓRIA DO JARI','PRACUÚBA','TARTARUGALZINHO']
@@ -89,7 +72,6 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
     return top;
   }, [rank2022, paulinho2022]);
 
-  const ano = PAULINHO_2022;
   const crescimento = { val: '—', perc: 'sem base anterior' };
 
   // Cores estilo EleitorAI
@@ -130,7 +112,7 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
           <div style={{ flex: 1 }}>
             <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16, margin: 0 }}>{paulinho2022?.nome}</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
-              {paulinho2022?.cargo} · {paulinho2022?.partido || (anoSelecionado === '2022' ? 'MDB' : 'PR')} · MACAPA/AP
+              {paulinho2022?.cargo} · {paulinho2022?.partido || '—'} · MACAPA/AP
             </p>
           </div>
           <span style={{ ...badge('#7c3aed'), fontSize: 13 }}>{anoSelecionado} · 1° turno</span>
@@ -164,66 +146,44 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
           <div>
             <p style={{ color: '#92400e', fontWeight: 700, fontSize: 14, margin: 0 }}>Quociente Eleitoral — como se elege de fato</p>
             <p style={{ color: '#78350f', fontSize: 13, margin: '2px 0 0', lineHeight: 1.6 }}>
-              {anoSelecionado === '2022'
-                ? 'O quociente (~17.230 votos) define quantas cadeiras o PARTIDO/federação ganha — não é a meta de um candidato sozinho. Piso individual: ~1.723 votos (10% do QE), que você já superou. Meta de eleição: a votação do último eleito do seu partido (no MDB, os eleitos tiveram ~8,4 mil em média). A alavanca real é somar votos ao partido/federação.'
-                : 'O quociente (~16.325 votos) define as cadeiras do PARTIDO, não de um candidato. Piso individual: ~1.633 votos (10% do QE). Meta de eleição: a votação do último eleito do seu partido. A alavanca é somar votos à legenda.'}
+              O quociente eleitoral (~17.230 votos em 2022) define quantas cadeiras o PARTIDO/federação ganha — não é a meta de um candidato sozinho. Piso individual: ~1.723 votos (10% do QE). A alavanca real é somar votos ao partido/federação.
             </p>
           </div>
         </div>
 
-        {/* Meta + Forca do Partido */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 24 }}>
-          {/* Meta Eleitoral */}
-          <div style={{ ...card }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
-            <div style={{ position: 'relative', height: 10, background: 'var(--border)', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: '28%', background: '#2563eb', borderRadius: 99 }} />
-              <div style={{ position: 'absolute', left: '10%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
-              <div style={{ position: 'absolute', left: '49%', top: 0, height: '100%', width: '2px', background: '#10b981' }} />
-              <div style={{ position: 'absolute', left: '98%', top: 0, height: '100%', width: '2px', background: 'var(--text-muted)' }} />
+        {/* Meta Eleitoral — calculada a partir dos votos do candidato configurado */}
+        {(() => {
+          const QE_2022 = 17230;
+          const meuTotal = paulinho2022?.total || 0;
+          const pisoQE = Math.round(QE_2022 * 0.1);
+          const pctAtual = Math.min(100, Math.round((meuTotal / QE_2022) * 100));
+          const fmtK = n => n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
+          return (
+            <div style={{ ...card, marginBottom: 24 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 12px' }}>META ELEITORAL</p>
+              <div style={{ position: 'relative', height: 10, background: 'var(--border)', borderRadius: 99, marginBottom: 16, overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: pctAtual + '%', background: '#2563eb', borderRadius: 99 }} />
+                <div style={{ position: 'absolute', left: '10%', top: 0, height: '100%', width: '2px', background: '#f59e0b' }} />
+                <div style={{ position: 'absolute', left: '100%', top: 0, height: '100%', width: '2px', background: 'var(--text-muted)' }} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                {[
+                  { label: 'Atual', val: fmtK(meuTotal), cor: '#2563eb' },
+                  { label: 'Piso (10% QE)', val: fmtK(pisoQE), cor: '#f59e0b' },
+                  { label: 'Quociente', val: fmtK(QE_2022), cor: 'var(--text-muted)' },
+                ].map((m, i) => (
+                  <div key={i} style={{ textAlign: 'center' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
+                    <p style={{ color: m.cor, fontWeight: 800, fontSize: 16, margin: 0 }}>{m.val}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', marginTop: 12 }}>
+                <p style={{ color: '#166534', fontSize: 12, margin: 0 }}>{meuTotal >= pisoQE ? 'Acima' : 'Abaixo'} do piso individual (10% do QE, ~{fmtK(pisoQE)} votos). A meta de eleição depende da votação do partido/federação.</p>
+              </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8 }}>
-              {[
-                { label: 'Atual', val: anoSelecionado === '2022' ? '4.9k' : '3.8k', cor: '#2563eb' },
-                { label: 'Piso (10% QE)', val: anoSelecionado === '2022' ? '1.7k' : '1.6k', cor: '#f59e0b' },
-                { label: 'Meta eleição*', val: anoSelecionado === '2022' ? '8.4k' : '4.9k', cor: '#10b981' },
-                { label: 'Quociente', val: anoSelecionado === '2022' ? '17.2k' : '16.3k', cor: 'var(--text-muted)' },
-              ].map((m, i) => (
-                <div key={i} style={{ textAlign: 'center' }}>
-                  <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 4px' }}>{m.label}</p>
-                  <p style={{ color: m.cor, fontWeight: 800, fontSize: 16, margin: 0 }}>{m.val}</p>
-                </div>
-              ))}
-            </div>
-            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, padding: '8px 12px', marginTop: 12 }}>
-              <p style={{ color: '#166534', fontSize: 12, margin: 0 }}>Acima do piso individual (10% do QE); abaixo da meta de eleição. *Meta = votação do último eleito do partido/federação.</p>
-            </div>
-          </div>
-
-          {/* Forca do Partido */}
-          <div style={{ ...card }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: 0 }}>FORCA DO PARTIDO</p>
-              <span style={{ ...badge('#2563eb') }}>{anoSelecionado === '2022' ? 'MDB' : 'PR'}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12 }}>
-              {[
-                { label: 'Candidatos', val: anoSelecionado === '2022' ? '17' : '36' },
-                { label: 'Eleitos', val: anoSelecionado === '2022' ? '2' : '4' },
-                { label: 'Votos do partido', val: anoSelecionado === '2022' ? '28.9k' : '44.6k' },
-                { label: '% do total', val: anoSelecionado === '2022' ? '7.0%' : '11.4%' },
-              ].map((f, i) => (
-                <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: 12 }}>
-                  <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 4px' }}>{f.label}</p>
-                  <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18, margin: 0 }}>{f.val}</p>
-                </div>
-              ))}
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '12px 0 0' }}>Media dos eleitos do partido
-              <strong style={{ color: 'var(--text)', marginLeft: 8 }}>{anoSelecionado === '2022' ? '8.4k votos' : '4.9k votos'}</strong>
-            </p>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* Regioes + Municipios mais fortes */}
         {anoSelecionado === '2022' && (
