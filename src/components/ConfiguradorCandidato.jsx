@@ -40,7 +40,9 @@ export default function ConfiguradorCandidato({ atual }) {
         total: c.total, municipios: c.municipios, zonas: c.zonas, secoes: c.secoes,
       }]);
       if (ins.error) throw ins.error;
-      alert('✅ Candidato de análise configurado! O app vai recarregar.');
+      // Atualiza também o nome/partido exibido no app inteiro (header, telas).
+      await supabase.from('config_candidato').update({ nome: c.nome, partido: c.partido }).not('id', 'is', null);
+      alert('✅ Candidato configurado! Nome e análise aplicados. O app vai recarregar.');
       window.location.reload();
     } catch (e) {
       alert('Erro ao salvar: ' + (e.message || e));
