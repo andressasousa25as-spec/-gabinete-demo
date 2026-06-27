@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 import { TOTAL_APTOS_2022 } from '../lib/eleitoradoAP';
+import { CANDIDATOS_TSE } from '../candidatosTSE';
+
+// Votos válidos de Deputado Estadual no AP em 2022 (eleição inteira, não por candidato)
+const VALIDOS_DEP_2022 = 414123;
 
 // Dados fixos do Paulinho
 const PAULINHO_2018 = {
@@ -63,10 +67,30 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
       .sort((a, b) => b.votos - a.votos);
   }, [dadosMunicipios, totalVotos2022]);
 
-  const ano = anoSelecionado === '2022' ? PAULINHO_2022 : PAULINHO_2018;
-  const crescimento = anoSelecionado === '2022'
-    ? { val: '+1.097', perc: '+29.0% vs 2018' }
-    : { val: '—', perc: 'Sem eleição anterior' };
+  // Ranking 2022 derivado da lista TSE: posição por nº de votos (genérico p/ qualquer candidato)
+  const rank2022 = useMemo(() => {
+    const lista = CANDIDATOS_TSE.filter(c => c.cargo === 'DEPUTADO ESTADUAL').sort((a, b) => b.total - a.total);
+    const meu = paulinho2022?.total || 0;
+    const pos = lista.filter(c => c.total > meu).length + 1;
+    return { pos, total: lista.length, lista };
+  }, [paulinho2022]);
+
+  // Tabela de concorrentes: top 5 por votos + a linha do candidato configurado
+  const concorrentes = useMemo(() => {
+    const fmtPerc = v => ((v / VALIDOS_DEP_2022) * 100).toFixed(2) + '%';
+    const top = rank2022.lista.slice(0, 5).map((c, i) => ({
+      pos: (i + 1) + '°', nome: c.nome, votos: c.total.toLocaleString('pt-BR'), perc: fmtPerc(c.total),
+      destaque: rank2022.pos === i + 1,
+    }));
+    if (rank2022.pos > 5) {
+      const meu = paulinho2022?.total || 0;
+      top.push({ pos: rank2022.pos + '°', nome: paulinho2022?.nome, votos: meu.toLocaleString('pt-BR'), perc: fmtPerc(meu), destaque: true });
+    }
+    return top;
+  }, [rank2022, paulinho2022]);
+
+  const ano = PAULINHO_2022;
+  const crescimento = { val: '—', perc: 'sem base anterior' };
 
   // Cores estilo EleitorAI
   const card = { background: 'var(--surface)', borderRadius: 12, padding: 20, border: '1px solid var(--border)', boxShadow: '0 1px 6px rgba(0,0,0,0.07)' };
@@ -99,22 +123,10 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
       </div>
 
       <div style={{ padding: '24px 32px' }}>
-        {/* Seletor de ano */}
-        <div style={{ background: 'var(--surface)', borderRadius: 10, padding: '12px 20px', display: 'flex', gap: 8, alignItems: 'center', marginBottom: 24, border: '1px solid var(--border)', maxWidth: 500 }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: 13, marginRight: 8 }}>CANDIDATO</span>
-          {['2022', '2018'].map(a => (
-            <button key={a} onClick={() => setAnoSelecionado(a)}
-              style={{ padding: '6px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
-                background: anoSelecionado === a ? '#2563eb' : 'transparent',
-                color: anoSelecionado === a ? '#fff' : 'var(--text-muted)' }}>
-              {a}
-            </button>
-          ))}
-        </div>
 
         {/* Card candidato */}
         <div style={{ ...card, background: 'var(--surface)', border: '1px solid var(--border)', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#fff' }}>P</div>
+          <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800, color: '#fff' }}>{(paulinho2022?.nome || '?')[0].toUpperCase()}</div>
           <div style={{ flex: 1 }}>
             <p style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16, margin: 0 }}>{paulinho2022?.nome}</p>
             <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
@@ -129,8 +141,8 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
           {[
             { label: 'VOTOS TOTAIS', valor: anoSelecionado === '2022' ? (paulinho2022?.total || 0).toLocaleString('pt-BR') : '3.783',
               sub: anoSelecionado === '2022' ? `${((paulinho2022?.total || 0) / TOTAL_APTOS_2022 * 100).toFixed(1)}% dos aptos` : '0.97% dos validos', cor: '#0ea5e9' },
-            { label: 'POSICAO NO RANKING', valor: `${ano.ranking}°`,
-              sub: `de ${ano.totalCandidatos} candidatos`, cor: '#8b5cf6' },
+            { label: 'POSICAO NO RANKING', valor: `${rank2022.pos}°`,
+              sub: `de ${rank2022.total} candidatos`, cor: '#8b5cf6' },
             { label: anoSelecionado === '2022' ? 'CRESCIMENTO' : 'VARIACAO',
               valor: crescimento.val, sub: crescimento.perc, cor: '#10b981' },
             { label: 'PENETRACAO TOTAL', valor: anoSelecionado === '2022' ? `${((paulinho2022?.total || 0) / TOTAL_APTOS_2022 * 100).toFixed(1)}%` : '0.0%',
@@ -267,27 +279,18 @@ export default function DiagnosticoEleitoral({ onVoltar }) {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)' }}>
-                    {['#','Candidato','Partido','Votos','% validos','Diferenca'].map(h => (
+                    {['#','Candidato','Votos','% válidos'].map(h => (
                       <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: 'var(--text-muted)', fontWeight: 600, fontSize: 12 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { pos:'1°', nome:'INACIO MONTEIRO MACIEL', partido:'PDT', votos:'14.163', perc:'14.36%', dif:'+9.283' },
-                    { pos:'2°', nome:'JACK HOUAT HARB', partido:'SOLIDARIEDADE', votos:'12.539', perc:'12.71%', dif:'+7.659' },
-                    { pos:'3°', nome:'ZENEIDE DA SILVA COSTA', partido:'PODE', votos:'11.547', perc:'11.70%', dif:'+6.667' },
-                    { pos:'4°', nome:'RUZIELY DE JESUS PONTES', partido:'PDT', votos:'11.069', perc:'11.22%', dif:'+6.189' },
-                    { pos:'5°', nome:'ALLINY SOUSA DA ROCHA SERRAO', partido:'UNIAO', votos:'11.017', perc:'11.17%', dif:'+6.137' },
-                    { pos:'26°', nome:'PAULO ALCEU AVILA RAMOS', partido:'MDB', votos:'4.880', perc:'1.18%', dif:'—', destaque: true },
-                  ].map((c, i) => (
+                  {concorrentes.map((c, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid var(--border)', background: c.destaque ? '#eff6ff' : 'transparent' }}>
                       <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)', fontWeight: 700 }}>{c.pos}</td>
                       <td style={{ padding: '10px 12px', color: c.destaque ? '#1d4ed8' : 'var(--text)', fontWeight: c.destaque ? 700 : 400 }}>{c.nome}</td>
-                      <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)' }}>{c.partido}</td>
                       <td style={{ padding: '10px 12px', color: c.destaque ? '#1e293b' : 'var(--text)', fontWeight: 600 }}>{c.votos}</td>
                       <td style={{ padding: '10px 12px', color: c.destaque ? '#64748b' : 'var(--text-muted)' }}>{c.perc}</td>
-                      <td style={{ padding: '10px 12px', color: c.dif === '—' ? (c.destaque ? '#64748b' : 'var(--text-muted)') : '#10b981', fontWeight: 600 }}>{c.dif}</td>
                     </tr>
                   ))}
                 </tbody>
