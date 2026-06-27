@@ -22,7 +22,7 @@ function calcScore(votos2022, meta) {
   return { score: 20, label: 'AUSENTE', cor: '#ef4444' };
 }
 
-export default function ProjecaoEstrategica({ onVoltar }) {
+export default function ProjecaoEstrategica({ config, onVoltar }) {
   const [meta, setMeta] = useState(7000);
   const [metaInput, setMetaInput] = useState('7000');
   const [mostraCandidato, setMostraCandidato] = useState(false);
@@ -54,11 +54,14 @@ export default function ProjecaoEstrategica({ onVoltar }) {
   });
 
   const scoreViabilidade = () => {
+    const clamp = (v, max) => Math.max(0, Math.min(max, Number(v) || 0));
+    // Calculados a partir dos dados do candidato
     const base = Math.min(25, Math.round((total2022 / 17230) * 25));
-    const crescPts = Math.min(20, Math.round((1097 / 1097) * 20));
-    const partido = 15;
-    const expansao = Math.min(20, Math.round((2200 / 5000) * 20));
-    const digital = 4;
+    const expansao = Math.min(20, Math.round((dadosMunicipios.length / 16) * 20));
+    // Editáveis pelo master (config) — sem dado por candidato na base TSE
+    const crescPts = clamp(config?.score_crescimento, 20);
+    const partido = clamp(config?.score_partido, 25);
+    const digital = clamp(config?.score_digital, 10);
     return { base, crescPts, partido, expansao, digital, total: base + crescPts + partido + expansao + digital };
   };
 
@@ -176,10 +179,10 @@ export default function ProjecaoEstrategica({ onVoltar }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginBottom: 16 }}>
             {[
               { label: 'Base territorial', pts: sv.base, max: 25, desc: `${total2022} votos = ${((total2022/17230)*100).toFixed(1)}% da meta segura` },
-              { label: 'Crescimento historico', pts: sv.crescPts, max: 20, desc: '+29% de 2018 para 2022' },
-              { label: 'Forca do partido', pts: sv.partido, max: 25, desc: 'MDB elegeu 2 deputados em 2022' },
-              { label: 'Potencial de expansao', pts: sv.expansao, max: 20, desc: '3 secoes mobilizaveis, +2.2k potencial' },
-              { label: 'Presenca digital', pts: sv.digital, max: 10, desc: 'Presenca publica a estruturar' },
+              { label: 'Crescimento historico', pts: sv.crescPts, max: 20, desc: 'Avaliação do master (Config)' },
+              { label: 'Forca do partido', pts: sv.partido, max: 25, desc: 'Avaliação do master (Config)' },
+              { label: 'Potencial de expansao', pts: sv.expansao, max: 20, desc: `${dadosMunicipios.length} de 16 municípios com voto` },
+              { label: 'Presenca digital', pts: sv.digital, max: 10, desc: 'Avaliação do master (Config)' },
             ].map(i => (
               <div key={i.label} style={{ background: 'var(--surface-2)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border)' }}>
                 <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 6px' }}>{i.label}</p>

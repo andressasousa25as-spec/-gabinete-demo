@@ -1,25 +1,22 @@
 import { useMemo } from 'react';
 import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 import { ELEITORADO_MUNICIPIO_2022, ABSTENCAO_MUNICIPIO_2022 } from '../lib/eleitoradoAP';
+import { CANDIDATOS_TSE } from '../candidatosTSE';
 
 // Eleitorado e abstenção REAIS (TSE, AP 2022). Fonte única.
 const ELEITORADO_MUNICIPIO = ELEITORADO_MUNICIPIO_2022;
 const ABSTENCAO_MUNICIPIO = ABSTENCAO_MUNICIPIO_2022;
 
-// Lider adversario por municipio (baseado nas imagens do EleitorAI)
-const LIDER_ADVERSARIO = {
-  'MACAPÁ': { nome: 'INACIO MONTEIRO', votos: '7.0k' },
-  'SANTANA': { nome: 'FRANCISCO PAULO', votos: '4.9k' },
-  'PEDRA BRANCA DO AMAPARI': { nome: 'PAULO PARANAGUA', votos: '1.8k' },
-  'PORTO GRANDE': { nome: 'JACK HOUAT', votos: '1.5k' },
-  'FERREIRA GOMES': { nome: 'JAIME DA', votos: '638' },
-  'CALÇOENE': { nome: 'LUCIANA ARAUJO', votos: '494' },
-  'LARANJAL DO JARI': { nome: 'ALLINY SOUSA', votos: '6.3k' },
-  'ITAUBAL': { nome: 'LUCIANA ARAUJO', votos: '417' },
-  'MAZAGÃO': { nome: 'ZENEIDE DA', votos: '7.1k' },
-  'CUTIAS': { nome: 'AMIRALDO DA', votos: '455' },
-  'PRACUÚBA': { nome: 'HILDEGARD DE', votos: '362' },
-};
+// Maior votado (dep. estadual 2022) em cada município — calculado da base TSE.
+function liderMunicipio(mun) {
+  let best = null;
+  for (const c of CANDIDATOS_TSE) {
+    if (!(c.cargo || '').includes('DEPUTADO ESTADUAL')) continue;
+    const v = c.municipios?.[mun] || 0;
+    if (v > 0 && (!best || v > best.votos)) best = { nome: c.nome, votos: v };
+  }
+  return best;
+}
 
 function getBadge(tipo) {
   const cores = {
@@ -134,7 +131,7 @@ export default function CaminhoVitoria({ onVoltar }) {
           </p>
 
           {dadosMunicipios.map((m, i) => {
-            const lider = LIDER_ADVERSARIO[m.municipio];
+            const lider = liderMunicipio(m.municipio);
             const penCor = m.pen < 1.5 ? '#ef4444' : '#f59e0b';
             const absCor = m.abs > 22 ? '#ef4444' : 'var(--text-muted)';
 
@@ -156,7 +153,7 @@ export default function CaminhoVitoria({ onVoltar }) {
                   </div>
                   {lider && (
                     <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '4px 0 0' }}>
-                      Lider: <strong style={{ color: 'var(--text-muted)' }}>{lider.nome}</strong> ({lider.votos} vts)
+                      Mais votado aqui: <strong style={{ color: 'var(--text-muted)' }}>{lider.nome}</strong> ({lider.votos.toLocaleString('pt-BR')} vts)
                     </p>
                   )}
                 </div>
