@@ -512,7 +512,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'apuracao-lancar') return <ApuracaoLancamento perfil={perfil} onVoltar={() => setAba('inicio')} />;
   if (aba === 'apuracao-painel') return <ApuracaoPainel onVoltar={() => setAba('inicio')} />;
 
-  if (aba === 'comparativo') return <ComparativoInterno onVoltar={() => setAba('inicio')} />;
+  if (aba === 'comparativo') return <ComparativoInterno config={config} onVoltar={() => setAba('inicio')} />;
   if (aba === 'comparativo-config') return <ComparativoInternoConfig onVoltar={() => setAba('inicio')} />;
 
   const eleitorFiltrados = eleitores.filter(e =>
