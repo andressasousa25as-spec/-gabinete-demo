@@ -225,27 +225,32 @@ export default function ProjecaoEstrategica({ onVoltar }) {
           })}
         </div>
 
-        {/* Mapa de Forca */}
+        {/* Mapa de Forca — derivado dos dados do candidato (genérico) */}
         <div style={{ ...card() }}>
-          <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, margin: '0 0 16px' }}>Mapa de Forca Eleitoral por Regiao</p>
+          <p style={{ color: 'var(--text)', fontWeight: 700, fontSize: 15, margin: '0 0 16px' }}>Mapa de Forca Eleitoral por Municipio</p>
+          {municipiosComMeta.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>Sem dados de votação por município para este candidato.</p>
+          ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-            {[
-              { regiao: 'Macapa (Z2+Z10)', votos: 3474, lider: 'INACIO MONTEIRO (7.0k)', class: 'Forte', cor: '#10b981', rec: 'Consolidar e aprofundar presenca nos bairros' },
-              { regiao: 'Santana (Z6)', votos: 581, lider: 'FRANCISCO PAULO (4.9k)', class: 'Media', cor: '#f59e0b', rec: 'Potencial de expansao — unico territorio adversario com presenca relevante' },
-              { regiao: 'Laranjal do Jari (Z7)', votos: 59, lider: 'ALLINY SERRAO (6.3k)', class: 'Baixa', cor: '#f97316', rec: 'Baixa prioridade — custo alto, retorno limitado' },
-              { regiao: 'Vitoria do Jari (Z7)', votos: 1, lider: 'R. ALCIMAR NEY (2.8k)', class: 'Ausente', cor: '#ef4444', rec: 'Nao investir — dominio absoluto do adversario' },
-            ].map(r => (
-              <div key={r.regiao} style={{ background: 'var(--surface-2)', borderRadius: 10, padding: 16, border: `2px solid ${r.cor}30` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 13 }}>{r.regiao}</span>
-                  <span style={{ background: r.cor + '20', color: r.cor, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{r.class}</span>
+            {municipiosComMeta.slice(0, 8).map(m => {
+              const rec = m.label === 'FORTE' ? 'Consolidar e aprofundar a presença'
+                : m.label === 'MEDIA' ? 'Potencial de expansão — investir para crescer'
+                : m.label === 'BAIXA' ? 'Baixa prioridade — custo alto, retorno limitado'
+                : 'Presença mínima — avaliar se vale investir';
+              return (
+              <div key={m.municipio} style={{ background: 'var(--surface-2)', borderRadius: 10, padding: 16, border: `2px solid ${m.cor}30` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, gap: 8 }}>
+                  <span style={{ color: 'var(--text)', fontWeight: 700, fontSize: 13 }}>{m.municipio}</span>
+                  <span style={{ background: m.cor + '20', color: m.cor, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{m.label}</span>
                 </div>
-                <p style={{ color: '#2563eb', fontWeight: 700, fontSize: 18, margin: '0 0 4px' }}>{r.votos.toLocaleString('pt-BR')} vts</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 8px' }}>Lider: {r.lider}</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: 0, lineHeight: 1.5 }}>{r.rec}</p>
+                <p style={{ color: '#2563eb', fontWeight: 700, fontSize: 18, margin: '0 0 4px' }}>{m.votos2022.toLocaleString('pt-BR')} vts</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 8px' }}>Meta 2026: {m.metaMun.toLocaleString('pt-BR')}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: 0, lineHeight: 1.5 }}>{rec}</p>
               </div>
-            ))}
+              );
+            })}
           </div>
+          )}
         </div>
 
       </div>
