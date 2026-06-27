@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { montarComparativo } from '../lib/comparativo';
+import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
 import * as XLSX from 'xlsx';
 
 const CORES_RISCO = {
@@ -10,9 +11,10 @@ const CORES_RISCO = {
   BAIXO: { bg: 'var(--surface-2)', fg: 'var(--text-muted)', label: 'Baixo' },
 };
 
-export default function ComparativoInterno({ onVoltar }) {
+export default function ComparativoInterno({ config, onVoltar }) {
   const [lista, setLista] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const { candidato: cand } = useCandidatoAnalise();
 
   async function carregar() {
     setCarregando(true);
@@ -22,7 +24,14 @@ export default function ComparativoInterno({ onVoltar }) {
   }
   useEffect(() => { carregar(); }, []);
 
-  const { referencia, adversarios, semReferencia } = useMemo(() => montarComparativo(lista), [lista]);
+  // Referência = candidato configurado (não mais uma linha manual "nosso").
+  const referencia = useMemo(() => {
+    const nome = config?.nome || cand?.nome;
+    if (!nome) return null;
+    return { nome, votos: cand?.total || 0, cargo_ultima: config?.cargo || cand?.cargo || 'Deputado Estadual', abrangencia: 'Estado' };
+  }, [config, cand]);
+
+  const { adversarios, semReferencia } = useMemo(() => montarComparativo(lista, referencia), [lista, referencia]);
 
   function exportar() {
     const linhas = lista.map(c => ({ nome: c.nome, votos: c.votos, cargo: c.cargo_ultima, abrangencia: c.abrangencia, risco: c.risco, confirmado: c.confirmado ? 'sim' : 'não' }));
@@ -44,7 +53,7 @@ export default function ComparativoInterno({ onVoltar }) {
         </div>
       </div>
 
-      {semReferencia && <p style={{ color: '#f87171' }}>Defina o candidato de referência (marque "nosso") na configuração.</p>}
+      {semReferencia && <p style={{ color: '#f87171' }}>Configure o candidato no ⚙️ Config para ver o comparativo.</p>}
 
       <div style={{ background: '#422006', border: '1px solid #854d0e', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#fde68a', lineHeight: 1.5 }}>
         ⚠️ <strong>Cargos e eleições diferentes não são comparáveis 1:1.</strong> Votos de prefeito ou vereador refletem só o <em>"tamanho"</em> da base que o candidato alcançou na última eleição dele (concentrada num município) — não equivalem a voto de deputado estadual, que precisa estar espalhado pelo estado todo. Use os números como referência de força, não como placar direto.
@@ -61,6 +70,12 @@ export default function ComparativoInterno({ onVoltar }) {
         </div>
       )}
 
+      {adversarios.length === 0 ? (
+        <div style={{ background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 12, padding: 24, textAlign: 'center', color: 'var(--text-muted)' }}>
+          <p style={{ margin: '0 0 6px', fontWeight: 700, color: 'var(--text)' }}>Nenhum concorrente cadastrado.</p>
+          <p style={{ margin: 0, fontSize: 13 }}>Adicione os concorrentes da sua disputa na tela <strong>“Comparativo: editar”</strong> (menu Estratégia → Relatórios & gestão).</p>
+        </div>
+      ) : (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
         {adversarios.map(a => {
           const cor = CORES_RISCO[a.risco] || CORES_RISCO.BAIXO;
@@ -90,6 +105,7 @@ export default function ComparativoInterno({ onVoltar }) {
           );
         })}
       </div>
+      )}
     </div>
   );
 }

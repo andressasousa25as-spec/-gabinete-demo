@@ -1,14 +1,16 @@
 // Lógica pura do comparativo interno (sem banco/UI).
-export function montarComparativo(lista) {
-  const referencia = lista.find((c) => c.eh_nosso) || null;
-  const base = referencia ? referencia.votos : 0;
-  const adversarios = lista
+// `referencia` = candidato configurado { nome, votos, cargo_ultima, abrangencia }.
+// A lista do banco contém apenas os ADVERSÁRIOS (linhas legadas eh_nosso são ignoradas).
+export function montarComparativo(lista, referencia) {
+  const base = referencia?.votos || 0;
+  const refAbr = referencia?.abrangencia || 'Estado';
+  const adversarios = (lista || [])
     .filter((c) => !c.eh_nosso)
     .map((c) => ({
       ...c,
       diff: c.votos - base,
-      comparacaoDireta: !!referencia && c.abrangencia === referencia.abrangencia,
+      comparacaoDireta: c.abrangencia === refAbr,
     }))
     .sort((a, b) => b.votos - a.votos);
-  return { referencia, adversarios, semReferencia: !referencia };
+  return { referencia: referencia || null, adversarios, semReferencia: !referencia };
 }
