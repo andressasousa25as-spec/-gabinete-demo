@@ -621,8 +621,8 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               {config.latitude && <p style={{ color: '#60a5fa', fontSize: 11, marginTop: 4 }}>📍 Coordenadas: {config.latitude}, {config.longitude}</p>}
             </div>
-            {ehMaster && <ConfiguradorCandidato atual={analiseCand} />}
-            {ehMaster && (
+            <ConfiguradorCandidato atual={analiseCand} />
+            {(
               <div style={{ marginTop: 16, padding: 12, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8 }}>
                 <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>SCORE DE VIABILIDADE — NOTAS MANUAIS</p>
                 <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 8px' }}>Base e Expansão são calculados. Defina as notas que não têm dado no TSE:</p>
