@@ -141,7 +141,7 @@ export default function GestaoUsuarios({ perfil, onVoltar }) {
                 </select>
                 <button onClick={() => {
                   const rows = logsFiltrados.map(l => `${new Date(l.created_at).toLocaleString('pt-BR')} | ${l.adm_nome} | ${l.acao} | ${l.detalhes || ''}`).join('\n');
-                  const blob = new Blob([`RELATÓRIO DE ATIVIDADES - GABINETE PAULINHO RAMOS\n\n${rows}`], { type: 'text/plain' });
+                  const blob = new Blob([`RELATÓRIO DE ATIVIDADES - GABINETE DIGITAL\n\n${rows}`], { type: 'text/plain' });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a'); a.href = url; a.download = 'relatorio-usuarios.txt'; a.click();
                 }} style={{ padding: '8px 16px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 13 }}>⬇️ Exportar</button>

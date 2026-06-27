@@ -37,7 +37,7 @@ export default function ComparativoInterno({ onVoltar }) {
   return (
     <div style={{ padding: 20, maxWidth: 1000, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
-        <h2 style={{ color: '#CBA15C', margin: 0 }}>🏆 Comparativo Interno — União Brasil</h2>
+        <h2 style={{ color: '#CBA15C', margin: 0 }}>🏆 Comparativo Interno</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={exportar} style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>⬇ Excel</button>
           {onVoltar && <button onClick={onVoltar} style={{ background: 'var(--surface-2)', color: 'var(--text)', border: 'none', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>←</button>}
