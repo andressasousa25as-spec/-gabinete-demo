@@ -11,6 +11,7 @@ import AnalyticsMidias from '../AnalyticsMidias';
 import GestaoUsuarios from './GestaoUsuarios';
 import { registrarLog as logBase } from '../lib/logAtividade';
 import { useCandidatoAnalise } from '../lib/useCandidatoAnalise';
+import ConfiguradorCandidato from './ConfiguradorCandidato';
 import { coordConfiavel, MACAPA_CENTRO, AMAPA_BBOX, COORDS_BAIRROS, LISTA_BAIRROS, LISTA_MUNICIPIOS } from '../lib/bairros';
 import DiagnosticoEleitoral from './DiagnosticoEleitoral';
 import CaminhoVitoria from './CaminhoVitoria';
@@ -493,7 +494,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
   if (aba === 'analise') return <AnaliseTerritorial onVoltar={() => setAba('inicio')} />;
   if (aba === 'radar') return <RadarOportunidade onVoltar={() => setAba('inicio')} />;
   if (aba === 'caminho') return <CaminhoVitoria onVoltar={() => setAba('inicio')} />;
-  if (aba === 'projecao') return <ProjecaoEstrategica onVoltar={() => setAba('inicio')} />;
+  if (aba === 'projecao') return <ProjecaoEstrategica config={config} onVoltar={() => setAba('inicio')} />;
   if (aba === 'cenario-municipal') return <CenarioMunicipal config={config} onVoltar={() => setAba('inicio')} />;
   if (aba === 'mapa') return (
     <div>
@@ -563,7 +564,7 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
             {[
               { label: 'Nome', key: 'nome' },
               { label: 'Cargo', key: 'cargo' },
-              { label: 'Partido (sigla, ex.: UNIÃO)', key: 'partido' },
+              { label: 'Partido (sigla)', key: 'partido' },
               { label: 'Estado', key: 'estado' },
               { label: 'Bairro de atuação', key: 'bairro' },
               { label: 'Endereço', key: 'endereco' },
@@ -620,12 +621,22 @@ export default function DashboardCandidato({ perfil, ehMaster }) {
               </select>
               {config.latitude && <p style={{ color: '#60a5fa', fontSize: 11, marginTop: 4 }}>📍 Coordenadas: {config.latitude}, {config.longitude}</p>}
             </div>
-            {ehMaster && (
+            <ConfiguradorCandidato atual={analiseCand} />
+            {(
               <div style={{ marginTop: 16, padding: 12, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8 }}>
-                <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>CANDIDATO DE ANÁLISE (TSE)</p>
-                {analiseCand
-                  ? <p style={{ color: 'var(--text)', fontSize: 13, margin: 0 }}>{analiseCand.nome} · {analiseCand.cargo} · {analiseCand.ano} · {analiseCand.total?.toLocaleString('pt-BR')} votos</p>
-                  : <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>Nenhum candidato importado. Rode o script de importação no onboarding.</p>}
+                <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, letterSpacing: 1, margin: '0 0 6px' }}>SCORE DE VIABILIDADE — NOTAS MANUAIS</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '0 0 8px' }}>Base e Expansão são calculados. Defina as notas que não têm dado no TSE:</p>
+                {[
+                  { key: 'score_crescimento', label: 'Crescimento histórico', max: 20 },
+                  { key: 'score_partido', label: 'Força do partido', max: 25 },
+                  { key: 'score_digital', label: 'Presença digital', max: 10 },
+                ].map(s => (
+                  <div key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <label style={{ flex: 1, color: 'var(--text)', fontSize: 13 }}>{s.label} <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>(0–{s.max})</span></label>
+                    <input type="number" min="0" max={s.max} value={config[s.key] ?? ''} onChange={e => setConfig({ ...config, [s.key]: e.target.value === '' ? null : Math.max(0, Math.min(s.max, Number(e.target.value))) })}
+                      style={{ width: 70, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: 14, textAlign: 'center' }} />
+                  </div>
+                ))}
               </div>
             )}
             <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>

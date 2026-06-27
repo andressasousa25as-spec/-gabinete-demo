@@ -34,12 +34,17 @@ function App() {
   const [iniciando, setIniciando] = useState(true);
   const [verMaster, setVerMaster] = useState(false);
   const [recovery, setRecovery] = useState(hash.includes('type=recovery'));
+  const [nomeApp, setNomeApp] = useState('');     // nome do candidato (config_candidato) p/ o cabeçalho
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { setSessao(data.session); setIniciando(false); });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSessao(s));
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    supabase.from('config_candidato').select('nome').limit(1).maybeSingle().then(({ data }) => { if (data?.nome) setNomeApp(data.nome); });
+  }, [sessao]);
 
   useEffect(() => {
     if (!sessao?.user) { setPerfil(null); setMembro(null); setLicenca(null); setCarregado(false); setErroConexao(false); return; }
@@ -113,7 +118,7 @@ function App() {
   if (licencaVencida(licenca) && !ehMaster) return <TelaBloqueio onLogout={handleLogout} />;
   if (ehMaster && verMaster) return <TelaMaster onVoltar={() => setVerMaster(false)} />;
 
-  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? 'Deputado Demo' : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe';
+  const nomeHeader = ehMaster ? 'Master (Andressa)' : perfil === 'CANDIDATO' ? (nomeApp || 'Candidato') : perfil === 'ADMIN' ? (membro?.nome || 'ADM') : 'Equipe';
   // Master e Candidato veem o painel completo do candidato. ADMIN vê o DashboardADM. Demais, Equipe.
   const conteudo = (perfil === 'CANDIDATO' || ehMaster)
     ? <DashboardCandidato perfil={membro} ehMaster={ehMaster} />
@@ -128,7 +133,7 @@ function App() {
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(8px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
           <div>
             <h1 style={{ fontSize: "clamp(10px, 3vw, 24px)", fontWeight: 800, whiteSpace: "nowrap", color: 'var(--text)' }}>GABINETE DIGITAL SF</h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Deputado Demo</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>{nomeApp || 'Gabinete'}</p>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0, flexWrap: "wrap", justifyContent: "flex-end" }}>
             {ehMaster && (
